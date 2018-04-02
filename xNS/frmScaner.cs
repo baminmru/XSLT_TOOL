@@ -38,15 +38,23 @@ namespace xNS
             string tmp;
             tmp = s.ToLower();
             tmp = tmp.Replace("_openbrkt_", "__");
+            tmp = tmp.Replace("-", "_");
             tmp = tmp.Replace("_closebrkt_", "__");
             tmp = tmp.Replace("_comma_", "__");
             tmp = tmp.Replace("_prd_", "__");
+            tmp = tmp.Replace("_fslash_", "__");
             int ltmp = tmp.Length + 1;
             while (ltmp != tmp.Length)
             {
                 ltmp = tmp.Length;
                 tmp = tmp.Replace("__", "_");
             }
+            if (tmp.StartsWith("_"))
+                tmp = tmp.Substring(1);
+            if (tmp.EndsWith("_"))
+                tmp = tmp.Substring(0, tmp.Length-1);
+
+
             return tmp;
         }
 
