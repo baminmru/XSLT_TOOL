@@ -43,6 +43,11 @@ namespace xNS
             tmp = tmp.Replace("_comma_", "__");
             tmp = tmp.Replace("_prd_", "__");
             tmp = tmp.Replace("_fslash_", "__");
+            tmp = tmp.Replace(".", "_");
+            tmp = tmp.Replace(",", "_");
+            tmp = tmp.Replace("(", "_");
+            tmp = tmp.Replace(")", "_");
+
             int ltmp = tmp.Length + 1;
             while (ltmp != tmp.Length)
             {
@@ -387,6 +392,21 @@ select="""+ xpi.PathNs + @""">
         private void button3_Click(object sender, EventArgs e)
         {
             txtIgnore.Text = "";
+        }
+
+        private void txtXML_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void opf_FileOk(object sender, CancelEventArgs e)
+        {
+
         }
     }
 }
