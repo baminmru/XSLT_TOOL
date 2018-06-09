@@ -170,6 +170,65 @@ namespace xNS
             return Found;
         }
 
+
+        // find child nodes for current node
+        private List<XmlPlusItem> FindChildList(XmlPlusItem parent, List<XmlPlusItem>  PathList, int xIdx)
+        {
+            int childIdx;
+            List<XmlPlusItem> childList = new List<XmlPlusItem>();
+            Boolean printNode = true;
+
+            for (childIdx = xIdx + 1; childIdx < PathList.Count; childIdx++)
+            {
+                XmlPlusItem xpi = PathList[childIdx];
+                //if (chkTextOnly.Checked)
+                //{
+                //    if (xpi.node.Attributes.Count > 0 || (xpi.NodeText != null && xpi.NodeText != ""))
+                //    {
+                //        printNode = true;
+                //    }
+                //}
+                //else
+                //{
+                //    printNode = true;
+                //}
+
+                //if (printNode)
+                {
+                    Boolean ok = true;
+                    if (Ignore != null)
+                    {
+                        foreach (string s in Ignore)
+                        {
+                            if (s.Length > 0)
+                            {
+                                if (xpi.Path.IndexOf(s) >= 0)
+                                {
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (ok)
+                    {
+                        ok = Finder(xpi.Path);
+                    }
+
+                    if (ok)
+                    {
+                        if (xpi.PathNs.StartsWith(parent.PathNs))
+                        {
+                            childList.Add(xpi);
+                        }
+                    }
+
+                }
+            }
+
+            return childList;
+        }
+
         private void btnStart_Click(object sender, EventArgs e)
         {
             txtState.Text = "scan started";
@@ -211,17 +270,18 @@ namespace xNS
                     List<XmlPlusItem> PathList = XmlTools.IterateThroughAllNodes(xdoc, txtNS.Text);
                     StringBuilder sb = new StringBuilder();
                     Boolean printNode = true;
-                    foreach (XmlPlusItem xpi in PathList)
+                    int xIdx;
+                    for (xIdx = 0; xIdx < PathList.Count; xIdx++)
                     {
+                        XmlPlusItem xpi = PathList[xIdx];
+                    
                         printNode = false;
 
                         if (chkTextOnly.Checked) {
                             if (xpi.node.Attributes.Count > 0 || (xpi.NodeText != null && xpi.NodeText != ""))
                             {
                                 printNode = true;
-                                
                             }
-
                         }
                         else
                         {
@@ -249,8 +309,12 @@ namespace xNS
                             {
                                 ok = Finder(xpi.Path);
                             }
+
                             if (ok)
                             {
+                                
+
+
                                 sb.AppendLine("<!-- ------------------------------------------------------------------ -->");
                                 sb.AppendLine("<!-- XPath    : --> " + xpi.Path);
                                 sb.AppendLine("");
@@ -279,8 +343,20 @@ namespace xNS
                                 }
                                 
 
-                                if (xpi.NodeText != null && xpi.NodeText != "")
+                               // if (xpi.NodeText != null && xpi.NodeText != "")
                                 {
+
+                                    List<XmlPlusItem> ChildList = null;
+                                    if (chkIf.Checked || chkIfPost.Checked)
+                                    {
+                                        ChildList = FindChildList(xpi, PathList, xIdx);
+                                        if (ChildList.Count > 0)
+                                        {
+                                            System.Diagnostics.Debug.Print(xpi.PathNs);
+                                        }
+                                    }
+
+
                                     if (chkDirect.Checked)
                                     {
                                         sb.Append("<!-- Direct   : --> ");
@@ -291,9 +367,32 @@ namespace xNS
                                     if (chkIfPost.Checked)
                                     {
                                         sb.Append(" < !-- If Post  : --> ");
-                                        sb.AppendLine(@"<xsl:if test  =""" + xpi.PathNs + @" != ''"">");
-                                        sb.AppendLine(@"<xsl:call-template name=""PostProcess""><xsl:with-param name=""size"" select=""0"" /><xsl:with-param name=""string""  select=""" + xpi.PathNs + @"""/></xsl:call-template>");
-                                        sb.AppendLine(@"</xsl:if>");
+
+                                        if (ChildList != null && ChildList.Count > 0)
+                                        {
+                                            sb.AppendLine(@"<xsl:if test  =""" + xpi.PathNs + @" != '' ");
+                                            foreach (XmlPlusItem child in ChildList)
+                                            {
+                                                sb.AppendLine(@" or " + child.PathNs + @" != '' ");
+                                            }
+                                            sb.AppendLine(@"""  > ");
+
+                                            sb.AppendLine(@"<xsl:call-template name=""PostProcess"">
+<xsl:with-param name=""size"" select=""0"" />
+<xsl:with-param name=""string""  select=""" + xpi.PathNs + @"""/></xsl:call-template>");
+                                            sb.AppendLine(@"</xsl:if>");
+
+                                        }
+                                        else
+                                        {
+
+                                            
+                                            sb.AppendLine(@"<xsl:if test  =""" + xpi.PathNs + @" != ''"">");
+                                            sb.AppendLine(@"<xsl:call-template name=""PostProcess"">
+<xsl:with-param name=""size"" select=""0"" />
+<xsl:with-param name=""string""  select=""" + xpi.PathNs + @"""/></xsl:call-template>");
+                                            sb.AppendLine(@"</xsl:if>");
+                                        }
                                         sb.AppendLine("");
                                     }
 
@@ -308,11 +407,31 @@ namespace xNS
                                     if (chkIf.Checked)
                                     {
                                         sb.Append("<!-- If-value : --> ");
-                                        sb.AppendLine(@"<xsl:if 
+
+
+                                        if (ChildList != null && ChildList.Count > 0)
+                                        {
+                                            sb.AppendLine(@"<xsl:if test  =""" + xpi.PathNs + @" != '' ");
+                                            foreach(XmlPlusItem child in ChildList)
+                                            {
+                                                sb.AppendLine(@" or " + child.PathNs + @" != '' ");
+                                            }
+                                            sb.AppendLine(@"""   ");
+
+                                            sb.AppendLine(@" > " + txtAddText.Text + @"<xsl:value-of 
+select=""" + xpi.PathNs + @"""/></xsl:if
+>");
+
+                                        }
+                                        else
+                                        {
+
+                                            sb.AppendLine(@"<xsl:if 
 test  =""" + xpi.PathNs + @" != ''""
 >" + txtAddText.Text + @"<xsl:value-of 
 select=""" + xpi.PathNs + @"""/></xsl:if
 >");
+                                        }
                                         sb.AppendLine("");
                                     }
 

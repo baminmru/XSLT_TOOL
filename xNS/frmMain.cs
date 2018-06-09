@@ -34,5 +34,11 @@ namespace xNS
             frmSnipets f = new frmSnipets();
             f.Show();
         }
+
+        private void cmdSizer_Click(object sender, EventArgs e)
+        {
+            frmSizercs f = new frmSizercs();
+            f.Show();
+        }
     }
 }

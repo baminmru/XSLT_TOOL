@@ -68,6 +68,7 @@
             this.opf.FileName = "text.xml";
             this.opf.Filter = "XML files|*.xml|All files|*.*";
             this.opf.InitialDirectory = ".";
+            this.opf.FileOk += new System.ComponentModel.CancelEventHandler(this.opf_FileOk);
             // 
             // cmdXML
             // 
@@ -90,6 +91,7 @@
             this.label1.Size = new System.Drawing.Size(89, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "XML файл";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // txtXML
             // 
@@ -101,6 +103,7 @@
             this.txtXML.ReadOnly = true;
             this.txtXML.Size = new System.Drawing.Size(717, 26);
             this.txtXML.TabIndex = 2;
+            this.txtXML.TextChanged += new System.EventHandler(this.txtXML_TextChanged);
             // 
             // label2
             // 
@@ -130,9 +133,11 @@
             this.txtOut.Location = new System.Drawing.Point(5, 264);
             this.txtOut.Multiline = true;
             this.txtOut.Name = "txtOut";
+            this.txtOut.ReadOnly = true;
             this.txtOut.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtOut.Size = new System.Drawing.Size(1015, 205);
             this.txtOut.TabIndex = 5;
+            this.txtOut.WordWrap = false;
             // 
             // btnStart
             // 
@@ -291,7 +296,7 @@
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(142, 34);
             this.btnClear.TabIndex = 21;
-            this.btnClear.Text = "clear copy start";
+            this.btnClear.Text = "clear+copy+start";
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 

@@ -64,6 +64,12 @@
     <Compile Include="frmPack.Designer.cs">
       <DependentUpon>frmPack.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSizercs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSizercs.Designer.cs">
+      <DependentUpon>frmSizercs.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmSnipets.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +87,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmPack.resx">
       <DependentUpon>frmPack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSizercs.resx">
+      <DependentUpon>frmSizercs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSnipets.resx">
       <DependentUpon>frmSnipets.cs</DependentUpon>
