@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmScaner));
             this.opf = new System.Windows.Forms.OpenFileDialog();
             this.cmdXML = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -439,6 +440,7 @@
             this.Controls.Add(this.txtXML);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmdXML);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(20, 120);
             this.Name = "frmScaner";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

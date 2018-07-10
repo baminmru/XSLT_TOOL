@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSnipets));
             this.txtOut = new System.Windows.Forms.TextBox();
             this.btnChoose = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -175,6 +176,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnChoose);
             this.Controls.Add(this.txtOut);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(60, 120);
             this.Name = "frmSnipets";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
