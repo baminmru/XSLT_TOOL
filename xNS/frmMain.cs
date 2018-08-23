@@ -40,5 +40,11 @@ namespace xNS
             frmSizercs f = new frmSizercs();
             f.Show();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            frmSpecMaker f = new frmSpecMaker();
+            f.Show();
+        }
     }
 }

@@ -176,7 +176,7 @@ namespace xNS
         {
             int childIdx;
             List<XmlPlusItem> childList = new List<XmlPlusItem>();
-            Boolean printNode = true;
+            //Boolean printNode = true;
 
             for (childIdx = xIdx + 1; childIdx < PathList.Count; childIdx++)
             {
