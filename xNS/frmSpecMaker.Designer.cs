@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtXML = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cmdXML = new System.Windows.Forms.Button();
@@ -36,7 +37,6 @@
             this.opf = new System.Windows.Forms.OpenFileDialog();
             this.opf2 = new System.Windows.Forms.OpenFileDialog();
             this.txtOut = new System.Windows.Forms.TextBox();
-            this.btnStart = new System.Windows.Forms.Button();
             this.chkDebug = new System.Windows.Forms.CheckBox();
             this.tv = new System.Windows.Forms.TreeView();
             this.cmdRead = new System.Windows.Forms.Button();
@@ -56,6 +56,14 @@
             this.cmdShiftUp = new System.Windows.Forms.Button();
             this.cmdDel = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkPDF = new System.Windows.Forms.RadioButton();
+            this.chkScreen = new System.Windows.Forms.RadioButton();
+            this.txtErrors = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.chkShiftDot = new System.Windows.Forms.CheckBox();
+            this.chkReInit = new System.Windows.Forms.CheckBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtXML
@@ -134,30 +142,20 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOut.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtOut.Location = new System.Drawing.Point(609, 191);
+            this.txtOut.Location = new System.Drawing.Point(642, 191);
             this.txtOut.Multiline = true;
             this.txtOut.Name = "txtOut";
             this.txtOut.ReadOnly = true;
             this.txtOut.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtOut.Size = new System.Drawing.Size(511, 369);
+            this.txtOut.Size = new System.Drawing.Size(465, 353);
             this.txtOut.TabIndex = 9;
+            this.toolTip1.SetToolTip(this.txtOut, "Сгенерированный код");
             this.txtOut.WordWrap = false;
-            // 
-            // btnStart
-            // 
-            this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnStart.Location = new System.Drawing.Point(609, 151);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(325, 34);
-            this.btnStart.TabIndex = 10;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // chkDebug
             // 
             this.chkDebug.AutoSize = true;
-            this.chkDebug.Location = new System.Drawing.Point(954, 162);
+            this.chkDebug.Location = new System.Drawing.Point(736, 162);
             this.chkDebug.Name = "chkDebug";
             this.chkDebug.Size = new System.Drawing.Size(153, 17);
             this.chkDebug.TabIndex = 11;
@@ -170,8 +168,11 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tv.Location = new System.Drawing.Point(4, 191);
             this.tv.Name = "tv";
-            this.tv.Size = new System.Drawing.Size(589, 369);
+            this.tv.Size = new System.Drawing.Size(622, 247);
             this.tv.TabIndex = 12;
+            this.toolTip1.SetToolTip(this.tv, "Структура документа");
+            this.tv.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tv_AfterSelect);
+            this.tv.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tv_NodeMouseDoubleClick);
             // 
             // cmdRead
             // 
@@ -223,9 +224,9 @@
             // cmdProcess
             // 
             this.cmdProcess.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cmdProcess.Location = new System.Drawing.Point(513, 151);
+            this.cmdProcess.Location = new System.Drawing.Point(642, 150);
             this.cmdProcess.Name = "cmdProcess";
-            this.cmdProcess.Size = new System.Drawing.Size(80, 34);
+            this.cmdProcess.Size = new System.Drawing.Size(88, 34);
             this.cmdProcess.TabIndex = 18;
             this.cmdProcess.Text = "Process";
             this.cmdProcess.UseVisualStyleBackColor = true;
@@ -365,11 +366,84 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.chkPDF);
+            this.groupBox1.Controls.Add(this.chkScreen);
+            this.groupBox1.Location = new System.Drawing.Point(453, 145);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(167, 39);
+            this.groupBox1.TabIndex = 33;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Form version";
+            // 
+            // chkPDF
+            // 
+            this.chkPDF.AutoSize = true;
+            this.chkPDF.Checked = true;
+            this.chkPDF.Location = new System.Drawing.Point(89, 16);
+            this.chkPDF.Name = "chkPDF";
+            this.chkPDF.Size = new System.Drawing.Size(46, 17);
+            this.chkPDF.TabIndex = 1;
+            this.chkPDF.TabStop = true;
+            this.chkPDF.Text = "PDF";
+            this.chkPDF.UseVisualStyleBackColor = true;
+            // 
+            // chkScreen
+            // 
+            this.chkScreen.AutoSize = true;
+            this.chkScreen.Location = new System.Drawing.Point(6, 16);
+            this.chkScreen.Name = "chkScreen";
+            this.chkScreen.Size = new System.Drawing.Size(59, 17);
+            this.chkScreen.TabIndex = 0;
+            this.chkScreen.Text = "Screen";
+            this.chkScreen.UseVisualStyleBackColor = true;
+            // 
+            // txtErrors
+            // 
+            this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtErrors.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtErrors.Location = new System.Drawing.Point(4, 444);
+            this.txtErrors.Multiline = true;
+            this.txtErrors.Name = "txtErrors";
+            this.txtErrors.ReadOnly = true;
+            this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtErrors.Size = new System.Drawing.Size(622, 100);
+            this.txtErrors.TabIndex = 34;
+            this.toolTip1.SetToolTip(this.txtErrors, "Ошибки");
+            this.txtErrors.WordWrap = false;
+            // 
+            // chkShiftDot
+            // 
+            this.chkShiftDot.AutoSize = true;
+            this.chkShiftDot.Checked = true;
+            this.chkShiftDot.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShiftDot.Location = new System.Drawing.Point(895, 162);
+            this.chkShiftDot.Name = "chkShiftDot";
+            this.chkShiftDot.Size = new System.Drawing.Size(120, 17);
+            this.chkShiftDot.TabIndex = 35;
+            this.chkShiftDot.Text = "Shift Dot to Children";
+            this.chkShiftDot.UseVisualStyleBackColor = true;
+            // 
+            // chkReInit
+            // 
+            this.chkReInit.AutoSize = true;
+            this.chkReInit.Location = new System.Drawing.Point(1036, 161);
+            this.chkReInit.Name = "chkReInit";
+            this.chkReInit.Size = new System.Drawing.Size(57, 17);
+            this.chkReInit.TabIndex = 36;
+            this.chkReInit.Text = "Re Init";
+            this.chkReInit.UseVisualStyleBackColor = true;
+            // 
             // frmSpecMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1119, 556);
+            this.Controls.Add(this.chkReInit);
+            this.Controls.Add(this.chkShiftDot);
+            this.Controls.Add(this.txtErrors);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.cmdDel);
             this.Controls.Add(this.cmdShiftUp);
@@ -388,7 +462,6 @@
             this.Controls.Add(this.cmdRead);
             this.Controls.Add(this.tv);
             this.Controls.Add(this.chkDebug);
-            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.txtOut);
             this.Controls.Add(this.txtDocx);
             this.Controls.Add(this.cmdDocX);
@@ -397,6 +470,8 @@
             this.Controls.Add(this.cmdXML);
             this.Name = "frmSpecMaker";
             this.Text = "Process specification";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -412,7 +487,6 @@
         private System.Windows.Forms.OpenFileDialog opf;
         private System.Windows.Forms.OpenFileDialog opf2;
         private System.Windows.Forms.TextBox txtOut;
-        private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.CheckBox chkDebug;
         private System.Windows.Forms.TreeView tv;
         private System.Windows.Forms.Button cmdRead;
@@ -432,5 +506,12 @@
         private System.Windows.Forms.Button cmdShiftUp;
         private System.Windows.Forms.Button cmdDel;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton chkPDF;
+        private System.Windows.Forms.RadioButton chkScreen;
+        private System.Windows.Forms.TextBox txtErrors;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox chkShiftDot;
+        private System.Windows.Forms.CheckBox chkReInit;
     }
 }

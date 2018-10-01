@@ -26,6 +26,7 @@ namespace xNS
             if (opf.ShowDialog() == DialogResult.OK)
             {
                 txtXML.Text = opf.FileName;
+                
             }
         }
 
@@ -38,91 +39,96 @@ namespace xNS
             }
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            if (txtDocx.Text == "") return;
-            DocX doc;
-            try
-            {
-                doc = DocX.Load(txtDocx.Text);
-            }catch(System.Exception ex)
-            {
-                txtOut.Text = ex.Message;
-                return;
-            }
+        //private void btnStart_Click(object sender, EventArgs e)
+        //{
+        //    if (txtDocx.Text == "") return;
+        //    DocX doc;
+        //    try
+        //    {
+        //        doc = DocX.Load(txtDocx.Text);
+        //    }catch(System.Exception ex)
+        //    {
+        //        txtOut.Text = ex.Message;
+        //        return;
+        //    }
                 
                 
                
-                int tIdx = 0;
-                int rIdx;
-                int cIdx;
+        //        int tIdx = 0;
+        //        int rIdx;
+        //        int cIdx;
               
-                int i;
+        //        int i;
 
-            XsltItem[] Levels = new XsltItem[10];
-            XsltItem x;
+        //    XsltItem[] Levels = new XsltItem[10];
+        //    XsltItem x;
 
-                foreach (var T in doc.Tables)
-                {
-                    items = new List<XsltItem>();
-                    tIdx += 1;
-                    //txtOut.Text = txtOut.Text + vbCrLf + "Table begin " + tIdx.ToString();
-                    rIdx = 0;
-                    foreach (Row r in T.Rows)
-                    {
-                        rIdx += 1;
-                        // txtOut.Text = txtOut.Text & vbCrLf & "Row begin " & rIdx.ToString()
-                        if (rIdx > 1)
-                        {
-                            cIdx = 0;
-                            x = new XsltItem();
+        //        foreach (var T in doc.Tables)
+        //        {
+        //            items = new List<XsltItem>();
+        //            tIdx += 1;
+        //            //txtOut.Text = txtOut.Text + vbCrLf + "Table begin " + tIdx.ToString();
+        //            rIdx = 0;
+        //            foreach (Row r in T.Rows)
+        //            {
+        //                rIdx += 1;
+        //                // txtOut.Text = txtOut.Text & vbCrLf & "Row begin " & rIdx.ToString()
+        //                if (rIdx > 1)
+        //                {
+        //                    cIdx = 0;
+        //                    x = new XsltItem();
 
-                            foreach (Cell c in r.Cells)
-                            {
-                                cIdx += 1;
-                                if (cIdx == 1)
-                                    x.ItemID = c.Xml.Value.Trim();
-                                if (cIdx == 3)
-                                    x.Caption = c.Xml.Value.Trim();
-                                if (cIdx == 4)
-                                    x.FormInfo = c.Xml.Value.Trim();
-                                if (cIdx == 5)
-                                    x.FactorInfo = c.Xml.Value.Trim();
-                                if (cIdx == 7)
-                                    x.Path = c.Xml.Value.Trim();
-                            }
-                            if (x.FormInfo != "-")
-                            {
-                                Levels[x.Level()] = x;
-                                if (x.Level() > 1)
-                                {
-                                    Levels[x.Level() - 1].Children.Add(x);
-                                    x.Parent = Levels[x.Level() - 1];
-                                }
-                                else
-                                {
-                                    items.Add(x);
-                                }
-                            }
-                        }
-                    }
+        //                    foreach (Cell c in r.Cells)
+        //                    {
+        //                        cIdx += 1;
+        //                        if (cIdx == 1)
+        //                            x.ItemID = c.Xml.Value.Trim();
+        //                        if (cIdx == 3)
+        //                            x.Caption = c.Xml.Value.Trim();
+        //                        if (cIdx == 4)
+        //                            x.FormInfo = c.Xml.Value.Trim();
+        //                        if (cIdx == 5)
+        //                            x.FactorInfo = c.Xml.Value.Trim();
+        //                        if (cIdx == 7)
+        //                            x.Path = c.Xml.Value.Trim();
+        //                    }
+        //                    if (x.FormInfo != "-")
+        //                    {
+        //                        Levels[x.Level()] = x;
+        //                        if (x.Level() > 1)
+        //                        {
+        //                            Levels[x.Level() - 1].Children.Add(x);
+        //                            x.Parent = Levels[x.Level() - 1];
+        //                        }
+        //                        else
+        //                        {
+        //                            items.Add(x);
+        //                        }
+        //                    }
+        //                }
+        //            }
 
-                    LoadTree(false);
-                    SpecPro sp = new xNS.SpecPro();
-                    SpecPro.DebugPrint = chkDebug.Checked;
-                    txtOut.Text = "";
+        //            LoadTree(false);
+        //            SpecPro sp;
+        //            if (chkPDF.Checked)
+        //                sp = new xNS.SpecPro();
+        //            else
+        //                sp = new xNS.ScreenForm();
+        //            SpecPro.DebugPrint = chkDebug.Checked;
+        //            txtOut.Text = "";
 
-                    foreach (var x1 in items)
-                    {
-                        Application.DoEvents();
-                        txtOut.Text = txtOut.Text + vbCrLf + sp.Process_OLD(txtXML.Text,  x1,false);
-                        Application.DoEvents();
-                    }
-                    //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
-                    MessageBox.Show("Обработка спецификации завершена");
-                    break;
-                }
-            }
+        //            foreach (var x1 in items)
+        //            {
+        //                Application.DoEvents();
+        //                txtOut.Text = txtOut.Text + vbCrLf + sp.Process(txtXML.Text,  x1,false);
+                      
+        //                Application.DoEvents();
+        //            }
+        //            //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
+        //            MessageBox.Show("Обработка спецификации завершена");
+        //            break;
+        //        }
+        //    }
 
         private List<XsltItem> items;
       
@@ -135,17 +141,16 @@ namespace xNS
 
                 if (noChanges == false)
                 {
-
                     t.ComaBefore = true;
                     if (t.IsHeader()) { t.ComaBefore = false; t.DotAfter = true; }
                     if (t.IsTOC()) { t.ComaBefore = false; t.DotAfter = true; }
-
                 }
 
 
                 String Flags = "";
                 if (t.ComaBefore) Flags += "Cm";
                 if (t.IsTOC()) Flags += "T";
+                if (t.IsBold()) Flags += "B";
                 if (t.IsHeader()) Flags += "H";
                 if (t.IsNewLine()) Flags += "Lf";
                 if (t.Capitalize) Flags += "^";
@@ -258,6 +263,7 @@ namespace xNS
                 if (c.ComaBefore) Flags += "Cm";
                 if (c.IsTOC()) Flags += "T";
                 if (c.IsHeader()) Flags += "H";
+                if (c.IsBold()) Flags += "B";
                 if (c.IsNewLine()) Flags += "Lf";
                 if (c.Capitalize ) Flags += "^";
                 if (c.WithHeader() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean()==false ) Flags += "N";
@@ -277,6 +283,7 @@ namespace xNS
             if (t.ComaBefore) Flags += "Cm";
             if (t.IsTOC()) Flags += "T";
             if (t.IsHeader()) Flags += "H";
+            if (t.IsBold()) Flags += "B";
             if (t.IsNewLine()) Flags += "Lf";
             if (t.Capitalize) Flags += "^";
             if (t.WithHeader() && t.IsHeader() == false && t.IsTOC() == false && t.IsBoolean() == false) Flags += "N";
@@ -337,15 +344,22 @@ namespace xNS
         {
             if (txtXML.Text == "") return;
             if (items == null) return;
+            SpecPro sp;
+            if (chkPDF.Checked)
+                sp = new xNS.SpecPro();
+            else
+                sp = new xNS.ScreenForm();
 
-            SpecPro sp = new xNS.SpecPro();
             SpecPro.DebugPrint = chkDebug.Checked;
+            sp.Init();
             txtOut.Text = "";
+            txtErrors.Text = "";
 
             foreach (var x1 in items)
             {
                 Application.DoEvents();
                 txtOut.Text = txtOut.Text + vbCrLf + sp.Process(txtXML.Text, x1, false);
+                txtErrors.Text = sp.Error(); 
                 Application.DoEvents();
             }
             //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
@@ -401,15 +415,18 @@ namespace xNS
         private void cmdAutoDot_Click(object sender, EventArgs e)
         {
             if (items == null) return;
+             if(chkReInit.Checked)  LoadTree(false);
 
-            //1. clear dot on last Header
-
-            foreach(XsltItem x in items)
+                foreach (XsltItem x in items)
             {
-                ClearLastDot(x);
-                CapAfterDot(x);
-                ClearFirstComa(x);
+                //ClearLastDot(x);
                 DotBeforeHeader(x);
+                if(chkShiftDot.Checked)
+                    ShiftDotToChildren(x);
+                else
+                    ClearLastDot(x);
+                ClearFirstComa(x);
+                CapAfterDot(x);
             }
 
 
@@ -420,14 +437,58 @@ namespace xNS
         }
 
 
+        private void ShiftDotToChildren(XsltItem x)
+        {
+            XsltItem lc;
+
+            if (x.Children.Count >= 1 )
+            {
+                
+                Boolean hdrChild = false;
+                foreach (XsltItem nc in x.Children)
+                {
+                    if (nc.IsHeader())
+                    {
+                        hdrChild = true;
+                        break;
+                    }
+                }
+
+                // если есть дочерние с заголовком
+                if (hdrChild)
+                {
+                    x.DotAfter = false;  // будем брать точку у последнего сына-дочки
+                                         //// последний потомок всегда с точкой
+                    lc = x.Children[x.Children.Count - 1];
+                    lc.DotAfter = true;
+
+                    // все дочерние переделать на точку
+                    //foreach (XsltItem nc in x.Children)
+                    //{
+                    //    nc.ComaBefore = false;
+                    //    nc.DotAfter = true;
+                    //}
+                }
+
+                
+
+                foreach (XsltItem nc in x.Children)
+                {
+                    ShiftDotToChildren(nc);
+                }
+            }
+        }
+
+
         private void ClearLastDot(XsltItem x)
         {
             XsltItem lc;
             
             if(x.Children.Count >=1 && x.DotAfter==true)
             {
+                // чтобы не было  двух точек,  убираем её у последнего дочернего  узла
                 lc = x.Children[x.Children.Count - 1];
-                if (lc.DotAfter) lc.DotAfter = false;
+                lc.DotAfter = false;
                 foreach(XsltItem nc in x.Children)
                 {
                     ClearLastDot(nc);
@@ -457,11 +518,11 @@ namespace xNS
             {
                 lc = x.Children[0];
                 if (lc.ComaBefore   ) lc.ComaBefore = false;
-                //if (lc.ComaBefore && lc.IsMulty() == false) lc.ComaBefore = false;
-                foreach (XsltItem nc in x.Children)
-                {
-                    ClearFirstComa(nc);
-                }
+               
+            }
+            foreach (XsltItem nc in x.Children)
+            {
+                ClearFirstComa(nc);
             }
         }
         private void DotBeforeHeader(XsltItem x)
@@ -476,8 +537,11 @@ namespace xNS
                 {
                     lc = x.Children[i+1];
                     cc = x.Children[i ];
-                    if (lc.IsHeader()  && cc.IsHeader()==false)
+
+                    // стаавим точку перед соседом - заголовком
+                    if (lc.IsHeader()  && cc.IsHeader()==false) 
                     {
+                        lc.Capitalize = true;
                         cc.DotAfter = true;
                     }
                 }
@@ -500,7 +564,8 @@ namespace xNS
             {
                 cur = x.Children[i];
                 prev = x.Children[i-1];
-                if(prev.DotAfter  && cur.ComaBefore)
+
+                if(prev.DotAfter  && !cur.ComaBefore)
                 {
                     cur.ComaBefore = false;
                     cur.Capitalize = true;
@@ -649,6 +714,25 @@ namespace xNS
             {
                 LeftLevel(nc);
             }
+        }
+
+        private void tv_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void tv_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+
+            if (tv.SelectedNode == null) return;
+
+            XsltItem t;
+            t = (XsltItem)tv.SelectedNode.Tag;
+
+            frmItem fi = new frmItem();
+            fi.Text = t.Caption;
+            fi.txtItem.Text = t.ToString(false);
+            fi.ShowDialog();
         }
     }
 
