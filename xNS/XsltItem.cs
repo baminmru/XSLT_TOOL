@@ -92,7 +92,6 @@ namespace xNS
             if (FormInfo.Contains("без заголовка")) return false;
             if (FormInfo.Contains("+")) return true;
             if (IsTOC()) return true;
-            if (IsBold()) return true;
             return false;
         }
 
@@ -135,14 +134,22 @@ namespace xNS
         public Boolean IsBold()
         {
             //if (FactorInfo.ToLower().Contains("заголовок раздела")) return true;
-            if (FormInfo.ToLower().Contains("жирны"))
-                return true;
+            /* if (FormInfo.ToLower().Contains("жирны"))
+                 return true; */
+            if (WithHeader())
+            {
+                if (Level() == 2)
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
         public Boolean IsDate()
         {
             if (FactorInfo.Contains("DV_DATE_TIME")) return true;
+            if (FactorInfo.Contains("DV_DATE")) return true;
             return false;
         }
 

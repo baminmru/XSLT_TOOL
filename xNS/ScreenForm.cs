@@ -26,7 +26,7 @@ namespace xNS
             sOut += "</td></tr>";
             return sOut;
         }
-        protected override string HeaderEnd(XsltItem sX)
+        protected override string HeaderEnd(string Caption, XsltItem sX)
         {
             string sOut = @"";
             if (sX.DotAfter) sOut += ". ";

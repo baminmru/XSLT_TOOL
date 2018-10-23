@@ -190,8 +190,8 @@ namespace xNS
         private XmlPlusItem FindNSPath(XsltItem sX)
         {
 
-            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer";
-            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;d_value/magnitude;d_value/units";
+            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;protocol";
+            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude";
             string sFind = sX.Path;
 
 
@@ -242,6 +242,12 @@ namespace xNS
             {
                 sTail = "";
             }
+
+            //if(sX.IsHeader() && sX.Children.Count > 0)
+            //{
+            //    sTail = "";
+            //}
+
 
             if (sTail != "")
             {
@@ -351,6 +357,10 @@ namespace xNS
             {
                 return "<!-- Error: " + ex.Message + " -->";
             }
+            //if (sX.ItemID=="3.5")
+            //{
+            //    System.Diagnostics.Debug.Print("!!!"); 
+            //}
 
             try
             {
@@ -607,14 +617,16 @@ namespace xNS
                             sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
                             sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
                             sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                            sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
                             sb.AppendLine(@"<span> </span>");
                             sb.AppendLine(@"<xsl:call-template name=""edizm"">");
                             sb.AppendLine(@"<xsl:with-param name=""val"" select=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @"""/>");
                             sb.Append(@"</xsl:call-template>");
+                            sb.Append(@"</xsl:if>"); 
                         }
                         else if (sX.IsDate())
                         {
-                            sb.AppendLine(@"<xsl:call-template name=""DateFormat"">");
+                            sb.AppendLine(@" <xsl:call-template name=""DateFormat"">");
                             sb.AppendLine(@"<xsl:with-param name=""dateString"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
                             sb.Append(@"</xsl:call-template>");
                         }
@@ -778,19 +790,13 @@ namespace xNS
                     else if (sX.IsHeader())
                     {
                         //if (sX.DotAfter) sb.Append(". "); // точку ? это  конец секции ??
-                        sb.Append(HeaderEnd(sX));
+                        sb.Append(HeaderEnd(sX.Caption,sX));
                         if (DebugPrint) sb.AppendLine("<!-- END of Header  -->");
                         if (OpenVariable[0] != null)
                         {
                             sb.AppendLine("</xsl:variable>");
-                            //if (OpenVariable[0].Capitalize)
-                            //{
-                            //    sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
-                            //}
-                            //else
-                            //{
+
                             sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
-                            //}
                             OpenVariable[0] = null;
                         }
 
@@ -865,7 +871,7 @@ namespace xNS
 
         }
 
-        protected virtual string HeaderEnd(XsltItem sX)
+        protected virtual string HeaderEnd(string Caption, XsltItem sX)
         {
             string sOut = @"";
             if (sX.DotAfter) sOut += ". ";
