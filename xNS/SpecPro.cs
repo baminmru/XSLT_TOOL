@@ -93,7 +93,8 @@ namespace xNS
                     else
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
-                        if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие_") || tmp.ToLower().StartsWith("любые_события_")) && tmp != "data")
+                        if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие") 
+					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data")
                         {
                             return false;
                         }
