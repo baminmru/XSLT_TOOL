@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
 namespace xNS
 {
     public class XsltItem
     {
-        [XmlIgnore] public static string VbCrLf = "\r\n";
+        [XmlIgnore] private const string VbCrLf = "\r\n";
 
         [XmlIgnore] private XsltItem _nextSibling;
 
@@ -101,16 +102,7 @@ namespace xNS
         // factor helper
         public bool IsMulty()
         {
-            if (FactorInfo.Contains(".*")) return true;
-            if (FactorInfo.Contains(".2")) return true;
-            if (FactorInfo.Contains(".3")) return true;
-            if (FactorInfo.Contains(".4")) return true;
-            if (FactorInfo.Contains(".5")) return true;
-            if (FactorInfo.Contains(".6")) return true;
-            if (FactorInfo.Contains(".7")) return true;
-            if (FactorInfo.Contains(".8")) return true;
-            if (FactorInfo.Contains(".9")) return true;
-            return false;
+            return Regex.IsMatch(FactorInfo, "(\\.[0-9*])");
         }
 
 
