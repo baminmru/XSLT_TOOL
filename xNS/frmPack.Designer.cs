@@ -1,6 +1,6 @@
 ﻿namespace xNS
 {
-    partial class frmPack
+    partial class FrmPack
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPack));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPack));
             this.txtXML = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cmdXML = new System.Windows.Forms.Button();
@@ -114,7 +114,7 @@
             this.Controls.Add(this.cmdXML);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(40, 120);
-            this.Name = "frmPack";
+            this.Name = "FrmPack";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "XSLT Packer";
             this.Load += new System.EventHandler(this.frmPack_Load);

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+      <Reference Include="System.Xaml"/>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,52 +48,53 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Xceed.Words.NET">
-      <HintPath>..\DocX\Xceed.Words.NET\bin\Debug\Xceed.Words.NET.dll</HintPath>
+      <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4">
+          <HintPath>packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
+          <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmItem.cs">
+      <Compile Include="FrmItem.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmItem.Designer.cs">
-      <DependentUpon>frmItem.cs</DependentUpon>
+        <DependentUpon>FrmItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmScaner.cs">
+      <Compile Include="FrmScaner.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmScaner.Designer.cs">
-      <DependentUpon>frmScaner.cs</DependentUpon>
+        <DependentUpon>FrmScaner.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+      <Compile Include="FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+        <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmPack.cs">
+      <Compile Include="FrmPack.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmPack.Designer.cs">
-      <DependentUpon>frmPack.cs</DependentUpon>
+        <DependentUpon>FrmPack.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSizercs.cs">
+      <Compile Include="FrmSizercs.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmSizercs.Designer.cs">
-      <DependentUpon>frmSizercs.cs</DependentUpon>
+        <DependentUpon>FrmSizercs.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSnipets.cs">
+      <Compile Include="FrmSnipets.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmSnipets.Designer.cs">
-      <DependentUpon>frmSnipets.cs</DependentUpon>
+        <DependentUpon>FrmSnipets.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSpecMaker.cs">
+      <Compile Include="FrmSpecMaker.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmSpecMaker.Designer.cs">
-      <DependentUpon>frmSpecMaker.cs</DependentUpon>
+        <DependentUpon>FrmSpecMaker.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,25 +103,25 @@
     <Compile Include="XmlTools.cs" />
     <Compile Include="XsltItem.cs" />
     <EmbeddedResource Include="frmItem.resx">
-      <DependentUpon>frmItem.cs</DependentUpon>
+        <DependentUpon>FrmItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmScaner.resx">
-      <DependentUpon>frmScaner.cs</DependentUpon>
+        <DependentUpon>FrmScaner.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+        <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmPack.resx">
-      <DependentUpon>frmPack.cs</DependentUpon>
+        <DependentUpon>FrmPack.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSizercs.resx">
-      <DependentUpon>frmSizercs.cs</DependentUpon>
+        <DependentUpon>FrmSizercs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSnipets.resx">
-      <DependentUpon>frmSnipets.cs</DependentUpon>
+        <DependentUpon>FrmSnipets.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSpecMaker.resx">
-      <DependentUpon>frmSpecMaker.cs</DependentUpon>
+        <DependentUpon>FrmSpecMaker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -130,6 +132,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+      <None Include="packages.config"/>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

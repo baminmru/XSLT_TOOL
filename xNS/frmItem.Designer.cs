@@ -1,6 +1,6 @@
 ﻿namespace xNS
 {
-    partial class frmItem
+    partial class FrmItem
     {
         /// <summary>
         /// Required designer variable.
@@ -62,7 +62,7 @@
             this.ClientSize = new System.Drawing.Size(731, 159);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.txtItem);
-            this.Name = "frmItem";
+            this.Name = "FrmItem";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ResumeLayout(false);
             this.PerformLayout();

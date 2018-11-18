@@ -1,6 +1,6 @@
 ﻿namespace xNS
 {
-    partial class frmSnipets
+    partial class FrmSnipets
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSnipets));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSnipets));
             this.txtOut = new System.Windows.Forms.TextBox();
             this.btnChoose = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -178,7 +178,7 @@
             this.Controls.Add(this.txtOut);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(60, 120);
-            this.Name = "frmSnipets";
+            this.Name = "FrmSnipets";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Snipets";
             this.ResumeLayout(false);

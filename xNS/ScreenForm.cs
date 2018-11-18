@@ -1,59 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace xNS
+﻿namespace xNS
 {
-    class ScreenForm: SpecPro
+    internal class ScreenForm : SpecPro
     {
-        protected override string TocStart(string Caption)
+        protected override string TocStart(string caption)
         {
-            return "<tr><td class='myth' ><span class='part'>" + Caption + "</span></td></tr><tr><td class='mytd'>";
+            return "<tr><td class='myth' ><span class='part'>" + caption + "</span></td></tr><tr><td class='mytd'>";
         }
 
-        protected override string HeaderStart(string Caption, XsltItem sX)
+        protected override string HeaderStart(string caption, XsltItem sX)
         {
-            string sOut = "";
-            sOut+= "<p><span class='part'>" + Caption + "</span></p>";
+            var sOut = "";
+            sOut += "<p><span class='part'>" + caption + "</span></p>";
 
             return sOut;
         }
+
         protected override string TocEnd(XsltItem sX)
         {
-            string sOut = "";
+            var sOut = "";
             sOut += "</td></tr>";
             return sOut;
         }
-        protected override string HeaderEnd(string Caption, XsltItem sX)
+
+        protected override string HeaderEnd(XsltItem sX)
         {
-            string sOut = @"";
+            var sOut = @"";
             if (sX.DotAfter) sOut += ". ";
-            //if(sX.NextSibling() != null )
-            //if(sX.Level()==2)
-            //    sOut += "<p class='gap'></p>";
             return sOut;
         }
-        protected override string ItemStart(string Caption, XsltItem sX)
-        {
 
-            string sOut="" ;
+        protected override string ItemStart(string caption, XsltItem sX)
+        {
+            var sOut = "";
             if (sX.ComaBefore) sOut += ", ";
-            if (Caption.Trim() !="")
-                sOut += @"<span>" + Caption + "-</span>";
-           
+            if (caption.Trim() != "")
+                sOut += @"<span>" + caption + "-</span>";
             return sOut;
         }
 
         protected override string ItemEnd(XsltItem sX)
         {
-            string sOut = @"";
+            var sOut = @"";
             if (sX.DotAfter) sOut += ". ";
             return sOut;
         }
 
-        protected override SpecPro Processor() { return new ScreenForm(); }
-
+        protected override SpecPro Processor()
+        {
+            return new ScreenForm();
+        }
     }
 }

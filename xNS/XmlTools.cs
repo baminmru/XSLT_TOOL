@@ -1,112 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace xNS
 {
     public class XmlPlusItem
     {
-        public XmlNode node;
-        public String Path;
-        public String PathNs;
-        public String NodeText;
+        public XmlNode Node;
+        public string NodeText;
+        public string Path;
+        public string PathNs;
     }
 
-
-    public static class  XmlTools
+    public static class XmlTools
     {
-
         public static string NodeSelf(XmlNode node)
         {
-            XmlDocument xdoc = new XmlDocument();
             try
             {
-
-                StringBuilder sOut = new StringBuilder();
+                var sOut = new StringBuilder();
 
                 sOut.Append("<");
-                sOut.Append(node.Name +" " );
+                sOut.Append(node.Name + " ");
 
-                foreach(XmlAttribute a in node.Attributes)
+                foreach (XmlAttribute a in node.Attributes)
                 {
                     sOut.AppendLine("");
-                    sOut.Append("            "+a.Name +"=\""+a.Value+"\" " );
+                    sOut.Append("            " + a.Name + "=\"" + a.Value + "\" ");
                 }
-                
+
                 sOut.Append("/>");
-                return sOut.ToString(); 
+                return sOut.ToString();
             }
-            catch  {
+            catch
+            {
                 return node.Name;
             }
         }
 
-
-        public static string UseDefaultNameSpace(string path, string ns)
+        private static string UseDefaultNameSpace(string path, string ns)
         {
-            string sOut="";
+            var sOut = "";
             string[] items;
             items = path.Split('/');
-            foreach(string s in items)
+            foreach (var s in items)
             {
-                if(sOut != "")
-                {
-                    sOut = sOut + "/";
-                }
-                if (s=="" || s.Contains(":")|| s.Contains("@") || s.StartsWith("["))
+                if (sOut != "") sOut = sOut + "/";
+                if (s == "" || s.Contains(":") || s.Contains("@") || s.StartsWith("["))
                 {
                     sOut += s;
-                }else
+                }
+                else
                 {
-                    if (ns !=""){
-
+                    if (ns != "")
                         sOut += ns + ":" + s;
-                    }else{
-                        sOut +=  s;
-                    }
+                    else
+                        sOut += s;
                 }
             }
-            return "/"+ sOut;
 
+            return "/" + sOut;
         }
 
-
-        public static string FindXPath(XmlNode node)
+        private static string FindXPath(XmlNode node)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             while (node != null)
-            {
                 switch (node.NodeType)
                 {
                     case XmlNodeType.Attribute:
                         builder.Insert(0, "/@" + node.Name);
-                        node = ((XmlAttribute)node).OwnerElement;
+                        node = ((XmlAttribute) node).OwnerElement;
                         break;
                     case XmlNodeType.Element:
-                        int index = FindElementIndex(node);
+                        var index = FindElementIndex(node);
                         if (index == 1)
-                        {
-                            builder.Insert(0, "/" + node.Name );
-                        }
+                            builder.Insert(0, "/" + node.Name);
                         else
-                        {
                             builder.Insert(0, "/" + node.Name + "[" + index + "]");
-                        }
                         node = node.ParentNode;
                         break;
                     case XmlNodeType.Text:
-                        int index2 = FindElementIndex(node);
+                        var index2 = FindElementIndex(node);
                         if (index2 == 1)
-                        {
                             builder.Insert(0, "/" + node.Name);
-                        }
                         else
-                        {
                             builder.Insert(0, "/" + node.Name + "[" + index2 + "]");
-                        }
                         node = node.ParentNode;
                         break;
 
@@ -115,61 +95,45 @@ namespace xNS
 
                     case XmlNodeType.XmlDeclaration:
                         return "";
-                    
+
                     default:
                         throw new ArgumentException("Only elements and attributes are supported");
                 }
-            }
             throw new ArgumentException("Node was not in a document");
         }
 
-        public static int FindElementIndex(XmlNode element)
+        private static int FindElementIndex(XmlNode element)
         {
-            XmlNode parentNode = element.ParentNode;
-            if (parentNode is XmlDocument)
-            {
-                return 1;
-            }
-            XmlNode parent = (XmlNode)parentNode;
-            int index = 1;
+            var parentNode = element.ParentNode;
+            if (parentNode is XmlDocument) return 1;
+            var parent = parentNode;
+            var index = 1;
             foreach (XmlNode candidate in parent.ChildNodes)
-            {
                 if (candidate is XmlNode && candidate.Name == element.Name)
                 {
-                    if (candidate == element)
-                    {
-                        return index;
-                    }
+                    if (candidate == element) return index;
                     index++;
                 }
-            }
+
             throw new ArgumentException("Couldn't find element within parent");
         }
 
-
         public static List<XmlPlusItem> IterateThroughAllNodes(
-                 this XmlDocument doc, string NameSpace
-                )
+            this XmlDocument doc, string nameSpace
+        )
         {
-            List<XmlPlusItem> PathList = new List<XmlPlusItem>();
-            if (doc != null )
-            {
+            var pathList = new List<XmlPlusItem>();
+            if (doc != null)
                 foreach (XmlNode node in doc.ChildNodes)
-                {
-                    doIterateNode(node, ref PathList,NameSpace);
-                }
-            }
-            return PathList;
+                    DoIterateNode(node, ref pathList, nameSpace);
+            return pathList;
         }
 
-        private static void doIterateNode(
-            XmlNode node
-            , ref List<XmlPlusItem> PathList, string NameSpace)
+        private static void DoIterateNode(XmlNode node, ref List<XmlPlusItem> pathList, string nameSpace)
         {
-
-            XmlPlusItem xpi = new XmlPlusItem();
-            xpi.node = node;
-            Boolean ok;
+            var xpi = new XmlPlusItem();
+            xpi.Node = node;
+            bool ok;
             switch (node.NodeType)
             {
                 case XmlNodeType.Attribute:
@@ -197,35 +161,14 @@ namespace xNS
             if (ok)
             {
                 xpi.Path = FindXPath(node);
-                xpi.PathNs = UseDefaultNameSpace(xpi.Path, NameSpace);
+                xpi.PathNs = UseDefaultNameSpace(xpi.Path, nameSpace);
                 if (node.ChildNodes.Count == 1)
-                {
-                    if(node.FirstChild.NodeType== XmlNodeType.Text)
-                    {
-                        xpi.NodeText = node.FirstChild.InnerText; 
-                    }
-                }
-                PathList.Add(xpi);
+                    if (node.FirstChild.NodeType == XmlNodeType.Text)
+                        xpi.NodeText = node.FirstChild.InnerText;
+                pathList.Add(xpi);
 
-                foreach (XmlNode childNode in node.ChildNodes)
-                {
-                    doIterateNode(childNode, ref PathList, NameSpace);
-                }
+                foreach (XmlNode childNode in node.ChildNodes) DoIterateNode(childNode, ref pathList, nameSpace);
             }
         }
-
-
-        /*  Usage:
-                var doc = new XmlDocument();
-                doc.Load(somePath);
-
-                doc.IterateThroughAllNodes(
-                delegate(XmlNode node)
-                {
-                    // ...Do something with the node...
-                });
-         */
-         
-
     }
 }

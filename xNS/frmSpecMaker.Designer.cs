@@ -1,6 +1,6 @@
 ﻿namespace xNS
 {
-    partial class frmSpecMaker
+    partial class FrmSpecMaker
     {
         /// <summary>
         /// Required designer variable.
@@ -468,7 +468,7 @@
             this.Controls.Add(this.txtXML);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cmdXML);
-            this.Name = "frmSpecMaker";
+            this.Name = "FrmSpecMaker";
             this.Text = "Process specification";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

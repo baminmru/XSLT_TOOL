@@ -1,6 +1,6 @@
 ﻿namespace xNS
 {
-    partial class frmSizercs
+    partial class FrmSizercs
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSizercs));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmSizercs));
             this.label1 = new System.Windows.Forms.Label();
             this.txtMin = new System.Windows.Forms.TextBox();
             this.txtMax = new System.Windows.Forms.TextBox();
@@ -210,7 +210,7 @@
             this.Controls.Add(this.txtMin);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmSizercs";
+            this.Name = "FrmSizercs";
             this.Text = "Change Size";
             this.ResumeLayout(false);
             this.PerformLayout();
