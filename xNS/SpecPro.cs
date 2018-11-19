@@ -94,7 +94,7 @@ namespace xNS
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
                         if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие") 
-					   || tmp.ToLower().StartsWith("любые_события")) )
+					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol")
                         {
                             return false;
                         }
@@ -191,7 +191,7 @@ namespace xNS
         private XmlPlusItem FindNSPath(XsltItem sX)
         {
 
-            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;protocol;data;";
+            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer";
             string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude";
             string sFind = sX.Path;
 
@@ -209,7 +209,7 @@ namespace xNS
             {
                 
                 sTail = "value/magnitude;d_value/magnitude;a_value/magnitude;wk_value/magnitude;mo_value/magnitude";
-                sTail += ";_1_per_d_value/magnitude;_1_per_a_value/magnitude;_1_per_wk_value/magnitude;_1_per_mo_value/magnitude;_1_per_yr_value/magnitude;";
+                sTail += ";_1_per_d_value/magnitude;_1_per_a_value/magnitude;_1_per_wk_value/magnitude;_1_per_mo_value/magnitude;_1_per_yr_value/magnitude";
             }
 
 
