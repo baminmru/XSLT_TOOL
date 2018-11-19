@@ -734,6 +734,42 @@ namespace xNS
             fi.txtItem.Text = t.ToString(false);
             fi.ShowDialog();
         }
+
+        private  void DropInput( XsltItem x)
+        {
+
+            List<XsltItem> ToDrop = new List<XsltItem>();
+            foreach (XsltItem c in x.Children)
+            {
+                if(c.Caption.ToLower()=="input" && c.Children.Count==0)
+                {
+                    ToDrop.Add(c);
+                    
+                }
+            }
+
+            foreach (XsltItem c in ToDrop)
+            {
+                x.Children.Remove(c);
+            }
+
+            foreach (XsltItem c in x.Children)
+            {
+                DropInput(c);
+            }
+        }
+
+        private void cmdDelInput_Click(object sender, EventArgs e)
+        {
+            if (items == null) return;
+
+            foreach (XsltItem c in items)
+            {
+                DropInput(c);
+            }
+            LoadTree(true);
+            
+        }
     }
 
 

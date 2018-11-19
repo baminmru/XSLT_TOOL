@@ -142,6 +142,12 @@ namespace xNS
                 {
                     return true;
                 }
+
+                if(Level()==3 )
+                    if( Parent.ItemID.StartsWith("Up"))
+                    {
+                        return true;
+                    }
             }
             return false;
         }
