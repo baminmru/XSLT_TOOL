@@ -97,7 +97,7 @@ namespace xNS
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
                         if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие")
-                       || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol" && tmp != "value")
+					   || tmp.ToLower().StartsWith("любые_события")   || tmp.ToLower()=="точка_во_времени") && tmp != "data" && tmp != "protocol" && tmp != "value")
                         {
                             return false;
                         }
@@ -210,22 +210,25 @@ namespace xNS
 
         private static void initAllTails()
         {
-            allTails = new string[3][];
-            allTails[0] = new[]
+            allTails = new string[4][];
+            allTails[0] = new[]  // common tail
             {
                 "value/value", "value/rm:value", "value/rm:defining_code/rm:code_string", "lower/magnitude",
                 "upper/magnitude", "value/magnitude", "value/rm:magnitude", "magnitude"
             };
-            allTails[1] = new[]
+            allTails[1] = new[]  // single period
             {
                 "value/magnitude", "d_value/magnitude", "a_value/magnitude", "wk_value/magnitude",
                 "mo_value/magnitude", "_1_per_d_value/magnitude", "_1_per_a_value/magnitude", "_1_per_wk_value/magnitude",
-                "_1_per_mo_value/magnitude", "_1_per_yr_value/magnitude"
+                "_1_per_mo_value/magnitude", "_1_per_yr_value/magnitude","_1_per_h_value/magnitude","h_value/magnitude"
             };
-            allTails[2] = new[]
+            allTails[2] = new[]   // quantity
             {
-                "value/magnitude", "mm_value/magnitude", "cm_value/magnitude",
-                "h_value/magnitude", "min_value/magnitude", "s_value/magnitude"
+                "value/magnitude", "h_value/magnitude", "min_value/magnitude", "s_value/magnitude"
+            };
+            allTails[3] = new[]   // size
+            {
+                "mm_value/magnitude", "cm_value/magnitude"
             };
         }
 
@@ -233,18 +236,27 @@ namespace xNS
         private void ChooseTails(XsltItem sX)
         {
             Tails = allTails[0];
-            if (sX.IsSinglePeriod())
-            {
-                Tails = allTails[1];
-            }
             if (sX.IsQuantity())
             {
                 Tails = allTails[2];
             }
+
+            // size and  single  period  is quantyty, so move it later !!!
+             if (sX.IsSize())
+            {
+                Tails = allTails[3];
+            }
+
+            if (sX.IsSinglePeriod())
+            {
+                Tails = allTails[1];
+            }
+           
             if (sX.IsMulty() && sX.Children.Count > 0)
             {
                 Tails = null;
             }
+
         }
 
         private XmlPlusItem FindNSPath(XsltItem sX)
@@ -364,6 +376,27 @@ namespace xNS
             initAllTails();
         }
 
+
+        private  string SinglePeriodPathPatch(string PathNs)
+        {
+            string realpath = PathNs;
+
+
+            realpath = realpath.Replace("*:d_value", "");
+            realpath = realpath.Replace("*:mo_value", "");
+            realpath = realpath.Replace("*:a_value", "");
+            realpath = realpath.Replace("*:wk_value", "");
+            realpath = realpath.Replace("*:yr_value", "");
+            realpath = realpath.Replace("*:h_value", "");
+            realpath = realpath.Replace("*:_1_per_d_value", "");
+            realpath = realpath.Replace("*:_1_per_mo_value", "");
+            realpath = realpath.Replace("*:_1_per_a_value", "");
+            realpath = realpath.Replace("*:_1_per_wk_value", "");
+            realpath = realpath.Replace("*:_1_per_yr_value", "");
+            realpath = realpath.Replace("*:_1_per_h_value", "");
+            return realpath;
+        }
+
         public string Process(string xmlPath, XsltItem sX, Boolean excludeFor)
         {
 
@@ -478,16 +511,23 @@ namespace xNS
 
                         if (sX.IsSinglePeriod())
                         {
-                            string realpath = xpi.PathNs;
+                            /* string realpath = xpi.PathNs;
                             realpath = realpath.Replace("d_value", "?_value");
                             realpath = realpath.Replace("mo_value", "?_value");
                             realpath = realpath.Replace("a_value", "?_value");
                             realpath = realpath.Replace("wk_value", "?_value");
+                            realpath = realpath.Replace("yr_value", "?_value");
+                            realpath = realpath.Replace("h_value", "?_value");
+*/
+                            string realpath = SinglePeriodPathPatch(xpi.PathNs);
 
-                            sTest = CutFor(sX, realpath.Replace("?_value", "d_value"), excludeFor) + @" != '' ";
-                            sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "wk_alue"), excludeFor) + @" != '' ";
-                            sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "mo_alue"), excludeFor) + @" != '' ";
-                            sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "a_alue"), excludeFor) + @" != '' ";
+                            sTest = CutFor(sX, realpath, excludeFor) + @" != '' ";
+                            //sTest = CutFor(sX, realpath.Replace("?_value", "d_value"), excludeFor) + @" != '' ";
+                            //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "wk_value"), excludeFor) + @" != '' ";
+                            //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "mo_value"), excludeFor) + @" != '' ";
+                            //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "a_value"), excludeFor) + @" != '' ";
+                            //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "yr_value"), excludeFor) + @" != '' ";
+                            //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "h_value"), excludeFor) + @" != '' ";
                         }
                         else if (sX.IsSize())
                         {
@@ -499,7 +539,7 @@ namespace xNS
                             sTest = CutFor(sX, realpath.Replace("?_value", "mm_value"), excludeFor) + @" != '' ";
                             sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "cm_alue"), excludeFor) + @" != '' ";
 
-                        }
+                        }else
 
                         if (xpi.PathNs != "")
                         {
@@ -513,7 +553,7 @@ namespace xNS
                         {
                             if (child.PathNs != "")
                             {
-                                sTest = sTest + "\r\n or " + CutFor(sX, child.PathNs, excludeFor) + @" != '' ";
+                                    sTest = sTest + "\r\n or " + CutFor(sX, SinglePeriodPathPatch(child.PathNs), excludeFor) + @" != '' ";
                             }
                         }
                         sb.AppendLine(@"<xsl:if ");
@@ -594,23 +634,38 @@ namespace xNS
                         }
                         else if (sX.IsSinglePeriod())
                         {
-                            string realpath = xpi.PathNs;
-                            realpath = realpath.Replace("d_value", "?_value");
-                            realpath = realpath.Replace("mo_value", "?_value");
-                            realpath = realpath.Replace("a_value", "?_value");
-                            realpath = realpath.Replace("wk_value", "?_value");
 
+                            string realpath = SinglePeriodPathPatch(xpi.PathNs);
                             string tmp;
 
                             tmp = @"<xsl:call-template name=""SinglePeriodFormat"">";
                             tmp += @"<xsl:with-param name=""v"" select=""" + CutFor(sX, realpath, excludeFor) + @"""/>";
                             tmp += @"<xsl:with-param name=""pString"" select=""" + CutFor(sX, realpath, excludeFor).Replace(":magnitude", ":units") + @"""/>";
                             tmp += @"</xsl:call-template>";
+                            sb.AppendLine(tmp);
 
-                            sb.AppendLine(tmp.Replace("?_value", "d_value"));
-                            sb.AppendLine(tmp.Replace("?_value", "wk_value"));
-                            sb.AppendLine(tmp.Replace("?_value", "mo_value"));
-                            sb.AppendLine(tmp.Replace("?_value", "a_value"));
+
+                            //string realpath = xpi.PathNs;
+                            //realpath = realpath.Replace("d_value", "?_value");
+                            //realpath = realpath.Replace("mo_value", "?_value");
+                            //realpath = realpath.Replace("a_value", "?_value");
+                            //realpath = realpath.Replace("wk_value", "?_value");
+                            //realpath = realpath.Replace("yr_value", "?_value");
+                            //realpath = realpath.Replace("h_value", "?_value");
+
+                            //string tmp;
+
+                            //tmp = @"<xsl:call-template name=""SinglePeriodFormat"">";
+                            //tmp += @"<xsl:with-param name=""v"" select=""" + CutFor(sX, realpath, excludeFor) + @"""/>";
+                            //tmp += @"<xsl:with-param name=""pString"" select=""" + CutFor(sX, realpath, excludeFor).Replace(":magnitude", ":units") + @"""/>";
+                            //tmp += @"</xsl:call-template>";
+
+                            //sb.AppendLine(tmp.Replace("?_value", "d_value"));
+                            //sb.AppendLine(tmp.Replace("?_value", "wk_value"));
+                            //sb.AppendLine(tmp.Replace("?_value", "mo_value"));
+                            //sb.AppendLine(tmp.Replace("?_value", "a_value"));
+                            //sb.AppendLine(tmp.Replace("?_value", "yr_value"));
+                            //sb.AppendLine(tmp.Replace("?_value", "h_value"));
 
                         }
                         else if (sX.IsSize())
