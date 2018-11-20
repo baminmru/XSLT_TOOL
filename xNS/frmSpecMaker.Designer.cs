@@ -63,6 +63,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkShiftDot = new System.Windows.Forms.CheckBox();
             this.chkReInit = new System.Windows.Forms.CheckBox();
+            this.cmdDelInput = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -189,10 +190,11 @@
             // 
             this.cmdDt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdDt.ForeColor = System.Drawing.Color.Blue;
-            this.cmdDt.Location = new System.Drawing.Point(408, 151);
+            this.cmdDt.Location = new System.Drawing.Point(424, 151);
             this.cmdDt.Name = "cmdDt";
             this.cmdDt.Size = new System.Drawing.Size(39, 34);
             this.cmdDt.TabIndex = 15;
+            this.cmdDt.Tag = "Set /Clear Dot after";
             this.cmdDt.Text = "Dt";
             this.cmdDt.UseVisualStyleBackColor = true;
             this.cmdDt.Click += new System.EventHandler(this.cmdDt_Click);
@@ -201,10 +203,11 @@
             // 
             this.cmdCm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdCm.ForeColor = System.Drawing.Color.Blue;
-            this.cmdCm.Location = new System.Drawing.Point(317, 151);
+            this.cmdCm.Location = new System.Drawing.Point(337, 151);
             this.cmdCm.Name = "cmdCm";
             this.cmdCm.Size = new System.Drawing.Size(46, 34);
             this.cmdCm.TabIndex = 16;
+            this.cmdCm.Tag = "Set/Clear Comma  before";
             this.cmdCm.Text = "Cm";
             this.cmdCm.UseVisualStyleBackColor = true;
             this.cmdCm.Click += new System.EventHandler(this.cmdCm_Click);
@@ -213,10 +216,11 @@
             // 
             this.cmdCap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdCap.ForeColor = System.Drawing.Color.Blue;
-            this.cmdCap.Location = new System.Drawing.Point(369, 151);
+            this.cmdCap.Location = new System.Drawing.Point(387, 151);
             this.cmdCap.Name = "cmdCap";
             this.cmdCap.Size = new System.Drawing.Size(33, 34);
             this.cmdCap.TabIndex = 17;
+            this.cmdCap.Tag = "Set / Clear Upper Case";
             this.cmdCap.Text = "^";
             this.cmdCap.UseVisualStyleBackColor = true;
             this.cmdCap.Click += new System.EventHandler(this.cmdCap_Click);
@@ -310,10 +314,11 @@
             // 
             this.cmdLf.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdLf.ForeColor = System.Drawing.Color.Blue;
-            this.cmdLf.Location = new System.Drawing.Point(277, 151);
+            this.cmdLf.Location = new System.Drawing.Point(299, 150);
             this.cmdLf.Name = "cmdLf";
             this.cmdLf.Size = new System.Drawing.Size(34, 34);
             this.cmdLf.TabIndex = 27;
+            this.cmdLf.Tag = "Set/Clear Line Feed ";
             this.cmdLf.Text = "Lf";
             this.cmdLf.UseVisualStyleBackColor = true;
             this.cmdLf.Click += new System.EventHandler(this.cmdLf_Click);
@@ -322,11 +327,12 @@
             // 
             this.cmdAutoDot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdAutoDot.ForeColor = System.Drawing.Color.Blue;
-            this.cmdAutoDot.Location = new System.Drawing.Point(180, 151);
+            this.cmdAutoDot.Location = new System.Drawing.Point(210, 151);
             this.cmdAutoDot.Name = "cmdAutoDot";
-            this.cmdAutoDot.Size = new System.Drawing.Size(91, 34);
+            this.cmdAutoDot.Size = new System.Drawing.Size(85, 34);
             this.cmdAutoDot.TabIndex = 28;
             this.cmdAutoDot.Text = "Auto Dot";
+            this.toolTip1.SetToolTip(this.cmdAutoDot, "Set dot and  comma");
             this.cmdAutoDot.UseVisualStyleBackColor = true;
             this.cmdAutoDot.Click += new System.EventHandler(this.cmdAutoDot_Click);
             // 
@@ -339,6 +345,7 @@
             this.cmdShiftUp.Size = new System.Drawing.Size(41, 34);
             this.cmdShiftUp.TabIndex = 29;
             this.cmdShiftUp.Text = "UP";
+            this.toolTip1.SetToolTip(this.cmdShiftUp, "Move current node UP in tree");
             this.cmdShiftUp.UseVisualStyleBackColor = true;
             this.cmdShiftUp.Click += new System.EventHandler(this.cmdShiftUp_Click);
             // 
@@ -346,11 +353,12 @@
             // 
             this.cmdDel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdDel.ForeColor = System.Drawing.Color.Red;
-            this.cmdDel.Location = new System.Drawing.Point(125, 151);
+            this.cmdDel.Location = new System.Drawing.Point(121, 151);
             this.cmdDel.Name = "cmdDel";
             this.cmdDel.Size = new System.Drawing.Size(42, 34);
             this.cmdDel.TabIndex = 30;
             this.cmdDel.Text = "Del";
+            this.toolTip1.SetToolTip(this.cmdDel, "Delete  current node");
             this.cmdDel.UseVisualStyleBackColor = true;
             this.cmdDel.Click += new System.EventHandler(this.cmdDel_Click);
             // 
@@ -358,11 +366,12 @@
             // 
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button5.ForeColor = System.Drawing.Color.Red;
-            this.button5.Location = new System.Drawing.Point(51, 151);
+            this.button5.Location = new System.Drawing.Point(49, 151);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(68, 34);
             this.button5.TabIndex = 31;
             this.button5.Text = "LEFT";
+            this.toolTip1.SetToolTip(this.button5, "Move current node to LEFT in  tree");
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -370,9 +379,9 @@
             // 
             this.groupBox1.Controls.Add(this.chkPDF);
             this.groupBox1.Controls.Add(this.chkScreen);
-            this.groupBox1.Location = new System.Drawing.Point(453, 145);
+            this.groupBox1.Location = new System.Drawing.Point(475, 145);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(167, 39);
+            this.groupBox1.Size = new System.Drawing.Size(145, 39);
             this.groupBox1.TabIndex = 33;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Form version";
@@ -435,11 +444,25 @@
             this.chkReInit.Text = "Re Init";
             this.chkReInit.UseVisualStyleBackColor = true;
             // 
+            // cmdDelInput
+            // 
+            this.cmdDelInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cmdDelInput.ForeColor = System.Drawing.Color.Red;
+            this.cmdDelInput.Location = new System.Drawing.Point(167, 151);
+            this.cmdDelInput.Name = "cmdDelInput";
+            this.cmdDelInput.Size = new System.Drawing.Size(39, 34);
+            this.cmdDelInput.TabIndex = 37;
+            this.cmdDelInput.Text = "In";
+            this.toolTip1.SetToolTip(this.cmdDelInput, "Delete Input fields from tree");
+            this.cmdDelInput.UseVisualStyleBackColor = true;
+            this.cmdDelInput.Click += new System.EventHandler(this.cmdDelInput_Click);
+            // 
             // frmSpecMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1119, 556);
+            this.Controls.Add(this.cmdDelInput);
             this.Controls.Add(this.chkReInit);
             this.Controls.Add(this.chkShiftDot);
             this.Controls.Add(this.txtErrors);
@@ -513,5 +536,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox chkShiftDot;
         private System.Windows.Forms.CheckBox chkReInit;
+        private System.Windows.Forms.Button cmdDelInput;
     }
 }

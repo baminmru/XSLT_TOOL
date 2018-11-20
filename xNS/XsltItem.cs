@@ -120,6 +120,7 @@ namespace xNS
             if (FactorInfo.Contains(".7")) return true;
             if (FactorInfo.Contains(".8")) return true;
             if (FactorInfo.Contains(".9")) return true;
+            if (FactorInfo.Contains(".10")) return true;
             return false;
         }
 
@@ -142,6 +143,12 @@ namespace xNS
                 {
                     return true;
                 }
+
+                if(Level()==3 )
+                    if( Parent.ItemID.StartsWith("Up"))
+                    {
+                        return true;
+                    }
             }
             return false;
         }
@@ -162,6 +169,12 @@ namespace xNS
         public Boolean IsQuantity()
         {
             if (FactorInfo.Contains("DV_QUANTITY")) return true;
+            return false;
+        }
+
+        public Boolean IsDecimal()
+        {
+            if (FactorInfo.Contains("show-decimals")) return true;
             return false;
         }
 

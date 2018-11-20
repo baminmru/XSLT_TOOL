@@ -27,12 +27,16 @@ namespace xNS
         {
             string tmp;
             tmp = s.ToLower();
+            tmp = tmp.Replace("_col_", "__");
+            tmp = tmp.Replace("_equals_", "__");
             tmp = tmp.Replace("_openbrkt_", "__");
             tmp = tmp.Replace("-", "_");
             tmp = tmp.Replace("_closebrkt_", "__");
             tmp = tmp.Replace("_comma_", "__");
             tmp = tmp.Replace("_prd_", "__");
             tmp = tmp.Replace("_fslash_", "__");
+            tmp = tmp.Replace(":", "_");
+            tmp = tmp.Replace("=", "_");
             tmp = tmp.Replace(".", "_");
             tmp = tmp.Replace(",", "_");
             tmp = tmp.Replace("(", "_");
@@ -94,7 +98,7 @@ namespace xNS
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
                         if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие") 
-					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data")
+					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol" && tmp != "value")
                         {
                             return false;
                         }
@@ -142,9 +146,13 @@ namespace xNS
                                         {
                                             tmp = SmartString(tmp);
                                         }
-
-
-                                        if (CurTail[t].ToLower() == tmp)
+                                        string tmpTail;
+                                        tmpTail = CurTail[t].ToLower();
+                                        if (SmartPath)
+                                        {
+                                            tmpTail = SmartString(CurTail[t]);
+                                        }
+                                        if (tmpTail == tmp)
                                         {
                                             tail = j - 1; // position for next test
                                             idxfound++; // last found index
@@ -191,8 +199,8 @@ namespace xNS
         private XmlPlusItem FindNSPath(XsltItem sX)
         {
 
-            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;protocol";
-            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude";
+            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer";
+            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude;magnitude";
             string sFind = sX.Path;
 
 
@@ -207,7 +215,9 @@ namespace xNS
 
             if (sX.IsSinglePeriod())
             {
+                
                 sTail = "value/magnitude;d_value/magnitude;a_value/magnitude;wk_value/magnitude;mo_value/magnitude";
+                sTail += ";_1_per_d_value/magnitude;_1_per_a_value/magnitude;_1_per_wk_value/magnitude;_1_per_mo_value/magnitude;_1_per_yr_value/magnitude";
             }
 
 
@@ -302,6 +312,7 @@ namespace xNS
                     }
                     if (ok)
                     {
+                       
                         ok = Finder(xpi.Path);
                     }
                     if (ok)
@@ -315,16 +326,21 @@ namespace xNS
         }
 
         private static XmlDocument xdoc = null;
+        private static string xdocPath = "";
         private static List<XmlPlusItem> PathList = null;
         private static Boolean FirstAfterTOC = false;
 
         private void ReadXML(string xmlPath, string sNS)
         {
+            if (SpecPro.xdocPath != xmlPath)
+            {
+                SpecPro.xdoc = null;
+            }
             if (SpecPro.xdoc == null)
             {
                 SpecPro.xdoc = new XmlDocument();
                 SpecPro.xdoc.Load(xmlPath);
-
+                SpecPro.xdocPath = xmlPath;
                 SpecPro.PathList = XmlTools.IterateThroughAllNodes(SpecPro.xdoc, sNS);
             }
 
@@ -615,9 +631,19 @@ namespace xNS
 
                         else if (sX.IsQuantity())
                         {
+
+                            if (sX.IsDecimal())
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""showDecimal"">");
+                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                            }
+                            else
+                            {
                             sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
                             sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
                             sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                            }
+                            
                             sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
                             sb.AppendLine(@"<span> </span>");
                             sb.AppendLine(@"<xsl:call-template name=""edizm"">");

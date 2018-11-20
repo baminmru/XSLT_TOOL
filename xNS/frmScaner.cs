@@ -37,12 +37,16 @@ namespace xNS
         {
             string tmp;
             tmp = s.ToLower();
+            tmp = tmp.Replace("_col_", "__");
+            tmp = tmp.Replace("_equals_", "__");
             tmp = tmp.Replace("_openbrkt_", "__");
             tmp = tmp.Replace("-", "_");
             tmp = tmp.Replace("_closebrkt_", "__");
             tmp = tmp.Replace("_comma_", "__");
             tmp = tmp.Replace("_prd_", "__");
             tmp = tmp.Replace("_fslash_", "__");
+            tmp = tmp.Replace(":", "_");
+            tmp = tmp.Replace("=", "_");
             tmp = tmp.Replace(".", "_");
             tmp = tmp.Replace(",", "_");
             tmp = tmp.Replace("(", "_");
