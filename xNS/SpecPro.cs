@@ -98,7 +98,7 @@ namespace xNS
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
                         if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие") 
-					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol")
+					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol" && tmp != "value")
                         {
                             return false;
                         }
@@ -146,9 +146,13 @@ namespace xNS
                                         {
                                             tmp = SmartString(tmp);
                                         }
-
-
-                                        if (CurTail[t].ToLower() == tmp)
+                                        string tmpTail;
+                                        tmpTail = CurTail[t].ToLower();
+                                        if (SmartPath)
+                                        {
+                                            tmpTail = SmartString(CurTail[t]);
+                                        }
+                                        if (tmpTail == tmp)
                                         {
                                             tail = j - 1; // position for next test
                                             idxfound++; // last found index
@@ -196,7 +200,7 @@ namespace xNS
         {
 
             string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer";
-            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude";
+            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude;magnitude";
             string sFind = sX.Path;
 
 
@@ -308,6 +312,7 @@ namespace xNS
                     }
                     if (ok)
                     {
+                       
                         ok = Finder(xpi.Path);
                     }
                     if (ok)
@@ -321,16 +326,21 @@ namespace xNS
         }
 
         private static XmlDocument xdoc = null;
+        private static string xdocPath = "";
         private static List<XmlPlusItem> PathList = null;
         private static Boolean FirstAfterTOC = false;
 
         private void ReadXML(string xmlPath, string sNS)
         {
+            if (SpecPro.xdocPath != xmlPath)
+            {
+                SpecPro.xdoc = null;
+            }
             if (SpecPro.xdoc == null)
             {
                 SpecPro.xdoc = new XmlDocument();
                 SpecPro.xdoc.Load(xmlPath);
-
+                SpecPro.xdocPath = xmlPath;
                 SpecPro.PathList = XmlTools.IterateThroughAllNodes(SpecPro.xdoc, sNS);
             }
 
