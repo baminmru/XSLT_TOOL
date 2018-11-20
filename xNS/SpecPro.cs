@@ -394,6 +394,14 @@ namespace xNS
             realpath = realpath.Replace("*:_1_per_wk_value", "");
             realpath = realpath.Replace("*:_1_per_yr_value", "");
             realpath = realpath.Replace("*:_1_per_h_value", "");
+
+            realpath = realpath.Replace("*:mm_value", "");
+            realpath = realpath.Replace("*:cm_value", "");
+
+            realpath = realpath.Replace("*:min_value", "");
+            realpath = realpath.Replace("*:s_value", "");
+            
+
             return realpath;
         }
 
@@ -531,17 +539,20 @@ namespace xNS
                         }
                         else if (sX.IsSize())
                         {
-                            string realpath = xpi.PathNs;
-                            realpath = realpath.Replace("mm_value", "?_value");
-                            realpath = realpath.Replace("cm_value", "?_value");
+                            //string realpath = xpi.PathNs;
+                            //realpath = realpath.Replace("mm_value", "?_value");
+                            //realpath = realpath.Replace("cm_value", "?_value");
 
 
-                            sTest = CutFor(sX, realpath.Replace("?_value", "mm_value"), excludeFor) + @" != '' ";
-                            sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "cm_alue"), excludeFor) + @" != '' ";
+                            //sTest = CutFor(sX, realpath.Replace("?_value", "mm_value"), excludeFor) + @" != '' ";
+                            //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "cm_value"), excludeFor) + @" != '' ";
 
-                        }else
+                            string realpath = SinglePeriodPathPatch(xpi.PathNs);
 
-                        if (xpi.PathNs != "")
+                            sTest = CutFor(sX, realpath, excludeFor) + @" != '' ";
+
+                        }
+                        else if (xpi.PathNs != "")
                         {
                             sTest = CutFor(sX, xpi.PathNs, excludeFor) + @" != '' ";
                         }
@@ -670,20 +681,28 @@ namespace xNS
                         }
                         else if (sX.IsSize())
                         {
-                            string realpath = xpi.PathNs;
-                            realpath = realpath.Replace("mm_value", "?_value");
-                            realpath = realpath.Replace("cm_value", "?_value");
+                            //string realpath = xpi.PathNs;
+                            //realpath = realpath.Replace("mm_value", "?_value");
+                            //realpath = realpath.Replace("cm_value", "?_value");
 
+                            //string tmp;
+
+                            //tmp = @"<xsl:call-template name=""SinglePeriodFormat"">";
+                            //tmp += @"<xsl:with-param name=""v"" select=""" + CutFor(sX, realpath, excludeFor) + @"""/>";
+                            //tmp += @"<xsl:with-param name=""pString"" select=""" + CutFor(sX, realpath, excludeFor).Replace(":magnitude", ":units") + @"""/>";
+                            //tmp += @"</xsl:call-template>";
+
+                            //sb.AppendLine(tmp.Replace("?_value", "mm_value"));
+                            //sb.AppendLine(tmp.Replace("?_value", "cm_value"));
+
+                            string realpath = SinglePeriodPathPatch(xpi.PathNs);
                             string tmp;
 
                             tmp = @"<xsl:call-template name=""SinglePeriodFormat"">";
                             tmp += @"<xsl:with-param name=""v"" select=""" + CutFor(sX, realpath, excludeFor) + @"""/>";
                             tmp += @"<xsl:with-param name=""pString"" select=""" + CutFor(sX, realpath, excludeFor).Replace(":magnitude", ":units") + @"""/>";
                             tmp += @"</xsl:call-template>";
-
-                            sb.AppendLine(tmp.Replace("?_value", "mm_value"));
-                            sb.AppendLine(tmp.Replace("?_value", "cm_value"));
-
+                            sb.AppendLine(tmp);
 
                         }
 
