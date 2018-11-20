@@ -39,96 +39,7 @@ namespace xNS
             }
         }
 
-        //private void btnStart_Click(object sender, EventArgs e)
-        //{
-        //    if (txtDocx.Text == "") return;
-        //    DocX doc;
-        //    try
-        //    {
-        //        doc = DocX.Load(txtDocx.Text);
-        //    }catch(System.Exception ex)
-        //    {
-        //        txtOut.Text = ex.Message;
-        //        return;
-        //    }
 
-
-
-        //        int tIdx = 0;
-        //        int rIdx;
-        //        int cIdx;
-
-        //        int i;
-
-        //    XsltItem[] Levels = new XsltItem[10];
-        //    XsltItem x;
-
-        //        foreach (var T in doc.Tables)
-        //        {
-        //            items = new List<XsltItem>();
-        //            tIdx += 1;
-        //            //txtOut.Text = txtOut.Text + vbCrLf + "Table begin " + tIdx.ToString();
-        //            rIdx = 0;
-        //            foreach (Row r in T.Rows)
-        //            {
-        //                rIdx += 1;
-        //                // txtOut.Text = txtOut.Text & vbCrLf & "Row begin " & rIdx.ToString()
-        //                if (rIdx > 1)
-        //                {
-        //                    cIdx = 0;
-        //                    x = new XsltItem();
-
-        //                    foreach (Cell c in r.Cells)
-        //                    {
-        //                        cIdx += 1;
-        //                        if (cIdx == 1)
-        //                            x.ItemID = c.Xml.Value.Trim();
-        //                        if (cIdx == 3)
-        //                            x.Caption = c.Xml.Value.Trim();
-        //                        if (cIdx == 4)
-        //                            x.FormInfo = c.Xml.Value.Trim();
-        //                        if (cIdx == 5)
-        //                            x.FactorInfo = c.Xml.Value.Trim();
-        //                        if (cIdx == 7)
-        //                            x.Path = c.Xml.Value.Trim();
-        //                    }
-        //                    if (x.FormInfo != "-")
-        //                    {
-        //                        Levels[x.Level()] = x;
-        //                        if (x.Level() > 1)
-        //                        {
-        //                            Levels[x.Level() - 1].Children.Add(x);
-        //                            x.Parent = Levels[x.Level() - 1];
-        //                        }
-        //                        else
-        //                        {
-        //                            items.Add(x);
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-        //            LoadTree(false);
-        //            SpecPro sp;
-        //            if (chkPDF.Checked)
-        //                sp = new xNS.SpecPro();
-        //            else
-        //                sp = new xNS.ScreenForm();
-        //            SpecPro.DebugPrint = chkDebug.Checked;
-        //            txtOut.Text = "";
-
-        //            foreach (var x1 in items)
-        //            {
-        //                Application.DoEvents();
-        //                txtOut.Text = txtOut.Text + vbCrLf + sp.Process(txtXML.Text,  x1,false);
-
-        //                Application.DoEvents();
-        //            }
-        //            //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
-        //            MessageBox.Show("Обработка спецификации завершена");
-        //            break;
-        //        }
-        //    }
 
         private List<XsltItem> items;
 
@@ -347,6 +258,12 @@ namespace xNS
             }
         }
 
+        private  void Show_Message(XsltItem sX)
+        {
+            Text = sX.ItemID + " "+ sX.Caption ;
+            Application.DoEvents(); 
+        }
+
         private void cmdProcess_Click(object sender, EventArgs e)
         {
             if (txtXML.Text == "") return;
@@ -359,6 +276,9 @@ namespace xNS
 
             SpecPro.DebugPrint = chkDebug.Checked;
             sp.Init();
+
+            sp.onNextNode += Show_Message;
+
             txtOut.Text = "";
             txtErrors.Text = "";
             StringBuilder sb = new StringBuilder();
@@ -371,6 +291,7 @@ namespace xNS
             txtOut.Text = sb.ToString();
             txtErrors.Text = sp.Error();
             //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
+            Text = "Обработка спецификации завершена";
             MessageBox.Show("Обработка спецификации завершена");
         }
 
