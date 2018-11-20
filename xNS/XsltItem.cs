@@ -172,6 +172,12 @@ namespace xNS
             return false;
         }
 
+        public Boolean IsDecimal()
+        {
+            if (FactorInfo.Contains("show-decimals")) return true;
+            return false;
+        }
+
         public Boolean IsPeriod()
         {
             if (FactorInfo.Contains("DV_DURATION")) return true;

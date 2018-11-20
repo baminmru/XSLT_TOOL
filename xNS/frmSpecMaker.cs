@@ -224,6 +224,13 @@ namespace xNS
                                 x.FactorInfo = c.Xml.Value.Trim();
                             if (cIdx == 7)
                                 x.Path = c.Xml.Value.Trim();
+                            if (cIdx > 7)
+                            {
+                                if (c.Xml.Value.Contains("show-decimals"))
+                                {
+                                    x.FactorInfo += "; show-decimals";
+                                }
+                            }
                         }
                         if (x.FormInfo != "-")
                         {

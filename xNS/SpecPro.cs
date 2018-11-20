@@ -621,9 +621,19 @@ namespace xNS
 
                         else if (sX.IsQuantity())
                         {
+
+                            if (sX.IsDecimal())
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""showDecimal"">");
+                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                            }
+                            else
+                            {
                             sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
                             sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
                             sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                            }
+                            
                             sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
                             sb.AppendLine(@"<span> </span>");
                             sb.AppendLine(@"<xsl:call-template name=""edizm"">");
