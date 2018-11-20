@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace xNS
@@ -12,6 +10,7 @@ namespace xNS
         private string[] Ignore;
         private string[] Find;
         private string[] Tails;
+        private static string[][] allTails;
         private static XsltItem[] OpenVariable = new XsltItem[10];
 
         public static Boolean DebugPrint
@@ -97,8 +96,8 @@ namespace xNS
                     else
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
-                        if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие") 
-					   || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol" && tmp != "value")
+                        if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие")
+                       || tmp.ToLower().StartsWith("любые_события")) && tmp != "data" && tmp != "protocol" && tmp != "value")
                         {
                             return false;
                         }
@@ -196,13 +195,61 @@ namespace xNS
             return childList;
         }
 
+        private void initIgnore()
+        {
+            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer";
+            if (sIgnore != "")
+            {
+                Ignore = sIgnore.Split(';');
+            }
+            else
+            {
+                Ignore = null;
+            }
+        }
+
+        private static void initAllTails()
+        {
+            allTails = new string[3][];
+            allTails[0] = new[]
+            {
+                "value/value", "value/rm:value", "value/rm:defining_code/rm:code_string", "lower/magnitude",
+                "upper/magnitude", "value/magnitude", "value/rm:magnitude", "magnitude"
+            };
+            allTails[1] = new[]
+            {
+                "value/magnitude", "d_value/magnitude", "a_value/magnitude", "wk_value/magnitude",
+                "mo_value/magnitude", "_1_per_d_value/magnitude", "_1_per_a_value/magnitude", "_1_per_wk_value/magnitude",
+                "_1_per_mo_value/magnitude", "_1_per_yr_value/magnitude"
+            };
+            allTails[2] = new[]
+            {
+                "value/magnitude", "mm_value/magnitude", "cm_value/magnitude",
+                "h_value/magnitude", "min_value/magnitude", "s_value/magnitude"
+            };
+        }
+
+
+        private void ChooseTails(XsltItem sX)
+        {
+            Tails = allTails[0];
+            if (sX.IsSinglePeriod())
+            {
+                Tails = allTails[1];
+            }
+            if (sX.IsQuantity())
+            {
+                Tails = allTails[2];
+            }
+            if (sX.IsMulty() && sX.Children.Count > 0)
+            {
+                Tails = null;
+            }
+        }
+
         private XmlPlusItem FindNSPath(XsltItem sX)
         {
-
-            string sIgnore = "mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer";
-            string sTail = "value/value;value/rm:value;value/rm:defining_code/rm:code_string;lower/magnitude;upper/magnitude;value/magnitude;value/rm:magnitude;magnitude";
             string sFind = sX.Path;
-
 
             if (sX.Path.Trim() == "" || sX.Path.Trim().ToLower().StartsWith("generic"))
             {
@@ -213,31 +260,10 @@ namespace xNS
                 return x;
             }
 
-            if (sX.IsSinglePeriod())
-            {
-                
-                sTail = "value/magnitude;d_value/magnitude;a_value/magnitude;wk_value/magnitude;mo_value/magnitude";
-                sTail += ";_1_per_d_value/magnitude;_1_per_a_value/magnitude;_1_per_wk_value/magnitude;_1_per_mo_value/magnitude;_1_per_yr_value/magnitude";
-            }
-
-
-
-            if (sX.IsQuantity())
-            {
-                sTail = "value/magnitude;mm_value/magnitude;cm_value/magnitude;h_value/magnitude;min_value/magnitude;s_value/magnitude";
-            }
-
+            ChooseTails(sX);
 
             SmartPath = true;
 
-            if (sIgnore != "")
-            {
-                Ignore = sIgnore.Split(';');
-            }
-            else
-            {
-                Ignore = null;
-            }
 
             if (sFind != "")
             {
@@ -247,31 +273,6 @@ namespace xNS
             {
                 Find = null;
             }
-
-
-            if (sX.IsMulty() && sX.Children.Count > 0)
-            {
-                sTail = "";
-            }
-
-            //if(sX.IsHeader() && sX.Children.Count > 0)
-            //{
-            //    sTail = "";
-            //}
-
-
-            if (sTail != "")
-            {
-                Tails = sTail.Split(';');
-            }
-            else
-            {
-                Tails = null;
-            }
-
-
-
-
 
             Boolean printNode = true;
             int xIdx;
@@ -312,7 +313,7 @@ namespace xNS
                     }
                     if (ok)
                     {
-                       
+
                         ok = Finder(xpi.Path);
                     }
                     if (ok)
@@ -359,6 +360,8 @@ namespace xNS
         public void Init()
         {
             Errors = new StringBuilder();
+            initIgnore();
+            initAllTails();
         }
 
         public string Process(string xmlPath, XsltItem sX, Boolean excludeFor)
@@ -486,16 +489,16 @@ namespace xNS
                             sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "mo_alue"), excludeFor) + @" != '' ";
                             sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "a_alue"), excludeFor) + @" != '' ";
                         }
-                        else if (sX.IsSize())  
+                        else if (sX.IsSize())
                         {
                             string realpath = xpi.PathNs;
                             realpath = realpath.Replace("mm_value", "?_value");
                             realpath = realpath.Replace("cm_value", "?_value");
-                            
+
 
                             sTest = CutFor(sX, realpath.Replace("?_value", "mm_value"), excludeFor) + @" != '' ";
                             sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "cm_alue"), excludeFor) + @" != '' ";
-                            
+
                         }
 
                         if (xpi.PathNs != "")
@@ -625,7 +628,7 @@ namespace xNS
 
                             sb.AppendLine(tmp.Replace("?_value", "mm_value"));
                             sb.AppendLine(tmp.Replace("?_value", "cm_value"));
-                            
+
 
                         }
 
@@ -639,17 +642,17 @@ namespace xNS
                             }
                             else
                             {
-                            sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
-                            sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
-                            sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
+                                sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
+                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
                             }
-                            
+
                             sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
                             sb.AppendLine(@"<span> </span>");
                             sb.AppendLine(@"<xsl:call-template name=""edizm"">");
                             sb.AppendLine(@"<xsl:with-param name=""val"" select=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @"""/>");
                             sb.Append(@"</xsl:call-template>");
-                            sb.Append(@"</xsl:if>"); 
+                            sb.Append(@"</xsl:if>");
                         }
                         else if (sX.IsDate())
                         {
@@ -738,7 +741,7 @@ namespace xNS
                         if (SelPath == "")
                         {
                             SelPath = "/ERROR";
-                            sb.AppendLine(@"<xsl:text> [ОШИБКА: ПУСТОЙ ПУТЬ ДЛЯ  ЦИКЛА, ID:"+ sX.ItemID +"] </xsl:text>");
+                            sb.AppendLine(@"<xsl:text> [ОШИБКА: ПУСТОЙ ПУТЬ ДЛЯ  ЦИКЛА, ID:" + sX.ItemID + "] </xsl:text>");
                         }
                         sb.AppendLine(@"<xsl:for-each select=""" + SelPath + @""">");
                         if (sX.IsNewLine())
@@ -817,7 +820,7 @@ namespace xNS
                     else if (sX.IsHeader())
                     {
                         //if (sX.DotAfter) sb.Append(". "); // точку ? это  конец секции ??
-                        sb.Append(HeaderEnd(sX.Caption,sX));
+                        sb.Append(HeaderEnd(sX.Caption, sX));
                         if (DebugPrint) sb.AppendLine("<!-- END of Header  -->");
                         if (OpenVariable[0] != null)
                         {
@@ -845,7 +848,7 @@ namespace xNS
                 {
                     if (DebugPrint) sb.AppendLine("<!-- " + sX.ToString(false) + " -->");
                     if (DebugPrint) sb.AppendLine("<!-- Error: Данные не найдены в XML файле -->");
-                    sb.AppendLine("<xsl:text> [ОШИБКА: Нет данных для поля (" + sX.Caption  + "), ID:" + sX.ItemID  + "] </xsl:text>");
+                    sb.AppendLine("<xsl:text> [ОШИБКА: Нет данных для поля (" + sX.Caption + "), ID:" + sX.ItemID + "] </xsl:text>");
                     Errors.AppendLine(sX.ToString(false));
                 }
 
@@ -861,10 +864,10 @@ namespace xNS
 
         }
 
-      
-      
 
-       
+
+
+
 
         protected virtual string TocStart(string Caption)
         {
@@ -911,7 +914,8 @@ namespace xNS
             string sOut = "";
 
             if (Caption.Trim() != "")
-                if (sX.IsBold()){
+                if (sX.IsBold())
+                {
                     sOut += @"<strong>" + Caption + ": </strong>";
                 }
                 else
@@ -926,8 +930,8 @@ namespace xNS
         protected virtual string ItemStart(string Caption, XsltItem sX)
         {
             string sOut = "";
-            if (sX.ComaBefore) sOut+=", ";
-            if(Caption.Trim() !="")
+            if (sX.ComaBefore) sOut += ", ";
+            if (Caption.Trim() != "")
                 sOut += @"<span>" + Caption + ": </span>";
             return sOut;
         }
@@ -935,7 +939,7 @@ namespace xNS
         protected virtual string ItemEnd(XsltItem sX)
         {
             string sOut = @"";
-            if (sX.DotAfter) sOut+=". ";
+            if (sX.DotAfter) sOut += ". ";
             return sOut;
         }
 
@@ -949,7 +953,7 @@ namespace xNS
             {
                 while (xParent != null)
                 {
-                    
+
                     if (xParent.xslFor != null && xParent.xslFor != "")
                     {
                         if (cf.Contains(xParent.xslFor))

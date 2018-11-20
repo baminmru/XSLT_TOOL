@@ -26,7 +26,7 @@ namespace xNS
             if (opf.ShowDialog() == DialogResult.OK)
             {
                 txtXML.Text = opf.FileName;
-                
+
             }
         }
 
@@ -51,13 +51,13 @@ namespace xNS
         //        txtOut.Text = ex.Message;
         //        return;
         //    }
-                
-                
-               
+
+
+
         //        int tIdx = 0;
         //        int rIdx;
         //        int cIdx;
-              
+
         //        int i;
 
         //    XsltItem[] Levels = new XsltItem[10];
@@ -121,7 +121,7 @@ namespace xNS
         //            {
         //                Application.DoEvents();
         //                txtOut.Text = txtOut.Text + vbCrLf + sp.Process(txtXML.Text,  x1,false);
-                      
+
         //                Application.DoEvents();
         //            }
         //            //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
@@ -131,7 +131,7 @@ namespace xNS
         //    }
 
         private List<XsltItem> items;
-      
+
 
         private void LoadTree(bool noChanges)
         {
@@ -169,7 +169,7 @@ namespace xNS
         private void cmdRead_Click(object sender, EventArgs e)
         {
             if (txtDocx.Text == "") return;
-           
+
 
             DocX doc;
             try
@@ -182,19 +182,19 @@ namespace xNS
                 return;
             }
 
-            
+
 
             int tIdx = 0;
             int rIdx;
             int cIdx;
-           
 
-            
+
+
             int i;
 
 
-        XsltItem[] Levels = new XsltItem[10];
-        XsltItem x;
+            XsltItem[] Levels = new XsltItem[10];
+            XsltItem x;
 
             foreach (var T in doc.Tables)
             {
@@ -251,7 +251,7 @@ namespace xNS
                 break;
 
             }
-         }
+        }
 
         private void AddChildren(TreeNode n, XsltItem t, bool NoChanges)
         {
@@ -272,8 +272,8 @@ namespace xNS
                 if (c.IsHeader()) Flags += "H";
                 if (c.IsBold()) Flags += "B";
                 if (c.IsNewLine()) Flags += "Lf";
-                if (c.Capitalize ) Flags += "^";
-                if (c.WithHeader() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean()==false ) Flags += "N";
+                if (c.Capitalize) Flags += "^";
+                if (c.WithHeader() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean() == false) Flags += "N";
                 if (c.IsMulty()) Flags += "*";
                 if (c.DotAfter) Flags += "Dt";
                 TreeNode n2 = new TreeNode(c.ItemID);
@@ -284,7 +284,7 @@ namespace xNS
             }
         }
 
-        private  void RenameNode(TreeNode n, XsltItem t)
+        private void RenameNode(TreeNode n, XsltItem t)
         {
             String Flags = "";
             if (t.ComaBefore) Flags += "Cm";
@@ -304,8 +304,8 @@ namespace xNS
             if (tv.SelectedNode == null) return;
 
             XsltItem t;
-            t = (XsltItem) tv.SelectedNode.Tag;
-            t.ComaBefore = ! t.ComaBefore;
+            t = (XsltItem)tv.SelectedNode.Tag;
+            t.ComaBefore = !t.ComaBefore;
             RenameNode(tv.SelectedNode, t);
         }
 
@@ -325,13 +325,13 @@ namespace xNS
 
             XsltItem t;
             t = (XsltItem)tv.SelectedNode.Tag;
-            t.Capitalize = !t.Capitalize ;
+            t.Capitalize = !t.Capitalize;
             RenameNode(tv.SelectedNode, t);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+
             if (svf.ShowDialog() == DialogResult.OK)
             {
                 textSaveMap.Text = svf.FileName;
@@ -361,21 +361,22 @@ namespace xNS
             sp.Init();
             txtOut.Text = "";
             txtErrors.Text = "";
-
+            StringBuilder sb = new StringBuilder();
             foreach (var x1 in items)
             {
-                Application.DoEvents();
-                txtOut.Text = txtOut.Text + vbCrLf + sp.Process(txtXML.Text, x1, false);
-                txtErrors.Text = sp.Error(); 
-                Application.DoEvents();
+                sb.Append(vbCrLf);
+                sb.Append(sp.Process(txtXML.Text, x1, false));
             }
+
+            txtOut.Text = sb.ToString();
+            txtErrors.Text = sp.Error();
             //txtOut.Text = txtOut.Text + vbCrLf + "</div>";
             MessageBox.Show("Обработка спецификации завершена");
         }
 
-            private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            if(textSaveMap.Text != "")
+            if (textSaveMap.Text != "")
             {
                 using (var writer = new System.IO.StreamWriter(textSaveMap.Text))
                 {
@@ -394,10 +395,10 @@ namespace xNS
                 using (var stream = System.IO.File.OpenRead(textLoadMap.Text))
                 {
                     var serializer = new XmlSerializer(typeof(List<XsltItem>));
-                    items= serializer.Deserialize(stream) as List<XsltItem>;
+                    items = serializer.Deserialize(stream) as List<XsltItem>;
                 }
 
-                
+
                 foreach (XsltItem c in items)
                 {
                     c.RestoreParent();
@@ -422,13 +423,13 @@ namespace xNS
         private void cmdAutoDot_Click(object sender, EventArgs e)
         {
             if (items == null) return;
-             if(chkReInit.Checked)  LoadTree(false);
+            if (chkReInit.Checked) LoadTree(false);
 
-                foreach (XsltItem x in items)
+            foreach (XsltItem x in items)
             {
                 //ClearLastDot(x);
                 DotBeforeHeader(x);
-                if(chkShiftDot.Checked)
+                if (chkShiftDot.Checked)
                     ShiftDotToChildren(x);
                 else
                     ClearLastDot(x);
@@ -448,9 +449,9 @@ namespace xNS
         {
             XsltItem lc;
 
-            if (x.Children.Count >= 1 )
+            if (x.Children.Count >= 1)
             {
-                
+
                 Boolean hdrChild = false;
                 foreach (XsltItem nc in x.Children)
                 {
@@ -477,7 +478,7 @@ namespace xNS
                     //}
                 }
 
-                
+
 
                 foreach (XsltItem nc in x.Children)
                 {
@@ -490,13 +491,13 @@ namespace xNS
         private void ClearLastDot(XsltItem x)
         {
             XsltItem lc;
-            
-            if(x.Children.Count >=1 && x.DotAfter==true)
+
+            if (x.Children.Count >= 1 && x.DotAfter == true)
             {
                 // чтобы не было  двух точек,  убираем её у последнего дочернего  узла
                 lc = x.Children[x.Children.Count - 1];
                 lc.DotAfter = false;
-                foreach(XsltItem nc in x.Children)
+                foreach (XsltItem nc in x.Children)
                 {
                     ClearLastDot(nc);
                 }
@@ -508,7 +509,7 @@ namespace xNS
             XsltItem lc;
 
             // у первого потомка после заголовка убрать  запятую
-            if (x.Children.Count > 0 && x.IsHeader()  == true)
+            if (x.Children.Count > 0 && x.IsHeader() == true)
             {
                 lc = x.Children[0];
                 lc.ComaBefore = false;
@@ -521,11 +522,11 @@ namespace xNS
                 lc.ComaBefore = false;
             }
 
-            if (x.Children.Count > 0 && x.DotAfter == true  )
+            if (x.Children.Count > 0 && x.DotAfter == true)
             {
                 lc = x.Children[0];
-                if (lc.ComaBefore   ) lc.ComaBefore = false;
-               
+                if (lc.ComaBefore) lc.ComaBefore = false;
+
             }
             foreach (XsltItem nc in x.Children)
             {
@@ -535,25 +536,25 @@ namespace xNS
         private void DotBeforeHeader(XsltItem x)
         {
             XsltItem lc;
-            XsltItem cc; 
+            XsltItem cc;
 
-            if (x.Children.Count > 0 )
+            if (x.Children.Count > 0)
             {
                 Int16 i;
-                for (i = 0; i < x.Children.Count-1; i++)
+                for (i = 0; i < x.Children.Count - 1; i++)
                 {
-                    lc = x.Children[i+1];
-                    cc = x.Children[i ];
+                    lc = x.Children[i + 1];
+                    cc = x.Children[i];
 
                     // стаавим точку перед соседом - заголовком
-                    if (lc.IsHeader()  && cc.IsHeader()==false) 
+                    if (lc.IsHeader() && cc.IsHeader() == false)
                     {
                         lc.Capitalize = true;
                         cc.DotAfter = true;
                     }
                 }
-                
-                
+
+
                 foreach (XsltItem nc in x.Children)
                 {
                     DotBeforeHeader(nc);
@@ -567,12 +568,12 @@ namespace xNS
             int i;
             XsltItem cur;
             XsltItem prev;
-            for (i=1;i< x.Children.Count;i++)
+            for (i = 1; i < x.Children.Count; i++)
             {
                 cur = x.Children[i];
-                prev = x.Children[i-1];
+                prev = x.Children[i - 1];
 
-                if(prev.DotAfter  && !cur.ComaBefore)
+                if (prev.DotAfter && !cur.ComaBefore)
                 {
                     cur.ComaBefore = false;
                     cur.Capitalize = true;
@@ -605,17 +606,17 @@ namespace xNS
             {
                 if (t.Level() == 1)
                 {
-                    
-                    for(int i=0;i < items.Count; i++)
+
+                    for (int i = 0; i < items.Count; i++)
                     {
                         if (t.ItemID == items[i].ItemID)
                         {
-                            if(i > 0)
+                            if (i > 0)
                             {
                                 p = items[i - 1];
                                 p.Children.Add(t);
                                 t.Parent = null;
-                                items.Remove(t); 
+                                items.Remove(t);
                                 UpLevel(t);
                             }
                         }
@@ -640,7 +641,7 @@ namespace xNS
         private void cmdDel_Click(object sender, EventArgs e)
         {
             if (items == null) return;
-            if(MessageBox.Show("Удалить текущий узел и всех его потомков  ?","Внимание",MessageBoxButtons.YesNo )== DialogResult.Yes)
+            if (MessageBox.Show("Удалить текущий узел и всех его потомков  ?", "Внимание", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 XsltItem t;
                 XsltItem p;
@@ -657,7 +658,7 @@ namespace xNS
                 LoadTree(true);
             }
 
-            
+
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -686,20 +687,20 @@ namespace xNS
                     {
                         if (p.ItemID == items[i].ItemID)
                         {
-                            
-                                LeftLevel(t);
-                            
-                                items.Insert(i,t);
+
+                            LeftLevel(t);
+
+                            items.Insert(i, t);
                             break;
-                            
+
                         }
                     }
-                    
+
                 }
                 LoadTree(true);
             }
-         
-            
+
+
         }
 
         private void LeftLevel(XsltItem x)
@@ -708,7 +709,7 @@ namespace xNS
             String newID;
             if (idx >= 0)
             {
-                newID = x.ItemID.Substring(0, idx ) + "_" + x.ItemID.Substring(idx + 1);
+                newID = x.ItemID.Substring(0, idx) + "_" + x.ItemID.Substring(idx + 1);
             }
             else
             {
@@ -742,16 +743,16 @@ namespace xNS
             fi.ShowDialog();
         }
 
-        private  void DropInput( XsltItem x)
+        private void DropInput(XsltItem x)
         {
 
             List<XsltItem> ToDrop = new List<XsltItem>();
             foreach (XsltItem c in x.Children)
             {
-                if(c.Caption.ToLower()=="input" && c.Children.Count==0)
+                if (c.Caption.ToLower() == "input" && c.Children.Count == 0)
                 {
                     ToDrop.Add(c);
-                    
+
                 }
             }
 
@@ -775,11 +776,10 @@ namespace xNS
                 DropInput(c);
             }
             LoadTree(true);
-            
+
         }
     }
 
 
 
 }
-
