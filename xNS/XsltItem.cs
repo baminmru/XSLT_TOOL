@@ -120,6 +120,7 @@ namespace xNS
             if (FactorInfo.Contains(".7")) return true;
             if (FactorInfo.Contains(".8")) return true;
             if (FactorInfo.Contains(".9")) return true;
+            if (FactorInfo.Contains(".10")) return true;
             return false;
         }
 
