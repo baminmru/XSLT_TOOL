@@ -378,7 +378,18 @@ namespace xNS
                                     if (restricts != null && restricts.Count > 0)
                                     {
                                         xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
-                                        xsd.Children.Add(xsdChild);
+                                        if (xsdChild.Restrictions != null && xsdChild.Restrictions != "")
+                                            xsd.Children.Add(xsdChild);
+                                    }
+                                    else
+                                    {
+                                        XmlNodeList seq = el4.SelectNodes("./xs:complexType/xs:sequence", nsmgr);
+                                        if (seq != null && seq.Count > 0)
+                                        {
+                                            xsdChild.Restrictions = processRestrictions(seq[0].InnerXml);
+                                            if(xsdChild.Restrictions!=null  && xsdChild.Restrictions!="")
+                                                xsd.Children.Add(xsdChild);
+                                        }
                                     }
                                 }
                                 else

@@ -208,6 +208,16 @@ namespace xNS
                             sb.Append(v.ToString());
                             Cnt++;
                         }
+
+                        if (this.Type == "oe:DV_COUNT")
+                        {
+
+                            int v = Rnd.Next(1, Cnt + 1);
+                            sb.Append(vbCrLf + sShift + "\t<magnitude>" + v.ToString() + "</magnitude>" + vbCrLf + sShift );
+                            Cnt++;
+                        }
+
+                        
                         if (this.Type == "xs:string")
                         {
                             bool OK = false;
