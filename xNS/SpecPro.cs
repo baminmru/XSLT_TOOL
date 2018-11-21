@@ -13,6 +13,9 @@ namespace xNS
         private static string[][] allTails;
         private static XsltItem[] OpenVariable = new XsltItem[10];
 
+        public delegate void ProcessNode(XsltItem sX);
+
+        public event ProcessNode onNextNode;
         public static Boolean DebugPrint
         {
             get; set;
@@ -96,7 +99,7 @@ namespace xNS
                     else
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
-                        if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие")
+                        if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие") 
 					   || tmp.ToLower().StartsWith("любые_события")   || tmp.ToLower()=="точка_во_времени") && tmp != "data" && tmp != "protocol" && tmp != "value")
                         {
                             return false;
@@ -242,7 +245,7 @@ namespace xNS
             }
 
             // size and  single  period  is quantyty, so move it later !!!
-             if (sX.IsSize())
+            if (sX.IsSize()) 
             {
                 Tails = allTails[3];
             }
@@ -326,7 +329,7 @@ namespace xNS
                     if (ok)
                     {
 
-                        ok = Finder(xpi.Path);
+                            ok = Finder(xpi.Path);
                     }
                     if (ok)
                     {
@@ -343,7 +346,7 @@ namespace xNS
         private static List<XmlPlusItem> PathList = null;
         private static Boolean FirstAfterTOC = false;
 
-        private void ReadXML(string xmlPath, string sNS)
+        public void ReadXML(string xmlPath, string sNS)
         {
             if (SpecPro.xdocPath != xmlPath)
             {
@@ -354,6 +357,22 @@ namespace xNS
                 SpecPro.xdoc = new XmlDocument();
                 SpecPro.xdoc.Load(xmlPath);
                 SpecPro.xdocPath = xmlPath;
+                SpecPro.PathList = XmlTools.IterateThroughAllNodes(SpecPro.xdoc, sNS);
+            }
+
+        }
+
+        public void LoadXML(string xmlData, string sNS)
+        {
+            if (SpecPro.xdocPath != "AUTO")
+            {
+                SpecPro.xdoc = null;
+            }
+            if (SpecPro.xdoc == null)
+            {
+                SpecPro.xdoc = new XmlDocument();
+                SpecPro.xdoc.LoadXml(xmlData);
+                SpecPro.xdocPath = "AUTO";
                 SpecPro.PathList = XmlTools.IterateThroughAllNodes(SpecPro.xdoc, sNS);
             }
 
@@ -430,6 +449,8 @@ namespace xNS
 
                 if (xpi != null)
                 {
+                    onNextNode?.Invoke(sX);
+
                     if (DebugPrint)
                     {
                         sb.AppendLine("<!-- " + sX.ToString(false) + " -->");
@@ -519,7 +540,7 @@ namespace xNS
 
                         if (sX.IsSinglePeriod())
                         {
-                            /* string realpath = xpi.PathNs;
+         /* string realpath = xpi.PathNs;
                             realpath = realpath.Replace("d_value", "?_value");
                             realpath = realpath.Replace("mo_value", "?_value");
                             realpath = realpath.Replace("a_value", "?_value");
@@ -537,12 +558,12 @@ namespace xNS
                             //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "yr_value"), excludeFor) + @" != '' ";
                             //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "h_value"), excludeFor) + @" != '' ";
                         }
-                        else if (sX.IsSize())
+                        else if (sX.IsSize())  
                         {
                             //string realpath = xpi.PathNs;
                             //realpath = realpath.Replace("mm_value", "?_value");
                             //realpath = realpath.Replace("cm_value", "?_value");
-
+                            
 
                             //sTest = CutFor(sX, realpath.Replace("?_value", "mm_value"), excludeFor) + @" != '' ";
                             //sTest += "\r\n or " + CutFor(sX, realpath.Replace("?_value", "cm_value"), excludeFor) + @" != '' ";
@@ -712,21 +733,21 @@ namespace xNS
                             if (sX.IsDecimal())
                             {
                                 sb.AppendLine(@"<xsl:call-template name=""showDecimal"">");
-                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor) + @"""/></xsl:call-template>");
                             }
                             else
                             {
                                 sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
                                 sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
-                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor) + @"""/></xsl:call-template>");
                             }
-
-                            sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
+                            
+                            sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
                             sb.AppendLine(@"<span> </span>");
                             sb.AppendLine(@"<xsl:call-template name=""edizm"">");
-                            sb.AppendLine(@"<xsl:with-param name=""val"" select=""" + CutFor(sX, xpi.PathNs, excludeFor).Replace(":magnitude", ":units") + @"""/>");
+                            sb.AppendLine(@"<xsl:with-param name=""val"" select=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor).Replace(":magnitude", ":units") + @"""/>");
                             sb.Append(@"</xsl:call-template>");
-                            sb.Append(@"</xsl:if>");
+                            sb.Append(@"</xsl:if>"); 
                         }
                         else if (sX.IsDate())
                         {
@@ -756,6 +777,7 @@ namespace xNS
                         if (sX.Children.Count > 0)
                         {
                             SpecPro sp2 = Processor();
+                            sp2.onNextNode = onNextNode;
                             foreach (var sX2 in sX.Children)
                             {
                                 sb.Append(sp2.Process(xmlPath, sX2, excludeFor));
@@ -815,7 +837,7 @@ namespace xNS
                         if (SelPath == "")
                         {
                             SelPath = "/ERROR";
-                            sb.AppendLine(@"<xsl:text> [ОШИБКА: ПУСТОЙ ПУТЬ ДЛЯ  ЦИКЛА, ID:" + sX.ItemID + "] </xsl:text>");
+                            sb.AppendLine(@"<xsl:text> [ОШИБКА: ПУСТОЙ ПУТЬ ДЛЯ  ЦИКЛА, ID:"+ sX.ItemID +"] </xsl:text>");
                         }
                         sb.AppendLine(@"<xsl:for-each select=""" + SelPath + @""">");
                         if (sX.IsNewLine())
@@ -834,6 +856,7 @@ namespace xNS
                             OpenVariable[0] = sX;
 
                             SpecPro sp2 = Processor();
+                            sp2.onNextNode = onNextNode;
                             foreach (var sX2 in sX.Children)
                             {
                                 sb.Append(sp2.Process(xmlPath, sX2, true));
@@ -894,7 +917,7 @@ namespace xNS
                     else if (sX.IsHeader())
                     {
                         //if (sX.DotAfter) sb.Append(". "); // точку ? это  конец секции ??
-                        sb.Append(HeaderEnd(sX.Caption, sX));
+                        sb.Append(HeaderEnd(sX.Caption,sX));
                         if (DebugPrint) sb.AppendLine("<!-- END of Header  -->");
                         if (OpenVariable[0] != null)
                         {
@@ -922,7 +945,7 @@ namespace xNS
                 {
                     if (DebugPrint) sb.AppendLine("<!-- " + sX.ToString(false) + " -->");
                     if (DebugPrint) sb.AppendLine("<!-- Error: Данные не найдены в XML файле -->");
-                    sb.AppendLine("<xsl:text> [ОШИБКА: Нет данных для поля (" + sX.Caption + "), ID:" + sX.ItemID + "] </xsl:text>");
+                    sb.AppendLine("<xsl:text> [ОШИБКА: Нет данных для поля (" + sX.Caption  + "), ID:" + sX.ItemID  + "] </xsl:text>");
                     Errors.AppendLine(sX.ToString(false));
                 }
 
@@ -938,10 +961,10 @@ namespace xNS
 
         }
 
+      
+      
 
-
-
-
+       
 
         protected virtual string TocStart(string Caption)
         {
@@ -1004,8 +1027,8 @@ namespace xNS
         protected virtual string ItemStart(string Caption, XsltItem sX)
         {
             string sOut = "";
-            if (sX.ComaBefore) sOut += ", ";
-            if (Caption.Trim() != "")
+            if (sX.ComaBefore) sOut+=", ";
+            if(Caption.Trim() !="")
                 sOut += @"<span>" + Caption + ": </span>";
             return sOut;
         }
@@ -1013,7 +1036,7 @@ namespace xNS
         protected virtual string ItemEnd(XsltItem sX)
         {
             string sOut = @"";
-            if (sX.DotAfter) sOut += ". ";
+            if (sX.DotAfter) sOut+=". ";
             return sOut;
         }
 
@@ -1027,7 +1050,7 @@ namespace xNS
             {
                 while (xParent != null)
                 {
-
+                    
                     if (xParent.xslFor != null && xParent.xslFor != "")
                     {
                         if (cf.Contains(xParent.xslFor))

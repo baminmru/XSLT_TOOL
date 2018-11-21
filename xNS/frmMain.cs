@@ -46,5 +46,7 @@ namespace xNS
             frmSpecMaker f = new frmSpecMaker();
             f.Show();
         }
+
+      
     }
 }

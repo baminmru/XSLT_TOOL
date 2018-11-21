@@ -61,9 +61,12 @@
             this.chkScreen = new System.Windows.Forms.RadioButton();
             this.txtErrors = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.cmdDelInput = new System.Windows.Forms.Button();
             this.chkShiftDot = new System.Windows.Forms.CheckBox();
             this.chkReInit = new System.Windows.Forms.CheckBox();
-            this.cmdDelInput = new System.Windows.Forms.Button();
+            this.cmdSelectFile = new System.Windows.Forms.Button();
+            this.txtXSD = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,10 +75,10 @@
             this.txtXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtXML.Location = new System.Drawing.Point(125, 12);
+            this.txtXML.Location = new System.Drawing.Point(127, 12);
             this.txtXML.Name = "txtXML";
             this.txtXML.ReadOnly = true;
-            this.txtXML.Size = new System.Drawing.Size(937, 26);
+            this.txtXML.Size = new System.Drawing.Size(933, 26);
             this.txtXML.TabIndex = 5;
             // 
             // label1
@@ -92,7 +95,7 @@
             // 
             this.cmdXML.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdXML.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cmdXML.Location = new System.Drawing.Point(1068, 9);
+            this.cmdXML.Location = new System.Drawing.Point(1070, 9);
             this.cmdXML.Name = "cmdXML";
             this.cmdXML.Size = new System.Drawing.Size(39, 32);
             this.cmdXML.TabIndex = 3;
@@ -105,7 +108,7 @@
             this.txtDocx.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDocx.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtDocx.Location = new System.Drawing.Point(125, 44);
+            this.txtDocx.Location = new System.Drawing.Point(127, 81);
             this.txtDocx.Name = "txtDocx";
             this.txtDocx.ReadOnly = true;
             this.txtDocx.Size = new System.Drawing.Size(937, 26);
@@ -115,7 +118,7 @@
             // 
             this.cmdDocX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdDocX.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cmdDocX.Location = new System.Drawing.Point(1068, 41);
+            this.cmdDocX.Location = new System.Drawing.Point(1070, 78);
             this.cmdDocX.Name = "cmdDocX";
             this.cmdDocX.Size = new System.Drawing.Size(39, 32);
             this.cmdDocX.TabIndex = 6;
@@ -143,12 +146,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOut.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtOut.Location = new System.Drawing.Point(642, 191);
+            this.txtOut.Location = new System.Drawing.Point(644, 228);
             this.txtOut.Multiline = true;
             this.txtOut.Name = "txtOut";
             this.txtOut.ReadOnly = true;
             this.txtOut.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtOut.Size = new System.Drawing.Size(465, 353);
+            this.txtOut.Size = new System.Drawing.Size(465, 381);
             this.txtOut.TabIndex = 9;
             this.toolTip1.SetToolTip(this.txtOut, "Сгенерированный код");
             this.txtOut.WordWrap = false;
@@ -156,7 +159,7 @@
             // chkDebug
             // 
             this.chkDebug.AutoSize = true;
-            this.chkDebug.Location = new System.Drawing.Point(736, 162);
+            this.chkDebug.Location = new System.Drawing.Point(738, 199);
             this.chkDebug.Name = "chkDebug";
             this.chkDebug.Size = new System.Drawing.Size(153, 17);
             this.chkDebug.TabIndex = 11;
@@ -167,9 +170,9 @@
             // 
             this.tv.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.tv.Location = new System.Drawing.Point(4, 191);
+            this.tv.Location = new System.Drawing.Point(6, 228);
             this.tv.Name = "tv";
-            this.tv.Size = new System.Drawing.Size(622, 247);
+            this.tv.Size = new System.Drawing.Size(622, 238);
             this.tv.TabIndex = 12;
             this.toolTip1.SetToolTip(this.tv, "Структура документа");
             this.tv.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tv_AfterSelect);
@@ -178,7 +181,7 @@
             // cmdRead
             // 
             this.cmdRead.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cmdRead.Location = new System.Drawing.Point(7, 41);
+            this.cmdRead.Location = new System.Drawing.Point(9, 78);
             this.cmdRead.Name = "cmdRead";
             this.cmdRead.Size = new System.Drawing.Size(112, 28);
             this.cmdRead.TabIndex = 13;
@@ -190,7 +193,7 @@
             // 
             this.cmdDt.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdDt.ForeColor = System.Drawing.Color.Blue;
-            this.cmdDt.Location = new System.Drawing.Point(424, 151);
+            this.cmdDt.Location = new System.Drawing.Point(426, 188);
             this.cmdDt.Name = "cmdDt";
             this.cmdDt.Size = new System.Drawing.Size(39, 34);
             this.cmdDt.TabIndex = 15;
@@ -203,7 +206,7 @@
             // 
             this.cmdCm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdCm.ForeColor = System.Drawing.Color.Blue;
-            this.cmdCm.Location = new System.Drawing.Point(337, 151);
+            this.cmdCm.Location = new System.Drawing.Point(339, 188);
             this.cmdCm.Name = "cmdCm";
             this.cmdCm.Size = new System.Drawing.Size(46, 34);
             this.cmdCm.TabIndex = 16;
@@ -216,7 +219,7 @@
             // 
             this.cmdCap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdCap.ForeColor = System.Drawing.Color.Blue;
-            this.cmdCap.Location = new System.Drawing.Point(387, 151);
+            this.cmdCap.Location = new System.Drawing.Point(389, 188);
             this.cmdCap.Name = "cmdCap";
             this.cmdCap.Size = new System.Drawing.Size(33, 34);
             this.cmdCap.TabIndex = 17;
@@ -228,7 +231,7 @@
             // cmdProcess
             // 
             this.cmdProcess.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cmdProcess.Location = new System.Drawing.Point(642, 150);
+            this.cmdProcess.Location = new System.Drawing.Point(644, 187);
             this.cmdProcess.Name = "cmdProcess";
             this.cmdProcess.Size = new System.Drawing.Size(88, 34);
             this.cmdProcess.TabIndex = 18;
@@ -241,7 +244,7 @@
             this.textSaveMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textSaveMap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textSaveMap.Location = new System.Drawing.Point(125, 76);
+            this.textSaveMap.Location = new System.Drawing.Point(127, 113);
             this.textSaveMap.Name = "textSaveMap";
             this.textSaveMap.ReadOnly = true;
             this.textSaveMap.Size = new System.Drawing.Size(937, 26);
@@ -251,7 +254,7 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(1068, 73);
+            this.button1.Location = new System.Drawing.Point(1070, 110);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(39, 32);
             this.button1.TabIndex = 19;
@@ -264,7 +267,7 @@
             this.textLoadMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textLoadMap.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textLoadMap.Location = new System.Drawing.Point(125, 108);
+            this.textLoadMap.Location = new System.Drawing.Point(127, 145);
             this.textLoadMap.Name = "textLoadMap";
             this.textLoadMap.ReadOnly = true;
             this.textLoadMap.Size = new System.Drawing.Size(937, 26);
@@ -274,7 +277,7 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(1068, 105);
+            this.button2.Location = new System.Drawing.Point(1070, 142);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(39, 32);
             this.button2.TabIndex = 22;
@@ -285,7 +288,7 @@
             // button3
             // 
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button3.Location = new System.Drawing.Point(7, 75);
+            this.button3.Location = new System.Drawing.Point(9, 112);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(112, 29);
             this.button3.TabIndex = 25;
@@ -296,7 +299,7 @@
             // button4
             // 
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button4.Location = new System.Drawing.Point(7, 108);
+            this.button4.Location = new System.Drawing.Point(9, 145);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(112, 29);
             this.button4.TabIndex = 26;
@@ -314,7 +317,7 @@
             // 
             this.cmdLf.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdLf.ForeColor = System.Drawing.Color.Blue;
-            this.cmdLf.Location = new System.Drawing.Point(299, 150);
+            this.cmdLf.Location = new System.Drawing.Point(301, 187);
             this.cmdLf.Name = "cmdLf";
             this.cmdLf.Size = new System.Drawing.Size(34, 34);
             this.cmdLf.TabIndex = 27;
@@ -327,7 +330,7 @@
             // 
             this.cmdAutoDot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdAutoDot.ForeColor = System.Drawing.Color.Blue;
-            this.cmdAutoDot.Location = new System.Drawing.Point(210, 151);
+            this.cmdAutoDot.Location = new System.Drawing.Point(212, 188);
             this.cmdAutoDot.Name = "cmdAutoDot";
             this.cmdAutoDot.Size = new System.Drawing.Size(85, 34);
             this.cmdAutoDot.TabIndex = 28;
@@ -340,7 +343,7 @@
             // 
             this.cmdShiftUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdShiftUp.ForeColor = System.Drawing.Color.Red;
-            this.cmdShiftUp.Location = new System.Drawing.Point(4, 151);
+            this.cmdShiftUp.Location = new System.Drawing.Point(6, 188);
             this.cmdShiftUp.Name = "cmdShiftUp";
             this.cmdShiftUp.Size = new System.Drawing.Size(41, 34);
             this.cmdShiftUp.TabIndex = 29;
@@ -353,7 +356,7 @@
             // 
             this.cmdDel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cmdDel.ForeColor = System.Drawing.Color.Red;
-            this.cmdDel.Location = new System.Drawing.Point(121, 151);
+            this.cmdDel.Location = new System.Drawing.Point(123, 188);
             this.cmdDel.Name = "cmdDel";
             this.cmdDel.Size = new System.Drawing.Size(42, 34);
             this.cmdDel.TabIndex = 30;
@@ -366,7 +369,7 @@
             // 
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button5.ForeColor = System.Drawing.Color.Red;
-            this.button5.Location = new System.Drawing.Point(49, 151);
+            this.button5.Location = new System.Drawing.Point(51, 188);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(68, 34);
             this.button5.TabIndex = 31;
@@ -379,7 +382,7 @@
             // 
             this.groupBox1.Controls.Add(this.chkPDF);
             this.groupBox1.Controls.Add(this.chkScreen);
-            this.groupBox1.Location = new System.Drawing.Point(475, 145);
+            this.groupBox1.Location = new System.Drawing.Point(477, 182);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(145, 39);
             this.groupBox1.TabIndex = 33;
@@ -412,22 +415,35 @@
             // 
             this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtErrors.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.txtErrors.Location = new System.Drawing.Point(4, 444);
+            this.txtErrors.Location = new System.Drawing.Point(6, 472);
             this.txtErrors.Multiline = true;
             this.txtErrors.Name = "txtErrors";
             this.txtErrors.ReadOnly = true;
             this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtErrors.Size = new System.Drawing.Size(622, 100);
+            this.txtErrors.Size = new System.Drawing.Size(622, 137);
             this.txtErrors.TabIndex = 34;
             this.toolTip1.SetToolTip(this.txtErrors, "Ошибки");
             this.txtErrors.WordWrap = false;
+            // 
+            // cmdDelInput
+            // 
+            this.cmdDelInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cmdDelInput.ForeColor = System.Drawing.Color.Red;
+            this.cmdDelInput.Location = new System.Drawing.Point(169, 188);
+            this.cmdDelInput.Name = "cmdDelInput";
+            this.cmdDelInput.Size = new System.Drawing.Size(39, 34);
+            this.cmdDelInput.TabIndex = 37;
+            this.cmdDelInput.Text = "In";
+            this.toolTip1.SetToolTip(this.cmdDelInput, "Delete Input fields from tree");
+            this.cmdDelInput.UseVisualStyleBackColor = true;
+            this.cmdDelInput.Click += new System.EventHandler(this.cmdDelInput_Click);
             // 
             // chkShiftDot
             // 
             this.chkShiftDot.AutoSize = true;
             this.chkShiftDot.Checked = true;
             this.chkShiftDot.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShiftDot.Location = new System.Drawing.Point(895, 162);
+            this.chkShiftDot.Location = new System.Drawing.Point(897, 199);
             this.chkShiftDot.Name = "chkShiftDot";
             this.chkShiftDot.Size = new System.Drawing.Size(120, 17);
             this.chkShiftDot.TabIndex = 35;
@@ -437,31 +453,54 @@
             // chkReInit
             // 
             this.chkReInit.AutoSize = true;
-            this.chkReInit.Location = new System.Drawing.Point(1036, 161);
+            this.chkReInit.Location = new System.Drawing.Point(1038, 198);
             this.chkReInit.Name = "chkReInit";
             this.chkReInit.Size = new System.Drawing.Size(57, 17);
             this.chkReInit.TabIndex = 36;
             this.chkReInit.Text = "Re Init";
             this.chkReInit.UseVisualStyleBackColor = true;
             // 
-            // cmdDelInput
+            // cmdSelectFile
             // 
-            this.cmdDelInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.cmdDelInput.ForeColor = System.Drawing.Color.Red;
-            this.cmdDelInput.Location = new System.Drawing.Point(167, 151);
-            this.cmdDelInput.Name = "cmdDelInput";
-            this.cmdDelInput.Size = new System.Drawing.Size(39, 34);
-            this.cmdDelInput.TabIndex = 37;
-            this.cmdDelInput.Text = "In";
-            this.toolTip1.SetToolTip(this.cmdDelInput, "Delete Input fields from tree");
-            this.cmdDelInput.UseVisualStyleBackColor = true;
-            this.cmdDelInput.Click += new System.EventHandler(this.cmdDelInput_Click);
+            this.cmdSelectFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdSelectFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cmdSelectFile.Location = new System.Drawing.Point(1070, 49);
+            this.cmdSelectFile.Name = "cmdSelectFile";
+            this.cmdSelectFile.Size = new System.Drawing.Size(39, 26);
+            this.cmdSelectFile.TabIndex = 40;
+            this.cmdSelectFile.Text = "...";
+            this.cmdSelectFile.UseVisualStyleBackColor = true;
+            this.cmdSelectFile.Click += new System.EventHandler(this.cmdSelectFile_Click);
+            // 
+            // txtXSD
+            // 
+            this.txtXSD.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtXSD.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtXSD.Location = new System.Drawing.Point(127, 49);
+            this.txtXSD.Name = "txtXSD";
+            this.txtXSD.ReadOnly = true;
+            this.txtXSD.Size = new System.Drawing.Size(937, 26);
+            this.txtXSD.TabIndex = 39;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(12, 52);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(67, 20);
+            this.label2.TabIndex = 38;
+            this.label2.Text = "XSD file";
             // 
             // frmSpecMaker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1119, 556);
+            this.ClientSize = new System.Drawing.Size(1119, 610);
+            this.Controls.Add(this.cmdSelectFile);
+            this.Controls.Add(this.txtXSD);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.cmdDelInput);
             this.Controls.Add(this.chkReInit);
             this.Controls.Add(this.chkShiftDot);
@@ -537,5 +576,8 @@
         private System.Windows.Forms.CheckBox chkShiftDot;
         private System.Windows.Forms.CheckBox chkReInit;
         private System.Windows.Forms.Button cmdDelInput;
+        private System.Windows.Forms.Button cmdSelectFile;
+        private System.Windows.Forms.TextBox txtXSD;
+        private System.Windows.Forms.Label label2;
     }
 }

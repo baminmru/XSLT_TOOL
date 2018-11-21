@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Xceed.Words.NET;
+using System.Xml;
+using System.IO;
 
 namespace xNS
 {
@@ -23,10 +25,11 @@ namespace xNS
         private void cmdXML_Click(object sender, EventArgs e)
         {
             opf.Multiselect = false;
+            opf.Filter = "XML files|*.xml|All files|*.*";
             if (opf.ShowDialog() == DialogResult.OK)
             {
                 txtXML.Text = opf.FileName;
-
+                
             }
         }
 
@@ -39,10 +42,10 @@ namespace xNS
             }
         }
 
-
+       
 
         private List<XsltItem> items;
-
+      
 
         private void LoadTree(bool noChanges)
         {
@@ -80,7 +83,7 @@ namespace xNS
         private void cmdRead_Click(object sender, EventArgs e)
         {
             if (txtDocx.Text == "") return;
-
+           
 
             DocX doc;
             try
@@ -93,19 +96,19 @@ namespace xNS
                 return;
             }
 
-
+            
 
             int tIdx = 0;
             int rIdx;
             int cIdx;
+           
 
-
-
+            
             int i;
 
 
-            XsltItem[] Levels = new XsltItem[10];
-            XsltItem x;
+        XsltItem[] Levels = new XsltItem[10];
+        XsltItem x;
 
             foreach (var T in doc.Tables)
             {
@@ -162,7 +165,7 @@ namespace xNS
                 break;
 
             }
-        }
+         }
 
         private void AddChildren(TreeNode n, XsltItem t, bool NoChanges)
         {
@@ -183,8 +186,8 @@ namespace xNS
                 if (c.IsHeader()) Flags += "H";
                 if (c.IsBold()) Flags += "B";
                 if (c.IsNewLine()) Flags += "Lf";
-                if (c.Capitalize) Flags += "^";
-                if (c.WithHeader() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean() == false) Flags += "N";
+                if (c.Capitalize ) Flags += "^";
+                if (c.WithHeader() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean()==false ) Flags += "N";
                 if (c.IsMulty()) Flags += "*";
                 if (c.DotAfter) Flags += "Dt";
                 TreeNode n2 = new TreeNode(c.ItemID);
@@ -195,7 +198,7 @@ namespace xNS
             }
         }
 
-        private void RenameNode(TreeNode n, XsltItem t)
+        private  void RenameNode(TreeNode n, XsltItem t)
         {
             String Flags = "";
             if (t.ComaBefore) Flags += "Cm";
@@ -215,8 +218,8 @@ namespace xNS
             if (tv.SelectedNode == null) return;
 
             XsltItem t;
-            t = (XsltItem)tv.SelectedNode.Tag;
-            t.ComaBefore = !t.ComaBefore;
+            t = (XsltItem) tv.SelectedNode.Tag;
+            t.ComaBefore = ! t.ComaBefore;
             RenameNode(tv.SelectedNode, t);
         }
 
@@ -236,13 +239,13 @@ namespace xNS
 
             XsltItem t;
             t = (XsltItem)tv.SelectedNode.Tag;
-            t.Capitalize = !t.Capitalize;
+            t.Capitalize = !t.Capitalize ;
             RenameNode(tv.SelectedNode, t);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            
             if (svf.ShowDialog() == DialogResult.OK)
             {
                 textSaveMap.Text = svf.FileName;
@@ -252,6 +255,8 @@ namespace xNS
         private void button2_Click(object sender, EventArgs e)
         {
             opf.Multiselect = false;
+            opf.Filter = "XML files|*.xml|All files|*.*";
+
             if (opf.ShowDialog() == DialogResult.OK)
             {
                 textLoadMap.Text = opf.FileName;
@@ -264,10 +269,239 @@ namespace xNS
             Application.DoEvents(); 
         }
 
+        private XmlNamespaceManager nsmgr;
+
+        private string processRestrictions(string res)
+        {
+            string sOut = "";
+            string[] stringSeparators = new string[] { "<!--", "-->" };
+            string[] items = res.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string s in items)
+            {
+                if (s.Contains("Value = "))
+                {
+                    if (sOut != "") sOut += ";";
+                    sOut += s.Replace("Value = ", "").Trim();
+
+                }
+            }
+            return sOut;
+        }
+
+
+        private void readChild(xsdItem xsd, XmlElement el)
+        {
+            XmlNodeList ct = el.SelectNodes("./xs:complexType", nsmgr);
+            foreach (XmlNode node in ct)
+            {
+
+                XmlElement el2 = (XmlElement)node;
+                XmlNodeList sq = el2.SelectNodes("./xs:sequence", nsmgr);
+                foreach (XmlNode node2 in sq)
+                {
+
+                    XmlElement el3 = (XmlElement)node2;
+                    XmlNodeList children = el3.SelectNodes("./xs:element", nsmgr);
+                    foreach (XmlNode node3 in children)
+                    {
+
+                        XmlElement el4 = (XmlElement)node3;
+
+
+                        xsdItem xsdChild = new xsdItem();
+                        try { xsdChild.Name = el4.GetAttribute("name"); }
+                        catch { }
+
+                        if (xsdChild.Name != "")
+                        {
+                            if (!StopStr.Contains(xsdChild.Name.ToLower()))
+                            {
+                                try { xsdChild.Type = el4.GetAttribute("type"); }
+                                catch { xsdChild.Type = ""; }
+
+                                if (xsdChild.Type == "")
+                                {
+                                    XmlNodeList restricts = el4.SelectNodes("./xs:simpleType/xs:restriction", nsmgr);
+                                    if (restricts != null && restricts.Count > 0)
+                                    {
+                                        XmlElement r = (XmlElement)restricts[0];
+                                        try { xsdChild.Type = r.GetAttribute("base"); }
+                                        catch { xsdChild.Type = ""; }
+
+                                        XmlNodeList pattern = r.SelectNodes("xs:pattern", nsmgr);
+
+                                        foreach (XmlNode pn in pattern)
+                                        {
+                                            XmlElement p = (XmlElement)pn;
+                                            try { xsdChild.Patterns.Add(p.GetAttribute("value")); }
+                                            catch { }
+                                        }
+                                    }
+                                }
+
+
+                                try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
+                                catch { }
+
+                                try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
+                                catch { }
+
+                                try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
+                                catch { }
+
+
+
+
+                                if (xsdChild.Name.ToLower() == "defining_code")
+                                {
+                                    XmlNodeList restricts = el4.SelectNodes(".//xs:restriction", nsmgr);
+                                    if (restricts != null && restricts.Count > 0)
+                                    {
+                                        xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
+                                        xsd.Children.Add(xsdChild);
+                                    }
+                                }
+                                else
+                                {
+                                    xsd.Children.Add(xsdChild);
+                                    readChild(xsdChild, el4);
+                                }
+
+
+
+                            }
+                        }
+
+
+                    }
+
+
+                    children = el3.SelectNodes("./xs:choice/xs:element", nsmgr);
+                    foreach (XmlNode node3 in children)
+                    {
+
+                        XmlElement el4 = (XmlElement)node3;
+
+
+                        xsdItem xsdChild = new xsdItem();
+                        try { xsdChild.Name = el4.GetAttribute("name"); }
+                        catch { }
+
+                        if (xsdChild.Name != "")
+                        {
+                            if (!StopStr.Contains(xsdChild.Name.ToLower()))
+                            {
+                                try { xsdChild.Type = el4.GetAttribute("type"); }
+                                catch { xsdChild.Type = ""; }
+
+                                if (xsdChild.Type == "")
+                                {
+                                    XmlNodeList restricts = el4.SelectNodes("./xs:simpleType/xs:restriction", nsmgr);
+                                    if (restricts != null && restricts.Count > 0)
+                                    {
+                                        XmlElement r = (XmlElement)restricts[0];
+                                        try { xsdChild.Type = r.GetAttribute("base"); }
+                                        catch { xsdChild.Type = ""; }
+
+                                    }
+                                }
+
+                                try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
+                                catch { }
+
+                                try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
+                                catch { }
+
+                                try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
+                                catch { }
+
+
+
+
+
+                                if (xsdChild.Name.ToLower() == "defining_code")
+                                {
+                                    XmlNodeList restricts = el4.SelectNodes(".//xs:restriction", nsmgr);
+                                    if (restricts != null && restricts.Count > 0)
+                                    {
+                                        xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
+                                        xsd.Choice.Add(xsdChild);
+                                    }
+                                }
+                                else
+                                {
+                                    xsd.Choice.Add(xsdChild);
+                                    readChild(xsdChild, el4);
+                                }
+
+
+
+
+                            }
+                        }
+                    }
+
+
+                }
+
+
+
+
+            }
+        }
+
+        private string BuildXML()
+        {
+            StopStr = new List<String>();
+            string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context";
+
+            String[] stops = sIg.Split(';');
+
+            foreach (string s in stops)
+            {
+                StopStr.Add(s);
+            }
+
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load(txtXSD.Text);
+
+            nsmgr = new XmlNamespaceManager(xDoc.NameTable);
+            nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
+            //nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
+
+            XmlElement xe;
+            StringBuilder sb = new StringBuilder();
+
+            xsdItem root = new xsdItem();
+
+            XmlNodeList rootElements = xDoc.LastChild.ChildNodes;
+            XmlElement rootEl;
+
+            foreach (XmlNode node in rootElements)
+            {
+                if (node.Name == "xs:element")
+                {
+                    rootEl = (XmlElement)node;
+                    Name = rootEl.GetAttribute("name");
+
+                    root.Name = Name;
+                    root.Type = "root";
+
+                    readChild(root, rootEl);
+
+                }
+            }
+
+            root.RestoreParent();
+
+            return root.Generate(null).ToString();
+        }
+
         private void cmdProcess_Click(object sender, EventArgs e)
         {
-            if (txtXML.Text == "") return;
-            if (items == null) return;
+            string xmlpath= txtXML.Text;
+
             SpecPro sp;
             if (chkPDF.Checked)
                 sp = new xNS.SpecPro();
@@ -275,6 +509,25 @@ namespace xNS
                 sp = new xNS.ScreenForm();
 
             SpecPro.DebugPrint = chkDebug.Checked;
+
+            if (txtXML.Text == "")
+            {
+                if (txtXSD.Text == "")
+                    return;
+                else
+                {
+                   string XMLText = BuildXML();
+                    File.WriteAllText(txtXSD.Text + ".xml", XMLText);
+                    xmlpath = "AUTO";
+                    sp.LoadXML(XMLText, "*");
+                }
+
+            }
+            if (items == null) return;
+            
+            
+
+            
             sp.Init();
 
             sp.onNextNode += Show_Message;
@@ -285,7 +538,7 @@ namespace xNS
             foreach (var x1 in items)
             {
                 sb.Append(vbCrLf);
-                sb.Append(sp.Process(txtXML.Text, x1, false));
+                sb.Append(sp.Process(xmlpath, x1, false));
             }
 
             txtOut.Text = sb.ToString();
@@ -295,9 +548,9 @@ namespace xNS
             MessageBox.Show("Обработка спецификации завершена");
         }
 
-        private void button3_Click(object sender, EventArgs e)
+            private void button3_Click(object sender, EventArgs e)
         {
-            if (textSaveMap.Text != "")
+            if(textSaveMap.Text != "")
             {
                 using (var writer = new System.IO.StreamWriter(textSaveMap.Text))
                 {
@@ -316,10 +569,10 @@ namespace xNS
                 using (var stream = System.IO.File.OpenRead(textLoadMap.Text))
                 {
                     var serializer = new XmlSerializer(typeof(List<XsltItem>));
-                    items = serializer.Deserialize(stream) as List<XsltItem>;
+                    items= serializer.Deserialize(stream) as List<XsltItem>;
                 }
 
-
+                
                 foreach (XsltItem c in items)
                 {
                     c.RestoreParent();
@@ -344,13 +597,13 @@ namespace xNS
         private void cmdAutoDot_Click(object sender, EventArgs e)
         {
             if (items == null) return;
-            if (chkReInit.Checked) LoadTree(false);
+             if(chkReInit.Checked)  LoadTree(false);
 
-            foreach (XsltItem x in items)
+                foreach (XsltItem x in items)
             {
                 //ClearLastDot(x);
                 DotBeforeHeader(x);
-                if (chkShiftDot.Checked)
+                if(chkShiftDot.Checked)
                     ShiftDotToChildren(x);
                 else
                     ClearLastDot(x);
@@ -370,9 +623,9 @@ namespace xNS
         {
             XsltItem lc;
 
-            if (x.Children.Count >= 1)
+            if (x.Children.Count >= 1 )
             {
-
+                
                 Boolean hdrChild = false;
                 foreach (XsltItem nc in x.Children)
                 {
@@ -399,7 +652,7 @@ namespace xNS
                     //}
                 }
 
-
+                
 
                 foreach (XsltItem nc in x.Children)
                 {
@@ -412,13 +665,13 @@ namespace xNS
         private void ClearLastDot(XsltItem x)
         {
             XsltItem lc;
-
-            if (x.Children.Count >= 1 && x.DotAfter == true)
+            
+            if(x.Children.Count >=1 && x.DotAfter==true)
             {
                 // чтобы не было  двух точек,  убираем её у последнего дочернего  узла
                 lc = x.Children[x.Children.Count - 1];
                 lc.DotAfter = false;
-                foreach (XsltItem nc in x.Children)
+                foreach(XsltItem nc in x.Children)
                 {
                     ClearLastDot(nc);
                 }
@@ -430,7 +683,7 @@ namespace xNS
             XsltItem lc;
 
             // у первого потомка после заголовка убрать  запятую
-            if (x.Children.Count > 0 && x.IsHeader() == true)
+            if (x.Children.Count > 0 && x.IsHeader()  == true)
             {
                 lc = x.Children[0];
                 lc.ComaBefore = false;
@@ -443,11 +696,11 @@ namespace xNS
                 lc.ComaBefore = false;
             }
 
-            if (x.Children.Count > 0 && x.DotAfter == true)
+            if (x.Children.Count > 0 && x.DotAfter == true  )
             {
                 lc = x.Children[0];
-                if (lc.ComaBefore) lc.ComaBefore = false;
-
+                if (lc.ComaBefore   ) lc.ComaBefore = false;
+               
             }
             foreach (XsltItem nc in x.Children)
             {
@@ -457,25 +710,25 @@ namespace xNS
         private void DotBeforeHeader(XsltItem x)
         {
             XsltItem lc;
-            XsltItem cc;
+            XsltItem cc; 
 
-            if (x.Children.Count > 0)
+            if (x.Children.Count > 0 )
             {
                 Int16 i;
-                for (i = 0; i < x.Children.Count - 1; i++)
+                for (i = 0; i < x.Children.Count-1; i++)
                 {
-                    lc = x.Children[i + 1];
-                    cc = x.Children[i];
+                    lc = x.Children[i+1];
+                    cc = x.Children[i ];
 
                     // стаавим точку перед соседом - заголовком
-                    if (lc.IsHeader() && cc.IsHeader() == false)
+                    if (lc.IsHeader()  && cc.IsHeader()==false) 
                     {
                         lc.Capitalize = true;
                         cc.DotAfter = true;
                     }
                 }
-
-
+                
+                
                 foreach (XsltItem nc in x.Children)
                 {
                     DotBeforeHeader(nc);
@@ -489,12 +742,12 @@ namespace xNS
             int i;
             XsltItem cur;
             XsltItem prev;
-            for (i = 1; i < x.Children.Count; i++)
+            for (i=1;i< x.Children.Count;i++)
             {
                 cur = x.Children[i];
-                prev = x.Children[i - 1];
+                prev = x.Children[i-1];
 
-                if (prev.DotAfter && !cur.ComaBefore)
+                if(prev.DotAfter  && !cur.ComaBefore)
                 {
                     cur.ComaBefore = false;
                     cur.Capitalize = true;
@@ -527,17 +780,17 @@ namespace xNS
             {
                 if (t.Level() == 1)
                 {
-
-                    for (int i = 0; i < items.Count; i++)
+                    
+                    for(int i=0;i < items.Count; i++)
                     {
                         if (t.ItemID == items[i].ItemID)
                         {
-                            if (i > 0)
+                            if(i > 0)
                             {
                                 p = items[i - 1];
                                 p.Children.Add(t);
                                 t.Parent = null;
-                                items.Remove(t);
+                                items.Remove(t); 
                                 UpLevel(t);
                             }
                         }
@@ -562,7 +815,7 @@ namespace xNS
         private void cmdDel_Click(object sender, EventArgs e)
         {
             if (items == null) return;
-            if (MessageBox.Show("Удалить текущий узел и всех его потомков  ?", "Внимание", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if(MessageBox.Show("Удалить текущий узел и всех его потомков  ?","Внимание",MessageBoxButtons.YesNo )== DialogResult.Yes)
             {
                 XsltItem t;
                 XsltItem p;
@@ -579,7 +832,7 @@ namespace xNS
                 LoadTree(true);
             }
 
-
+            
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -608,20 +861,20 @@ namespace xNS
                     {
                         if (p.ItemID == items[i].ItemID)
                         {
-
-                            LeftLevel(t);
-
-                            items.Insert(i, t);
+                            
+                                LeftLevel(t);
+                            
+                                items.Insert(i,t);
                             break;
-
+                            
                         }
                     }
-
+                    
                 }
                 LoadTree(true);
             }
-
-
+         
+            
         }
 
         private void LeftLevel(XsltItem x)
@@ -630,7 +883,7 @@ namespace xNS
             String newID;
             if (idx >= 0)
             {
-                newID = x.ItemID.Substring(0, idx) + "_" + x.ItemID.Substring(idx + 1);
+                newID = x.ItemID.Substring(0, idx ) + "_" + x.ItemID.Substring(idx + 1);
             }
             else
             {
@@ -664,16 +917,16 @@ namespace xNS
             fi.ShowDialog();
         }
 
-        private void DropInput(XsltItem x)
+        private  void DropInput( XsltItem x)
         {
 
             List<XsltItem> ToDrop = new List<XsltItem>();
             foreach (XsltItem c in x.Children)
             {
-                if (c.Caption.ToLower() == "input" && c.Children.Count == 0)
+                if(c.Caption.ToLower()=="input" && c.Children.Count==0)
                 {
                     ToDrop.Add(c);
-
+                    
                 }
             }
 
@@ -697,8 +950,19 @@ namespace xNS
                 DropInput(c);
             }
             LoadTree(true);
-
+            
         }
+
+        private void cmdSelectFile_Click(object sender, EventArgs e)
+        {
+            opf.Filter = "XSD files|*.xsd|All files|*.*";
+            if (opf.ShowDialog() == DialogResult.OK)
+            {
+                txtXSD.Text = opf.FileName;
+            }
+        }
+
+        private List<String> StopStr;
     }
 
 

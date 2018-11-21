@@ -99,6 +99,7 @@
     <Compile Include="ScreenForm.cs" />
     <Compile Include="SpecPro.cs" />
     <Compile Include="XmlTools.cs" />
+    <Compile Include="xsdItem.cs" />
     <Compile Include="XsltItem.cs" />
     <EmbeddedResource Include="frmItem.resx">
       <DependentUpon>frmItem.cs</DependentUpon>

@@ -48,9 +48,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(355, 7);
+            this.button2.Location = new System.Drawing.Point(320, 7);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(107, 45);
+            this.button2.Size = new System.Drawing.Size(93, 45);
             this.button2.TabIndex = 1;
             this.button2.Text = "Packer";
             this.button2.UseVisualStyleBackColor = true;
@@ -58,9 +58,9 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(237, 7);
+            this.button3.Location = new System.Drawing.Point(217, 7);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(110, 45);
+            this.button3.Size = new System.Drawing.Size(93, 45);
             this.button3.TabIndex = 2;
             this.button3.Text = "Snipets";
             this.button3.UseVisualStyleBackColor = true;
@@ -68,9 +68,9 @@
             // 
             // cmdSizer
             // 
-            this.cmdSizer.Location = new System.Drawing.Point(470, 7);
+            this.cmdSizer.Location = new System.Drawing.Point(423, 7);
             this.cmdSizer.Name = "cmdSizer";
-            this.cmdSizer.Size = new System.Drawing.Size(98, 45);
+            this.cmdSizer.Size = new System.Drawing.Size(93, 45);
             this.cmdSizer.TabIndex = 3;
             this.cmdSizer.Text = "Sizer";
             this.cmdSizer.UseVisualStyleBackColor = true;
@@ -78,9 +78,9 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(113, 7);
+            this.button4.Location = new System.Drawing.Point(115, 7);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(116, 45);
+            this.button4.Size = new System.Drawing.Size(93, 45);
             this.button4.TabIndex = 4;
             this.button4.Text = "Spec maker";
             this.button4.UseVisualStyleBackColor = true;
@@ -90,7 +90,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 56);
+            this.ClientSize = new System.Drawing.Size(524, 56);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.cmdSizer);
             this.Controls.Add(this.button3);
