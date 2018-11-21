@@ -336,6 +336,26 @@ namespace xNS
                                             try { xsdChild.Patterns.Add(p.GetAttribute("value")); }
                                             catch { }
                                         }
+
+                                        XmlNodeList ens = r.SelectNodes("xs:enumeration", nsmgr);
+
+                                        if (ens.Count > 0)
+                                        {
+                                            string R = "";
+                                            foreach (XmlNode pn in ens)
+                                            {
+                                                if (R != "") R += ";";
+
+                                                XmlElement p = (XmlElement)pn;
+                                                try { R += p.GetAttribute("value"); }
+                                                catch { }
+                                            }
+                                            if (R != "")
+                                            {
+                                                xsdChild.Restrictions = R;
+                                            }
+                                        }
+
                                     }
                                 }
 
@@ -494,6 +514,13 @@ namespace xNS
             }
 
             root.RestoreParent();
+
+            using (var writer = new System.IO.StreamWriter(txtXSD.Text+".map"))
+            {
+                var serializer = new XmlSerializer(root.GetType());
+                serializer.Serialize(writer, root);
+                writer.Flush();
+            }
 
             return root.Generate(null).ToString();
         }

@@ -15,6 +15,9 @@ namespace xNS
         [XmlIgnoreAttribute]
         public static Dictionary<string, string> PatternSamples ;
 
+        [XmlIgnoreAttribute]
+        public static Random Rnd;
+
 
         [XmlIgnoreAttribute]
         public static string vbCrLf = "\r\n";
@@ -77,8 +80,8 @@ namespace xNS
             {
                 string Variants = PatternSamples[Pattern];
                 string[] s = Variants.Split(';');
-                Random r = new Random();
-                int v = r.Next(s.Length);
+                
+                int v = Rnd.Next(s.Length);
                 return s[v];
             }
             else
@@ -176,6 +179,7 @@ namespace xNS
                 sb = new StringBuilder();
                 Cnt = 0;
                 sb.Append(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
+                Rnd = new Random();
             }
             string sShift = Level();    
 
@@ -184,8 +188,8 @@ namespace xNS
                 int ItemCount = 1;
 
                 if(oMax =="unbounded" || oMax == "99") {
-                    Random r = new Random();
-                    ItemCount = r.Next(2, 5);
+                    
+                    ItemCount = Rnd.Next(2, 5);
                 }
                 for (int idx = 1; idx <= ItemCount; idx++)
                 {
@@ -199,8 +203,8 @@ namespace xNS
                     {
                         if (this.Type == "xs:int")
                         {
-                            Random r = new Random();
-                            int v = r.Next(1, Cnt + 1);
+                            
+                            int v = Rnd.Next(1, Cnt + 1);
                             sb.Append(v.ToString());
                             Cnt++;
                         }
@@ -213,8 +217,8 @@ namespace xNS
                                 {
 
                                     string[] s = NextSibling().Restrictions.Split(';');
-                                    Random r = new Random();
-                                    int v = r.Next(s.Length);
+                                    
+                                    int v = Rnd.Next(s.Length);
                                     sb.Append(s[v]);
                                     OK = true;
                                 }
@@ -222,8 +226,13 @@ namespace xNS
                             if (!OK)
                             {
 
-
-                                if (Patterns.Count > 0)
+                                if (Restrictions != null  && Restrictions != "") {
+                                    string[] s = Restrictions.Split(';');
+                                    
+                                    int v = Rnd.Next(s.Length);
+                                    sb.Append(s[v]);
+                                }
+                                else if (Patterns.Count > 0)
                                 {
                                     sb.Append(GetPatternSample(Patterns[0]));
                                 }
@@ -255,16 +264,16 @@ namespace xNS
 
                         if (this.Type == "oe:DV_TEXT")
                         {
-                            Random r = new Random();
-                            int v = r.Next(1, Cnt + 1);
+                            //
+                            //int v = Rnd.Next(1, Cnt + 1);
 
                             if (Parent != null)
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + v.ToString() + " для [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " для [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
                             }
                             else
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + v.ToString() + " для [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " для [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
                             }
 
                             Cnt++;
@@ -273,8 +282,8 @@ namespace xNS
 
                         if (this.Type == "oe:DV_CODED_TEXT")
                         {
-                            Random r = new Random();
-                            int v = r.Next(1, Cnt + 1);
+                            //
+                            int v = Cnt; //Rnd.Next(1, Cnt + 1);
 
                             if (Parent != null)
                             {
@@ -301,21 +310,29 @@ namespace xNS
                             }
                             else
                             {
-                                sb.Append(Cnt.ToString() + "." + ((Cnt + 3) % 10).ToString());
+                                
+                                int v = Rnd.Next(0, 100);
+                                sb.Append(Cnt.ToString() + "." + v.ToString());
                                 Cnt++;
                             }
                         }
 
                         if (this.Type == "oe:DV_BOOLEAN")
                         {
-                            sb.Append(vbCrLf + sShift + "\t<value>" + "true" + "</value>" + vbCrLf + sShift);
+                            int v = Rnd.Next(0, 2);
+                            if(v==1)
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "true" + "</value>" + vbCrLf + sShift);
+                            else
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "false" + "</value>" + vbCrLf + sShift);
                             Cnt++;
                         }
 
-                        if (this.Type == "oe:DV_DATE_TIME" || this.Type == "oe:DV_DATE")
+                        if (this.Type == "oe:DV_DATE_TIME" || this.Type == "oe:DV_DATE" || this.Type == "oe:DV_TIME")
                         {
                             sb.Append(vbCrLf + sShift + "\t<value>" + DateTime.Now.AddDays(-Cnt).ToString("yyyy-MM-ddThh:mm:ss") + "</value>" + vbCrLf + sShift);
                         }
+
+                        
 
                         if (this.Type == "" && Children.Count == 0 && Choice.Count == 0)
                         {
@@ -332,9 +349,11 @@ namespace xNS
                         i.Generate(sb);
                     }
 
-                    foreach (xsdItem i in Choice)
+                    if (Choice.Count > 0)
                     {
-                        i.Generate(sb);
+                        
+                        int v = Rnd.Next(Choice.Count);
+                        Choice[v].Generate(sb);
                     }
 
                     if (Children.Count > 0 || Choice.Count > 0)
