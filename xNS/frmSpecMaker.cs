@@ -484,9 +484,9 @@ namespace xNS
         private string BuildXML()
         {
             StopStr = new List<String>();
-            string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context";
+            string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context;Любое_событие_as_Interval_Event";
 
-            String[] stops = sIg.Split(';');
+            String[] stops = sIg.ToLower().Split(';');
 
             foreach (string s in stops)
             {
