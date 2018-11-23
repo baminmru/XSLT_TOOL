@@ -494,8 +494,18 @@ namespace xNS
             }
 
 
+
+
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(txtXSD.Text);
+
+            string sXSD = File.ReadAllText(txtXSD.Text);
+
+            //  patch Factor problem
+            sXSD=sXSD.Replace("Провоцирующий_fslash_купирующий_фактор", "Провоцирующий_фактор");
+            sXSD = sXSD.Replace("&lt;", "_меньше_");
+            sXSD = sXSD.Replace("&gt;", "_больше_");
+
+            xDoc.LoadXml(sXSD);
 
             nsmgr = new XmlNamespaceManager(xDoc.NameTable);
             nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");

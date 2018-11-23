@@ -66,6 +66,18 @@ namespace xNS
             //(\+|\-)?(0|[1-9][0-9]*)?
         }
 
+        private  string GetRandomUnit()
+        {
+            string KnownUnits = "Cel|°С;week|неделя;hour|час;month|месяц;year|год;day|день;second|секунда;minute|минута;Sv|Зв;mg/l|мг/л;/yr|/год;10*12/l|10*12/л;cm2|см2;mm/h|мм/ч;Minutes|минуты;/ml|/мл;/mo|/месяц;mm3|мм3;/d|/день;mg|мг;10*9/l|10*9/л;ml|мл;mm|мм;mo|мес;J/min|Дж/мин;ft3|фут3;mm[Hg]|мм.рт.ст.;dioptre|дптр;nanomol/d|нмоль/день;in3|дюйм3;mSv|мЗв;Hz|Гц;gm/l|гм/л;U/l|Е/л;U/ml|Е/мл;/wk|/неделю;fl|фл;IU/ml|МЕ/мл;m/s|м/с;µg|мкг;min|мин;wk|недель;/min|/мин;U|Е;millisec|мс;nanogm/ml|нг/мл;kg|кг;dB|дБ;cc|см3;a|лет;d|дней;m2|м2;gm|г;h|ч;cm|см;kg/m2|кг/м2;m|м;mmol/l|ммоль/л;pg/ml|пг/мл;s|сек;lb|фунты;pg|пг;1/min|в мин";
+
+            string[] s = KnownUnits.Split(';');
+
+            int v = Rnd.Next(s.Length);
+            string[] u = s[v].Split('|');
+            return u[0];
+
+        }
+
         private string GetPatternSample(string Pattern)
         {
             if (PatternSamples==null)
@@ -191,13 +203,17 @@ namespace xNS
                     
                     ItemCount = Rnd.Next(2, 5);
                 }
+                bool passValue;
+
                 for (int idx = 1; idx <= ItemCount; idx++)
                 {
                     sb.Append(vbCrLf + sShift + "<" + Name + ">");
+                    passValue = false;
 
                     if (Fixed != "")
                     {
                         sb.Append(Fixed);
+                        passValue = true;
                     }
                     else
                     {
@@ -206,6 +222,7 @@ namespace xNS
                             
                             int v = Rnd.Next(1, Cnt + 1);
                             sb.Append(v.ToString());
+                            passValue = true;
                             Cnt++;
                         }
 
@@ -214,10 +231,21 @@ namespace xNS
 
                             int v = Rnd.Next(1, Cnt + 1);
                             sb.Append(vbCrLf + sShift + "\t<magnitude>" + v.ToString() + "</magnitude>" + vbCrLf + sShift );
+                            passValue = true;
                             Cnt++;
                         }
 
-                        
+                        if (this.Type == "oe:DV_QUANTITY")
+                        {
+
+                            int v = Rnd.Next(1, Cnt + 1);
+                            sb.Append(vbCrLf + sShift + "\t<magnitude>" + v.ToString() + "</magnitude>");
+                            sb.Append(vbCrLf + sShift + "\t<units>" + GetRandomUnit() + "</units>" + vbCrLf + sShift);
+                            passValue = true;
+                            Cnt++;
+                        }
+
+
                         if (this.Type == "xs:string")
                         {
                             bool OK = false;
@@ -230,6 +258,7 @@ namespace xNS
                                     
                                     int v = Rnd.Next(s.Length);
                                     sb.Append(s[v]);
+                                    passValue = true;
                                     OK = true;
                                 }
                             }
@@ -241,10 +270,12 @@ namespace xNS
                                     
                                     int v = Rnd.Next(s.Length);
                                     sb.Append(s[v]);
+                                    passValue = true;
                                 }
                                 else if (Patterns.Count > 0)
                                 {
                                     sb.Append(GetPatternSample(Patterns[0]));
+                                    passValue = true;
                                 }
                                 else
                                 {
@@ -252,16 +283,19 @@ namespace xNS
                                     if (Parent.Name == "name")
                                     {
                                         sb.Append(Parent.Parent.Name);
+                                        passValue = true;
                                     }
                                     else
                                     {
                                         if (Parent != null && Parent.Parent != null)
                                         {
                                             sb.Append("строка № " + Cnt.ToString() + " для [" + Parent.Parent.Name.ToLower() + "]");
+                                            passValue = true;
                                         }
                                         else
                                         {
                                             sb.Append("строка № " + Cnt.ToString() + " для [" + Name.ToLower() + "]");
+                                            passValue = true;
                                         }
 
                                         Cnt++;
@@ -280,10 +314,12 @@ namespace xNS
                             if (Parent != null)
                             {
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " для [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                passValue = true;
                             }
                             else
                             {
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " для [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                passValue = true;
                             }
 
                             Cnt++;
@@ -298,10 +334,12 @@ namespace xNS
                             if (Parent != null)
                             {
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "код " + v.ToString() + " - расшифровка № " + v.ToString() + " для [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                passValue = true;
                             }
                             else
                             {
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "код " + v.ToString() + " - расшифровка № " + v.ToString() + " для [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                passValue = true;
                             }
 
 
@@ -317,12 +355,14 @@ namespace xNS
                             if (Patterns.Count > 0)
                             {
                                 sb.Append(GetPatternSample(Patterns[0]));
+                                passValue = true;
                             }
                             else
                             {
                                 
                                 int v = Rnd.Next(0, 100);
                                 sb.Append(Cnt.ToString() + "." + v.ToString());
+                                passValue = true;
                                 Cnt++;
                             }
                         }
@@ -334,12 +374,21 @@ namespace xNS
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "true" + "</value>" + vbCrLf + sShift);
                             else
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "false" + "</value>" + vbCrLf + sShift);
+                            passValue = true;
                             Cnt++;
                         }
 
-                        if (this.Type == "oe:DV_DATE_TIME" || this.Type == "oe:DV_DATE" || this.Type == "oe:DV_TIME")
+                        if (this.Type == "oe:DV_DATE_TIME" || this.Type == "oe:DV_DATE" || this.Type == "oe:DV_TIME" || this.Type == "oe:Iso8601Date")
                         {
                             sb.Append(vbCrLf + sShift + "\t<value>" + DateTime.Now.AddDays(-Cnt).ToString("yyyy-MM-ddThh:mm:ss") + "</value>" + vbCrLf + sShift);
+                            passValue = true;
+                        }
+
+                        if(this.Type== "oe:LOCATABLE_REF")
+                        {
+                            sb.Append("REF № " + Cnt.ToString());
+                            passValue = true;
+                            Cnt++;
                         }
 
                         
@@ -347,7 +396,13 @@ namespace xNS
                         if (this.Type == "" && Children.Count == 0 && Choice.Count == 0)
                         {
                             sb.Append("Значение № " + Cnt.ToString());
+                            passValue = true;
                             Cnt++;
+                        }
+
+                        if(passValue==false && this.Type != "" && Children.Count == 0 && Choice.Count == 0)
+                        {
+                            sb.Append("Значение ещё неизвестного типа " + Cnt.ToString() + ". Тип=" +this.Type);
                         }
 
 
