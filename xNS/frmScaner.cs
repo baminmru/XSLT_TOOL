@@ -47,10 +47,11 @@ namespace xNS
             tmp = tmp.Replace("_fslash_", "__");
             tmp = tmp.Replace(":", "_");
             tmp = tmp.Replace("=", "_");
-            tmp = tmp.Replace(".", "_");
-            tmp = tmp.Replace(",", "_");
             tmp = tmp.Replace("(", "_");
             tmp = tmp.Replace(")", "_");
+            tmp = tmp.Replace(",", "_");
+            tmp = tmp.Replace(".", "_");
+            //tmp = tmp.Replace("/", "_");
 
             int ltmp = tmp.Length + 1;
             while (ltmp != tmp.Length)

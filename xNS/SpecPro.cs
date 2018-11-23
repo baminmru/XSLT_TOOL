@@ -39,10 +39,11 @@ namespace xNS
             tmp = tmp.Replace("_fslash_", "__");
             tmp = tmp.Replace(":", "_");
             tmp = tmp.Replace("=", "_");
-            tmp = tmp.Replace(".", "_");
-            tmp = tmp.Replace(",", "_");
             tmp = tmp.Replace("(", "_");
             tmp = tmp.Replace(")", "_");
+            tmp = tmp.Replace(",", "_");
+            tmp = tmp.Replace(".", "_");
+            //tmp = tmp.Replace("/", "_");
 
             int ltmp = tmp.Length + 1;
             while (ltmp != tmp.Length)
@@ -216,7 +217,7 @@ namespace xNS
             allTails = new string[4][];
             allTails[0] = new[]  // common tail
             {
-                "value/value", "value/rm:value", "value/rm:defining_code/rm:code_string", "lower/magnitude",
+                "value/value", "value/rm:value", "value/rm:defining_code/rm:code_string","value/defining_code/code_string", "lower/magnitude",
                 "upper/magnitude", "value/magnitude", "value/rm:magnitude", "magnitude"
             };
             allTails[1] = new[]  // single period
@@ -364,10 +365,9 @@ namespace xNS
 
         public void LoadXML(string xmlData, string sNS)
         {
-            if (SpecPro.xdocPath != "AUTO")
-            {
+            
                 SpecPro.xdoc = null;
-            }
+           
             if (SpecPro.xdoc == null)
             {
                 SpecPro.xdoc = new XmlDocument();

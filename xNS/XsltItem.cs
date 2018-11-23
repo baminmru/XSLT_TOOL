@@ -188,7 +188,7 @@ namespace xNS
         public Boolean IsSinglePeriod()
         {
             if (FactorInfo.Contains("DV_QUANTITY")) {
-                if(FactorInfo.Contains("wk") && FactorInfo.Contains("mo"))
+                if(FactorInfo.Contains("wk") || FactorInfo.Contains("mo") || FactorInfo.Contains("d") || FactorInfo.Contains("1/wk") || FactorInfo.Contains("1/mo") || FactorInfo.Contains("1/d"))
                     return true;
             } 
             return false;
