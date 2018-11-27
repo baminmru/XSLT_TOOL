@@ -62,7 +62,6 @@
             this.txtErrors = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.cmdDelInput = new System.Windows.Forms.Button();
-            this.chkShiftDot = new System.Windows.Forms.CheckBox();
             this.chkReInit = new System.Windows.Forms.CheckBox();
             this.cmdSelectFile = new System.Windows.Forms.Button();
             this.txtXSD = new System.Windows.Forms.TextBox();
@@ -159,7 +158,7 @@
             // chkDebug
             // 
             this.chkDebug.AutoSize = true;
-            this.chkDebug.Location = new System.Drawing.Point(738, 199);
+            this.chkDebug.Location = new System.Drawing.Point(850, 198);
             this.chkDebug.Name = "chkDebug";
             this.chkDebug.Size = new System.Drawing.Size(153, 17);
             this.chkDebug.TabIndex = 11;
@@ -438,18 +437,6 @@
             this.cmdDelInput.UseVisualStyleBackColor = true;
             this.cmdDelInput.Click += new System.EventHandler(this.cmdDelInput_Click);
             // 
-            // chkShiftDot
-            // 
-            this.chkShiftDot.AutoSize = true;
-            this.chkShiftDot.Checked = true;
-            this.chkShiftDot.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShiftDot.Location = new System.Drawing.Point(897, 199);
-            this.chkShiftDot.Name = "chkShiftDot";
-            this.chkShiftDot.Size = new System.Drawing.Size(120, 17);
-            this.chkShiftDot.TabIndex = 35;
-            this.chkShiftDot.Text = "Shift Dot to Children";
-            this.chkShiftDot.UseVisualStyleBackColor = true;
-            // 
             // chkReInit
             // 
             this.chkReInit.AutoSize = true;
@@ -503,7 +490,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cmdDelInput);
             this.Controls.Add(this.chkReInit);
-            this.Controls.Add(this.chkShiftDot);
             this.Controls.Add(this.txtErrors);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button5);
@@ -573,7 +559,6 @@
         private System.Windows.Forms.RadioButton chkScreen;
         private System.Windows.Forms.TextBox txtErrors;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.CheckBox chkShiftDot;
         private System.Windows.Forms.CheckBox chkReInit;
         private System.Windows.Forms.Button cmdDelInput;
         private System.Windows.Forms.Button cmdSelectFile;

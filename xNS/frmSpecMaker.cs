@@ -651,10 +651,7 @@ namespace xNS
             {
                 //ClearLastDot(x);
                 DotBeforeHeader(x);
-                if(chkShiftDot.Checked)
-                    ShiftDotToChildren(x);
-                else
-                    ClearLastDot(x);
+                ShiftDotToChildren(x);
                 ClearFirstComa(x);
                 CapAfterDot(x);
             }
@@ -673,34 +670,38 @@ namespace xNS
 
             if (x.Children.Count >= 1 )
             {
-                
-                Boolean hdrChild = false;
-                foreach (XsltItem nc in x.Children)
-                {
-                    if (nc.IsHeader())
-                    {
-                        hdrChild = true;
-                        break;
-                    }
-                }
 
-                // если есть дочерние с заголовком
-                if (hdrChild)
-                {
-                    x.DotAfter = false;  // будем брать точку у последнего сына-дочки
-                                         //// последний потомок всегда с точкой
-                    lc = x.Children[x.Children.Count - 1];
-                    lc.DotAfter = true;
+                /* Boolean hdrChild = false;
+                 foreach (XsltItem nc in x.Children)
+                 {
+                     if (nc.IsHeader())
+                     {
+                         hdrChild = true;
+                         break;
+                     }
+                 }
 
-                    // все дочерние переделать на точку
-                    //foreach (XsltItem nc in x.Children)
-                    //{
-                    //    nc.ComaBefore = false;
-                    //    nc.DotAfter = true;
-                    //}
-                }
+                 // если есть дочерние с заголовком
+                 if (hdrChild)
+                 {
+                     x.DotAfter = false;  // будем брать точку у последнего сына-дочки
+                                          //// последний потомок всегда с точкой
+                     lc = x.Children[x.Children.Count - 1];
+                     lc.DotAfter = true;
 
-                
+                     // все дочерние переделать на точку
+                     //foreach (XsltItem nc in x.Children)
+                     //{
+                     //    nc.ComaBefore = false;
+                     //    nc.DotAfter = true;
+                     //}
+                 }
+                 */
+
+                x.DotAfter = false;  // будем брать точку у последнего сына-дочки
+                                     //// последний потомок всегда с точкой
+                lc = x.Children[x.Children.Count - 1];
+                lc.DotAfter = true;
 
                 foreach (XsltItem nc in x.Children)
                 {
@@ -795,14 +796,26 @@ namespace xNS
                 cur = x.Children[i];
                 prev = x.Children[i-1];
 
-                if(prev.DotAfter  && !cur.ComaBefore)
+                if( (prev.Children.Count > 0 ||  prev.DotAfter)  )
                 {
                     cur.ComaBefore = false;
                     cur.Capitalize = true;
                 }
             }
+
+
+            // shift  capitalization  down  from  generic  header
+            if (x.Children.Count > 0)
+            {
+                if(x.Capitalize  && (x.Path=="" || x.Path.ToLower().Contains("generic")   ))
+                {
+                    x.Children[0].Capitalize = true;
+                }
+            }
+
             foreach (XsltItem nc in x.Children)
             {
+
                 CapAfterDot(nc);
             }
         }
