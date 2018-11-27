@@ -984,7 +984,7 @@ namespace xNS
             List<XsltItem> ToDrop = new List<XsltItem>();
             foreach (XsltItem c in x.Children)
             {
-                if((c.Caption.ToLower()=="input" || c.Caption.ToLower().Contains("кнопка добаления"))  && c.Children.Count==0)
+                if((c.Caption.ToLower()=="input" || c.Caption.ToLower().Contains("кнопка добавления"))  && c.Children.Count==0)
                 {
                     ToDrop.Add(c);
                     
