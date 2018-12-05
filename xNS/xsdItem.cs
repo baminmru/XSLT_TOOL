@@ -18,6 +18,10 @@ namespace xNS
         [XmlIgnoreAttribute]
         public static Random Rnd;
 
+        [XmlIgnoreAttribute]
+        public static int RandomPercent=0;  
+
+
 
         [XmlIgnoreAttribute]
         public static string vbCrLf = "\r\n";
@@ -201,8 +205,17 @@ namespace xNS
 
                 if(oMax =="unbounded" || oMax == "99") {
                     
-                    ItemCount = Rnd.Next(2, 5);
-                }
+                    
+                    int ifgen = Rnd.Next(1, 100);
+                    if (ifgen >= RandomPercent)
+                    {
+                        ItemCount = Rnd.Next(2, 5);
+                    }
+                    else
+                    {
+                        ItemCount = 1;
+                    }
+                 }
                 bool passValue;
 
                 for (int idx = 1; idx <= ItemCount; idx++)
@@ -411,14 +424,22 @@ namespace xNS
 
                     foreach (xsdItem i in Children)
                     {
-                        i.Generate(sb);
+                        
+                        int ifgen = Rnd.Next(1, 100);
+                        if (ifgen >= RandomPercent || i.oMin=="1" )
+                        {
+                            i.Generate(sb);
+                        }
                     }
 
                     if (Choice.Count > 0)
                     {
-                        
+                        int ifgen = Rnd.Next(1, 100);
                         int v = Rnd.Next(Choice.Count);
-                        Choice[v].Generate(sb);
+                        if (ifgen >= RandomPercent || Choice[v].oMin == "1")
+                        {
+                            Choice[v].Generate(sb);
+                        }
                     }
 
                     if (Children.Count > 0 || Choice.Count > 0)

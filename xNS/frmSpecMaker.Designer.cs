@@ -84,7 +84,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Location = new System.Drawing.Point(13, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(89, 20);
             this.label1.TabIndex = 4;
@@ -158,7 +158,7 @@
             // chkDebug
             // 
             this.chkDebug.AutoSize = true;
-            this.chkDebug.Location = new System.Drawing.Point(850, 198);
+            this.chkDebug.Location = new System.Drawing.Point(754, 198);
             this.chkDebug.Name = "chkDebug";
             this.chkDebug.Size = new System.Drawing.Size(153, 17);
             this.chkDebug.TabIndex = 11;
@@ -476,9 +476,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label2.Location = new System.Drawing.Point(12, 52);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(67, 20);
+            this.label2.Size = new System.Drawing.Size(90, 20);
             this.label2.TabIndex = 38;
-            this.label2.Text = "XSD file";
+            this.label2.Text = "XSD файл";
             // 
             // frmSpecMaker
             // 

@@ -493,9 +493,7 @@ namespace xNS
                 StopStr.Add(s);
             }
 
-
-
-
+           
             XmlDocument xDoc = new XmlDocument();
 
             string sXSD = File.ReadAllText(txtXSD.Text);
@@ -543,7 +541,26 @@ namespace xNS
                 writer.Flush();
             }
 
-            return root.Generate(null).ToString();
+            string sOut;
+            string testName;
+            //if (TestCount > 0)
+            //{
+            FileInfo fi = new FileInfo(txtXSD.Text);
+            testName = fi.DirectoryName;
+            for (int i = 1; i <= 10; i++)
+            {
+                for (int j = 1; j <= 5; j++)
+                {
+                    xsdItem.RandomPercent = i * 2;
+                    sOut = root.Generate(null).ToString();
+                    File.WriteAllText(testName + "\\test_" + i.ToString() + "_" + j.ToString() + ".xml", sOut);
+                }
+            }
+            //}
+
+            xsdItem.RandomPercent = 0;
+            sOut = root.Generate(null).ToString();
+            return sOut;
         }
 
         private void cmdProcess_Click(object sender, EventArgs e)

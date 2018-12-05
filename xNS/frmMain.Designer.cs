@@ -48,7 +48,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(320, 7);
+            this.button2.Location = new System.Drawing.Point(323, 7);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(93, 45);
             this.button2.TabIndex = 1;
@@ -58,7 +58,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(217, 7);
+            this.button3.Location = new System.Drawing.Point(220, 7);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(93, 45);
             this.button3.TabIndex = 2;
@@ -68,7 +68,7 @@
             // 
             // cmdSizer
             // 
-            this.cmdSizer.Location = new System.Drawing.Point(423, 7);
+            this.cmdSizer.Location = new System.Drawing.Point(426, 7);
             this.cmdSizer.Name = "cmdSizer";
             this.cmdSizer.Size = new System.Drawing.Size(93, 45);
             this.cmdSizer.TabIndex = 3;
@@ -90,7 +90,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(524, 56);
+            this.ClientSize = new System.Drawing.Size(526, 56);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.cmdSizer);
             this.Controls.Add(this.button3);
@@ -114,5 +114,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button cmdSizer;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }
