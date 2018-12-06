@@ -34,6 +34,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.cmdSizer = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.cmdTester = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -48,7 +49,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(323, 7);
+            this.button2.Location = new System.Drawing.Point(318, 7);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(93, 45);
             this.button2.TabIndex = 1;
@@ -58,7 +59,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(220, 7);
+            this.button3.Location = new System.Drawing.Point(216, 7);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(93, 45);
             this.button3.TabIndex = 2;
@@ -68,7 +69,7 @@
             // 
             // cmdSizer
             // 
-            this.cmdSizer.Location = new System.Drawing.Point(426, 7);
+            this.cmdSizer.Location = new System.Drawing.Point(420, 7);
             this.cmdSizer.Name = "cmdSizer";
             this.cmdSizer.Size = new System.Drawing.Size(93, 45);
             this.cmdSizer.TabIndex = 3;
@@ -78,7 +79,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(115, 7);
+            this.button4.Location = new System.Drawing.Point(114, 7);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(93, 45);
             this.button4.TabIndex = 4;
@@ -86,11 +87,22 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // cmdTester
+            // 
+            this.cmdTester.Location = new System.Drawing.Point(522, 7);
+            this.cmdTester.Name = "cmdTester";
+            this.cmdTester.Size = new System.Drawing.Size(93, 45);
+            this.cmdTester.TabIndex = 5;
+            this.cmdTester.Text = "Tester";
+            this.cmdTester.UseVisualStyleBackColor = true;
+            this.cmdTester.Click += new System.EventHandler(this.cmdTester_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(526, 56);
+            this.ClientSize = new System.Drawing.Size(627, 56);
+            this.Controls.Add(this.cmdTester);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.cmdSizer);
             this.Controls.Add(this.button3);
@@ -115,5 +127,6 @@
         private System.Windows.Forms.Button cmdSizer;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button cmdTester;
     }
 }

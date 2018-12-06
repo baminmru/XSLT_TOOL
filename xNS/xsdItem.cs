@@ -186,6 +186,18 @@ namespace xNS
             return sOut;
         }
 
+        public int NodeLevel()
+        {
+            int sOut = 1;
+            xsdItem xP = Parent;
+            while (xP != null)
+            {
+                sOut++;
+                xP = xP.Parent;
+            }
+            return sOut;
+        }
+
         public static int Cnt;
 
         public StringBuilder Generate(StringBuilder sb)
@@ -426,7 +438,11 @@ namespace xNS
                     {
                         
                         int ifgen = Rnd.Next(1, 100);
-                        if (ifgen >= RandomPercent || i.oMin=="1" )
+                        if (i.NodeLevel() >2 &&  (ifgen >= RandomPercent || i.oMin=="1" ))
+                        {
+                            i.Generate(sb);
+                        }
+                        else
                         {
                             i.Generate(sb);
                         }
@@ -436,7 +452,7 @@ namespace xNS
                     {
                         int ifgen = Rnd.Next(1, 100);
                         int v = Rnd.Next(Choice.Count);
-                        if (ifgen >= RandomPercent || Choice[v].oMin == "1")
+                        if (Choice[v].NodeLevel() >2 && ( ifgen >= RandomPercent || Choice[v].oMin == "1"))
                         {
                             Choice[v].Generate(sb);
                         }
