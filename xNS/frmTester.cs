@@ -84,6 +84,7 @@ namespace xNS
             int eStop;
             int pos;
             int bodyPos;
+            int gap = 110;
 
             txtError.Text = "";
            sLen = sHtml.Length+1;
@@ -109,11 +110,11 @@ namespace xNS
                 {
                     if (pos >= 0)
                     {
-                        eStart = pos - 100;
-                        eStop = pos + 100;
+                        eStart = pos - gap;
+                        eStop = pos + gap;
                         if (eStart < 0) eStart = 0;
                         if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                        sError.AppendLine("{. .} pos: " + pos.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                        sError.AppendLine("{. .}  ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                         pos = sHtml.IndexOf(". .", pos + 1);
                     }
                 } while (pos >= 0);
@@ -129,11 +130,11 @@ namespace xNS
                 {
                     if (pos >= 0)
                     {
-                        eStart = pos - 100;
-                        eStop = pos + 100;
+                        eStart = pos - gap;
+                        eStop = pos + gap;
                         if (eStart < 0) eStart = 0;
                         if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                        sError.AppendLine("{ .} pos: " + pos.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                        sError.AppendLine("{ .}  ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                         pos = sHtml.IndexOf(" .", pos + 1);
                     }
                 } while (pos >= 0);
@@ -147,11 +148,11 @@ namespace xNS
                 {
                     if (pos >= 0)
                     {
-                        eStart = pos - 100;
-                        eStop = pos + 100;
+                        eStart = pos - gap;
+                        eStop = pos + gap;
                         if (eStart < 0) eStart = 0;
                         if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                        sError.AppendLine("{ .< } pos: " + pos.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                        sError.AppendLine("{ .< }  ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                         pos = sHtml.IndexOf(" .<", pos + 1);
                     }
                 } while (pos >= 0);
@@ -165,11 +166,11 @@ namespace xNS
                 {
                     if (pos >= 0)
                     {
-                        eStart = pos - 100;
-                        eStop = pos + 100;
+                        eStart = pos - gap;
+                        eStop = pos + gap;
                         if (eStart < 0) eStart = 0;
                         if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                        sError.AppendLine("{<td>,} pos: " + pos.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                        sError.AppendLine("{<td>,}  ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                         pos = sHtml.IndexOf("<td>,", pos + 1);
                     }
                 } while (pos >= 0);
@@ -182,11 +183,11 @@ namespace xNS
                 {
                     if (pos >= 0)
                     {
-                        eStart = pos - 100;
-                        eStop = pos + 100;
+                        eStart = pos - gap;
+                        eStop = pos + gap;
                         if (eStart < 0) eStart = 0;
                         if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                        sError.AppendLine("{. ,} pos: " + pos.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                        sError.AppendLine("{. ,}  ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                         pos = sHtml.IndexOf(". ,", pos + 1);
                     }
                 } while (pos >= 0);
@@ -198,35 +199,35 @@ namespace xNS
                 do
                 {
                    
-                    eStart = pos - 100;
-                    eStop = pos + 100;
+                    eStart = pos - gap;
+                    eStop = pos + gap;
                     if (eStart < 0) eStart = 0;
                     if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                    sError.AppendLine("{: ,} pos: " + pos.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                    sError.AppendLine("{: ,}  ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                     pos = sHtml.IndexOf(": ,", pos + 1);
                     
                 } while (pos >= 0);
             }
             {
-                Regex regex = new Regex(@"\.\s*[a-zа-я]");
+                Regex regex = new Regex(@"\.\s*[а-я]");
                 MatchCollection matches = regex.Matches(sHtml, bodyPos);
                 if (matches.Count > 0)
                 {
                     foreach (Match match in matches)
                     {
                         
-                        eStart = match.Index - 100;
-                        eStop = match.Index + 100;
+                        eStart = match.Index - gap;
+                        eStop = match.Index + gap;
                         if (eStart < 0) eStart = 0;
                         if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                        sError.AppendLine("{" + match.Value + "} pos: " + match.Index.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                        sError.AppendLine("{" + match.Value + "} ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                        
                     }
 
                 }
             }
             {
-                Regex regex = new Regex(@":\s*[A-ZА-Я]");
+                Regex regex = new Regex(@":\s*[А-Я]");
                 MatchCollection matches = regex.Matches(sHtml,bodyPos);
                 if (matches.Count > 0)
                 {
@@ -234,11 +235,11 @@ namespace xNS
                     {
                         if (match.Index > bodyPos)
                         {
-                            eStart = match.Index - 100;
-                            eStop = match.Index + 100;
+                            eStart = match.Index - gap;
+                            eStop = match.Index + gap;
                             if (eStart < 0) eStart = 0;
                             if (eStop >= sHtml.Length) eStop = sHtml.Length - 1;
-                            sError.AppendLine("{" + match.Value + "} pos: " + match.Index.ToString() + " context: " + sHtml.Substring(eStart, eStop - eStart + 1));
+                            sError.AppendLine("{" + match.Value + "} ..." + sHtml.Substring(eStart, eStop - eStart + 1));
                         }
                     }
 
