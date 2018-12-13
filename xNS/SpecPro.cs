@@ -953,8 +953,26 @@ namespace xNS
                             if (OpenVariable[0] != null)
                             {
                                 sb.AppendLine("</xsl:variable>");
+                                    bool CapSecond = false;
+                                    if(sX.Children.Count > 0)
+                                    {
+                                        if(sX.Children[sX.Children.Count-1].DotAfter)
+                                        {
+                                            CapSecond = true;
+                                        }
+
+                                    }
                                   
+                                    if (CapSecond)
+                                    {
+                                        sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template></xsl:if>");
+                                        sb.AppendLine(@"<xsl:if test='position()>1' ><xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template></xsl:if>");
+                                    }
+                                    else {
                                 sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                    }
+
+                                    
                                 sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
                                 OpenVariable[0] = null;
                             }
