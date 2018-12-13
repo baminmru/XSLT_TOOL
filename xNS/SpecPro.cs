@@ -744,7 +744,7 @@ namespace xNS
                             }
                             
                             sb.AppendLine(@"<xsl:if test=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor).Replace(":magnitude", ":units") + @" !='' "" >");
-                            sb.AppendLine(@"<span> </span>");
+                            //sb.AppendLine(@"<span> </span>");  вставка пробела перенесена внутрь шаблона edizm
                             sb.AppendLine(@"<xsl:call-template name=""edizm"">");
                             sb.AppendLine(@"<xsl:with-param name=""val"" select=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor).Replace(":magnitude", ":units") + @"""/>");
                             sb.Append(@"</xsl:call-template>");
