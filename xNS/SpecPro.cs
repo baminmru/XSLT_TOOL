@@ -228,7 +228,7 @@ namespace xNS
             };
             allTails[2] = new[]   // quantity
             {
-                "value/magnitude", "h_value/magnitude", "min_value/magnitude", "s_value/magnitude"
+                "value/magnitude", "h_value/magnitude", "min_value/magnitude", "s_value/magnitude","gm_value/magnitude","g_per_24hr_value/magnitude","_value/magnitude","mg_value/magnitude","micro_g_value/magnitude"
             };
             allTails[3] = new[]   // size
             {
@@ -430,6 +430,14 @@ namespace xNS
 
             realpath = realpath.Replace("*:mm_value", "");
             realpath = realpath.Replace("*:cm_value", "");
+            realpath = realpath.Replace("*:gm_value", "");
+            realpath = realpath.Replace("*:g_per_24hr_value", "");
+            realpath = realpath.Replace("*:_value", "");
+            realpath = realpath.Replace("*:mg_value", "");
+            realpath = realpath.Replace("*:micro_g_value", "");
+
+
+            //"gm_value/magnitude","g_per_24hr_value/magnitude","_value/magnitude","mg_value/magnitude","micro_g_value/magnitude"
 
             realpath = realpath.Replace("*:min_value", "");
             realpath = realpath.Replace("*:s_value", "");
