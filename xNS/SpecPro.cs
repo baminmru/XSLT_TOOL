@@ -224,11 +224,14 @@ namespace xNS
             {
                 "value/magnitude", "d_value/magnitude", "a_value/magnitude", "wk_value/magnitude",
                 "mo_value/magnitude", "_1_per_d_value/magnitude", "_1_per_a_value/magnitude", "_1_per_wk_value/magnitude",
-                "_1_per_mo_value/magnitude", "_1_per_yr_value/magnitude","_1_per_h_value/magnitude","h_value/magnitude"
+                "_1_per_mo_value/magnitude", "_1_per_yr_value/magnitude","_1_per_h_value/magnitude","h_value/magnitude",
+                "_per_mo_value/magnitude","_per_wk_value/magnitude","_per_d_value/magnitude"
             };
             allTails[2] = new[]   // quantity
             {
-                "value/magnitude", "h_value/magnitude", "min_value/magnitude", "s_value/magnitude","gm_value/magnitude","g_per_24hr_value/magnitude","_value/magnitude","mg_value/magnitude","micro_g_value/magnitude"
+                "value/magnitude", "h_value/magnitude", "min_value/magnitude", "s_value/magnitude","gm_value/magnitude",
+                "g_per_24hr_value/magnitude","_value/magnitude","mg_value/magnitude","micro_g_value/magnitude",
+                 "ml_value/magnitude","_1_value/magnitude"
             };
             allTails[3] = new[]   // size
             {
@@ -263,10 +266,11 @@ namespace xNS
 
         }
 
+        private static  Dictionary<string, XmlPlusItem> PathCache;
+
         private XmlPlusItem FindNSPath(XsltItem sX)
         {
             string sFind = sX.Path;
-
             if (sX.Path.Trim() == "" || sX.Path.Trim().ToLower().StartsWith("generic"))
             {
                 XmlPlusItem x = new XmlPlusItem();
@@ -274,6 +278,12 @@ namespace xNS
                 x.PathNs = "";
                 x.NodeText = sX.Caption;
                 return x;
+            }
+
+            if (PathCache.ContainsKey(sFind))
+            {
+                return PathCache[sFind];
+
             }
 
             ChooseTails(sX);
@@ -334,6 +344,7 @@ namespace xNS
                     }
                     if (ok)
                     {
+                        PathCache.Add(sFind, xpi);
                         return xpi;
                     }
                 }
@@ -359,6 +370,7 @@ namespace xNS
                 SpecPro.xdoc.Load(xmlPath);
                 SpecPro.xdocPath = xmlPath;
                 SpecPro.PathList = XmlTools.IterateThroughAllNodes(SpecPro.xdoc, sNS);
+                PathCache = new Dictionary<string, XmlPlusItem>();
             }
 
         }
@@ -374,6 +386,7 @@ namespace xNS
                 SpecPro.xdoc.LoadXml(xmlData);
                 SpecPro.xdocPath = "AUTO";
                 SpecPro.PathList = XmlTools.IterateThroughAllNodes(SpecPro.xdoc, sNS);
+                PathCache = new Dictionary<string, XmlPlusItem>();
             }
 
         }
@@ -435,6 +448,20 @@ namespace xNS
             realpath = realpath.Replace("*:_value", "");
             realpath = realpath.Replace("*:mg_value", "");
             realpath = realpath.Replace("*:micro_g_value", "");
+            realpath = realpath.Replace("*:_per_mo_value", "");
+            realpath = realpath.Replace("*:_per_mo_value", "");
+            realpath = realpath.Replace("*:_per_d_value", "");
+            realpath = realpath.Replace("*:ml_value", "");
+            realpath = realpath.Replace("*:_1_value", "");
+            
+
+
+
+
+            /*
+              "_per_mo_value/magnitude","_per_mo_value/magnitude","_per_d_value/magnitude",
+                 "ml_value/magnitude","_1_value/magnitude"
+             */
 
 
             //"gm_value/magnitude","g_per_24hr_value/magnitude","_value/magnitude","mg_value/magnitude","micro_g_value/magnitude"
@@ -444,6 +471,53 @@ namespace xNS
             
 
             return realpath;
+        }
+
+
+        private  string ChildTest(StringBuilder sb , XsltItem sX)
+        {
+            //StringBuilder sb;
+
+            foreach (XsltItem child in sX.Children)
+            {
+                if (child.Children.Count == 0)
+                {
+                    XmlPlusItem xpi = FindNSPath(child);
+                    if (xpi.PathNs != "")
+                    {
+
+                        if (child.IsMulty())
+                        {
+                            sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
+                        }
+                        else
+                        {
+
+                            if (child.IsBoolean())
+                            {
+                                sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" = 'true' ");
+                            }
+                            else
+                            {
+                                sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" != '' ");
+                            }
+                        }
+                        
+                    }
+                }
+                else
+                {
+                    if (child.IsMulty())
+                    {
+                        XmlPlusItem xpi = FindNSPath(child);
+                        sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
+                    }
+                    ChildTest(sb, child);
+                }
+            }
+
+
+            return sb.ToString();
         }
 
         public string Process(string xmlPath, XsltItem sX, Boolean excludeFor)
@@ -459,10 +533,6 @@ namespace xNS
             {
                 return "<!-- Error: " + ex.Message + " -->";
             }
-            //if (sX.ItemID=="3.5")
-            //{
-            //    System.Diagnostics.Debug.Print("!!!"); 
-            //}
 
             try
             {
@@ -547,24 +617,17 @@ namespace xNS
 
                     }
 
-
-
-
-
-                    // условие  на вывод  блока  
-                    if (sX.IsBoolean())
-                    {
-                        sb.AppendLine(@"<xsl:if ");
-                        sb.AppendLine(@" test  =""" + CutFor(sX, xpi.PathNs, excludeFor) + @" = 'true' "" ");
-                        sb.Append(">");
-                    }
-                    else
-                    {
                         List<XmlPlusItem> ChildList = null;
                         ChildList = FindChildList(sX);
                         string sTest;
+                    if (sX.Children.Count == 0)
+                    {
+                        if (sX.IsBoolean())
+                        {
 
-                        if (sX.IsSinglePeriod())
+                            sTest =  CutFor(sX, xpi.PathNs, excludeFor) + @" = 'true'  ";
+                            
+                        }else if (sX.IsSinglePeriod())
                         {
         
                             string realpath = SinglePeriodPathPatch(xpi.PathNs);
@@ -586,17 +649,24 @@ namespace xNS
                         }
                         else
                         {
+                            sTest = " '1' = '1' "; // true 
+                        }
+                    } else{
                             sTest = " '1' = '0' ";
-                        }
-                        foreach (XmlPlusItem child in ChildList)
-                        {
-                            if (child.PathNs != "")
-                            {
-                                    sTest = sTest + "\r\n or " + CutFor(sX, SinglePeriodPathPatch(child.PathNs), excludeFor) + @" != '' ";
-                            }
-                        }
 
+                        StringBuilder sbChild = new StringBuilder();
+                        ChildTest(sbChild, sX);
+                        sTest = sTest + sbChild.ToString(); 
 
+                        //foreach (XmlPlusItem child in ChildList)
+                        //{
+                        //    if (child.PathNs != "")
+                        //    {
+                        //        sTest = sTest + "\r\n or " + CutFor(sX, SinglePeriodPathPatch(child.PathNs), excludeFor) + @" != '' ";
+                        //    }
+                        //}
+
+                    }
 
                         if (sX.IsMulty() == false)
                         {
@@ -629,10 +699,10 @@ namespace xNS
                         }
 
 
-                        sb.AppendLine(@"<xsl:if ");
+                        sb.AppendLine(@"<!-- "+ sX.ItemID+" --><xsl:if ");
                         sb.AppendLine(@" test  =""" + sTest + @""" ");
                         sb.Append(">");
-                    }
+                    
 
                     if (sX.IsMulty() == false)
                     {
@@ -691,12 +761,7 @@ namespace xNS
                         }
                         else
                         {
-                            //if (OpenVariable[0] == null)
-                            //{
-                            //    sb.Append("<!-- NO Header -->");
-                            //    sb.AppendLine("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
-                            //    OpenVariable[0] = sX;
-                            //}
+   
                             if (sX.ComaBefore) sb.Append(", ");
 
                         }
