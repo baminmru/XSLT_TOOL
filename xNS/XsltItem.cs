@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.VisualBasic;
-    using System.Xml.Serialization;
+using Microsoft.VisualBasic;
+using System.Xml.Serialization;
 
 namespace xNS
 {
@@ -88,7 +86,7 @@ namespace xNS
 
 
         // form helper
-        public Boolean WithHeader()
+        public Boolean WithCaption()
         {
             if (FormInfo.Contains("без заголовка")) return false;
             if (FormInfo.Contains("+")) return true;
@@ -138,7 +136,7 @@ namespace xNS
             //if (FactorInfo.ToLower().Contains("заголовок раздела")) return true;
             /* if (FormInfo.ToLower().Contains("жирны"))
                  return true; */
-            if (WithHeader())
+            if (WithCaption())
             {
                 if (Level() == 2)
                 {

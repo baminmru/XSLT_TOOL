@@ -182,7 +182,7 @@ namespace xNS
             return Found;
         }
 
-        private static int HeaderLevel = 0;
+      
 
         // find ns-paths for child nodes of current node
         private List<XmlPlusItem> FindChildList(XsltItem sX)
@@ -356,7 +356,6 @@ namespace xNS
         private static XmlDocument xdoc = null;
         private static string xdocPath = "";
         private static List<XmlPlusItem> PathList = null;
-        private static Boolean FirstAfterTOC = false;
 
         public void ReadXML(string xmlPath, string sNS)
         {
@@ -478,12 +477,16 @@ namespace xNS
         {
             //StringBuilder sb;
 
+            try
+            {
+
+
             foreach (XsltItem child in sX.Children)
             {
                 if (child.Children.Count == 0)
                 {
                     XmlPlusItem xpi = FindNSPath(child);
-                    if (xpi.PathNs != "")
+                        if (xpi != null && xpi.PathNs != "")
                     {
 
                         if (child.IsMulty())
@@ -510,12 +513,19 @@ namespace xNS
                     if (child.IsMulty())
                     {
                         XmlPlusItem xpi = FindNSPath(child);
+                            if (xpi!=null && xpi.PathNs != "")
+                            {
                         sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
                     }
+                        }
                     ChildTest(sb, child);
                 }
             }
-
+            }
+            catch(System.Exception ex)
+            {
+                sb.AppendLine("<!-- Error: " + ex.Message + " " +sX.ItemID+" " + sX.Caption+ " "  + ex.StackTrace + "-->");
+            }
 
             return sb.ToString();
         }
@@ -577,11 +587,16 @@ namespace xNS
                             if (DebugPrint) sb.AppendLine("<!-- Close prev var before FOR -->");
                                 
                             sb.AppendLine("</xsl:variable>");
-                            sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                
                             if (sX.ComaBefore == false)
                             {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                                 sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") +@" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
                             }
+                                else
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
 
                             OpenVariable[0] = null;
                         }
@@ -594,8 +609,14 @@ namespace xNS
                         {
                             if (DebugPrint) sb.AppendLine("<!-- Close prev var TOC  -->");
                             sb.AppendLine("</xsl:variable>");
+                            if (OpenVariable[0].WithCaption()) {
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
+                            else
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
                            
-                            sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
                             OpenVariable[0] = null;
                         }
@@ -609,9 +630,18 @@ namespace xNS
                         {
                             if (DebugPrint) sb.AppendLine("<!-- Close prev var  Hdr -->");
                             sb.AppendLine("</xsl:variable>");
-                            sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            if (OpenVariable[0].WithCaption())
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
+                            else
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
+
+                            //sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
-                            //}
+  
                             OpenVariable[0] = null;
                         }
 
@@ -670,7 +700,7 @@ namespace xNS
 
                         if (sX.IsMulty() == false)
                         {
-                            if (sX.WithHeader())
+                            if (sX.WithCaption())
                             {
                                 if (sX.IsTOC() == false && sX.IsHeader()==false)
                                 {
@@ -714,7 +744,7 @@ namespace xNS
 
 
                         // вывод заголока
-                        if (sX.WithHeader())
+                        if (sX.WithCaption())
                         {
                             if (sX.IsTOC())
                             {
@@ -769,7 +799,7 @@ namespace xNS
                         // собственно вывод данных                                        
                         if (sX.IsTOC() || sX.IsHeader())
                         {
-                            // no body output, only header ???
+                            // no body output, only header !!!
                         }
                         else if (sX.IsSinglePeriod())
                         {
@@ -854,7 +884,7 @@ namespace xNS
 
                            
 
-                            if (sX.WithHeader() == false)
+                            if (sX.WithCaption() == false)
                             {
 
                                 bool UseCap = false;
@@ -927,7 +957,7 @@ namespace xNS
                     {  // multy row
 
                         // вывод заголовка           
-                        if (sX.WithHeader())
+                        if (sX.WithCaption())
                         {
                             if (sX.IsTOC())
                             {
@@ -983,13 +1013,12 @@ namespace xNS
 
                         
                         if(NoComa==false)
-                            sb.AppendLine(@"<xsl:if test  =""position() >1  ""><span>, </span></xsl:if>");
+                            sb.Append(@"<xsl:if test  =""position() >1  ""><span>, </span></xsl:if>");
 
 
                         if (sX.Children.Count > 0)
                         {
-
-
+                            //  цикл с подчиненными атрибутами
                             bool CloseVar = true;
                             if (sX.Children.Count == 1)
                             {
@@ -1055,7 +1084,18 @@ namespace xNS
                         }
                         else
                         {
-                            sb.AppendLine(@"<xsl:value-of select ="".""/>");
+                            // дочерних элементов нет
+                            // ситуация  когда надо капитализировать первый элемент цикла. Возможно условие придется  уточнять
+                            if (sX.WithCaption()==false && (sX.PrevSibling()!=null  && sX.PrevSibling().DotAfter))
+                            {
+                                sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
+                            }
+                            else
+                            {
+                                sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
+                            }
+                                
+                            sb.AppendLine(@"<xsl:if test='position()>1' ><xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
                         }
 
                         sb.Append(@"</xsl:for-each>");
@@ -1066,21 +1106,21 @@ namespace xNS
                     // был заголовок -  надо закрыть переменную
                     if (sX.IsTOC())
                     {
-
                         // закрываем строку
-
                         if (OpenVariable[0] != null)
                         {
                             sb.AppendLine("</xsl:variable>");
-                            //if (OpenVariable[0].Capitalize)
-                            //{
-                            //    sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
-                            //}
-                            //else
-                            //{
-                            sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            if (OpenVariable[0].WithCaption())
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
+                            else
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
+                            //sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
-                            //}
+                       
                             OpenVariable[0] = null;
                         }
 
@@ -1089,27 +1129,29 @@ namespace xNS
                     }
                     else if (sX.IsHeader())
                     {
-                        //if (sX.DotAfter) sb.Append(". "); // точку ? это  конец секции ??
                         sb.Append(HeaderEnd(sX.Caption,sX));
-                        if (DebugPrint) sb.AppendLine("<!-- END of Header  -->");
+                        if (DebugPrint) sb.Append("<!-- END of Header  -->");
                         if (OpenVariable[0] != null)
                         {
                             sb.AppendLine("</xsl:variable>");
-
-                            sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            if (OpenVariable[0].WithCaption())
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
+                            else
+                            {
+                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                            }
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
                             OpenVariable[0] = null;
                         }
 
-
                     }
                     else
                     {
+                        //  финал  атрибута
                         sb.Append(ItemEnd(sX));
-
                     }
-
-
 
                     sb.Append(@"</xsl:if>");
                     if (DebugPrint) sb.AppendLine(@"<!-- End of #" + sX.ItemID + " -->");
@@ -1128,7 +1170,6 @@ namespace xNS
             }
             catch (System.Exception ex)
             {
-                // Errors.AppendLine(ex.Message);
                 return "<!-- Error: " + ex.Message + " -->";
             }
 

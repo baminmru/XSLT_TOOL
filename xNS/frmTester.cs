@@ -289,7 +289,7 @@ namespace xNS
             nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
             //nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
 
-            XmlElement xe;
+          
             StringBuilder sb = new StringBuilder();
 
             xsdItem root = new xsdItem();
@@ -320,7 +320,7 @@ namespace xNS
             testName = fi.DirectoryName + "\\test_" + RandomPrc.ToString() + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xml";
                 
 
-            xsdItem.RandomPercent = RandomPrc;
+            root.SetGenPercent((short)RandomPrc);
             sOut = root.Generate(null).ToString();
             File.WriteAllText(testName, sOut);
             return testName; // sOut;

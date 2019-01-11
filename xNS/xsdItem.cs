@@ -13,13 +13,13 @@ namespace xNS
         public xsdItem Parent = null;
 
         [XmlIgnoreAttribute]
-        public static Dictionary<string, string> PatternSamples ;
+        public static Dictionary<string, string> PatternSamples;
 
         [XmlIgnoreAttribute]
         public static Random Rnd;
 
-        [XmlIgnoreAttribute]
-        public static int RandomPercent=0;  
+        //[XmlIgnoreAttribute]
+        //public static int RandomPercent=0;  
 
 
 
@@ -27,14 +27,25 @@ namespace xNS
         public static string vbCrLf = "\r\n";
 
 
+        public xsdItem()
+        {
+            oMin = "0";
+            oMax = "1";
+            Fixed = "";
+            Type = "";
+            GenPercent = 0;
+
+        }
+
         public string Name;
         public string Type;
         public string Fixed;
-        public string Comments;
         public string oMin;
         public string oMax;
         public string Restrictions;
-        public List<string> Patterns =  new List<string>() ;
+        public Int16 GenPercent;
+        public bool Skip;
+        public List<string> Patterns = new List<string>();
 
         public List<xsdItem> Children = new List<xsdItem>();
         public List<xsdItem> Choice = new List<xsdItem>();
@@ -70,7 +81,7 @@ namespace xNS
             //(\+|\-)?(0|[1-9][0-9]*)?
         }
 
-        private  string GetRandomUnit()
+        private string GetRandomUnit()
         {
             string KnownUnits = "Cel|°С;week|неделя;hour|час;month|месяц;year|год;day|день;second|секунда;minute|минута;Sv|Зв;mg/l|мг/л;/yr|/год;10*12/l|10*12/л;cm2|см2;mm/h|мм/ч;Minutes|минуты;/ml|/мл;/mo|/месяц;mm3|мм3;/d|/день;mg|мг;10*9/l|10*9/л;ml|мл;mm|мм;mo|мес;J/min|Дж/мин;ft3|фут3;mm[Hg]|мм.рт.ст.;dioptre|дптр;nanomol/d|нмоль/день;in3|дюйм3;mSv|мЗв;Hz|Гц;gm/l|гм/л;U/l|Е/л;U/ml|Е/мл;/wk|/неделю;fl|фл;IU/ml|МЕ/мл;m/s|м/с;µg|мкг;min|мин;wk|недель;/min|/мин;U|Е;millisec|мс;nanogm/ml|нг/мл;kg|кг;dB|дБ;cc|см3;a|лет;d|дней;m2|м2;gm|г;h|ч;cm|см;kg/m2|кг/м2;m|м;mmol/l|ммоль/л;pg/ml|пг/мл;s|сек;lb|фунты;pg|пг;1/min|в мин";
 
@@ -84,7 +95,7 @@ namespace xNS
 
         private string GetPatternSample(string Pattern)
         {
-            if (PatternSamples==null)
+            if (PatternSamples == null)
             {
                 PatternSamples = new Dictionary<string, string>();
             }
@@ -96,7 +107,7 @@ namespace xNS
             {
                 string Variants = PatternSamples[Pattern];
                 string[] s = Variants.Split(';');
-                
+
                 int v = Rnd.Next(s.Length);
                 return s[v];
             }
@@ -174,6 +185,38 @@ namespace xNS
             }
         }
 
+        public void SetGenPercent(Int16 gPrc)
+        {
+            GenPercent = gPrc;
+            foreach (xsdItem c in Children)
+            {
+                c.GenPercent = gPrc;
+                c.SetGenPercent(gPrc);
+            }
+
+            foreach (xsdItem c in Choice)
+            {
+                c.GenPercent = gPrc;
+                c.SetGenPercent(gPrc);
+            }
+        }
+
+        public void SetMax(Int16 Max)
+        {
+            oMax = Max.ToString();
+            foreach (xsdItem c in Children)
+            {
+                c.oMax = Max.ToString();
+                c.SetMax(Max);
+            }
+
+            foreach (xsdItem c in Choice)
+            {
+                c.oMax = Max.ToString();
+                c.SetMax(Max);
+            }
+        }
+
         public string Level()
         {
             string sOut = "";
@@ -209,17 +252,22 @@ namespace xNS
                 sb.Append(@"<?xml version=""1.0"" encoding=""UTF-8""?>");
                 Rnd = new Random();
             }
-            string sShift = Level();    
+
+            if (Skip) // пропускаем этот узел
+            {
+                return sb;
+            }
+            string sShift = Level();
 
             if (Name != "defining_code")
             {
                 int ItemCount = 1;
 
-                if(oMax =="unbounded" || oMax == "99") {
-                    
-                    
+                if (oMax == "unbounded" || oMax == "99" || oMax == "2" || oMax == "4")
+                {
+
                     int ifgen = Rnd.Next(1, 100);
-                    if (ifgen >= RandomPercent)
+                    if (ifgen >= GenPercent)
                     {
                         ItemCount = Rnd.Next(2, 5);
                     }
@@ -227,7 +275,8 @@ namespace xNS
                     {
                         ItemCount = 1;
                     }
-                 }
+                }
+
                 bool passValue;
 
                 for (int idx = 1; idx <= ItemCount; idx++)
@@ -244,7 +293,7 @@ namespace xNS
                     {
                         if (this.Type == "xs:int")
                         {
-                            
+
                             int v = Rnd.Next(1, Cnt + 1);
                             sb.Append(v.ToString());
                             passValue = true;
@@ -255,7 +304,7 @@ namespace xNS
                         {
 
                             int v = Rnd.Next(1, Cnt + 1);
-                            sb.Append(vbCrLf + sShift + "\t<magnitude>" + v.ToString() + "</magnitude>" + vbCrLf + sShift );
+                            sb.Append(vbCrLf + sShift + "\t<magnitude>" + v.ToString() + "</magnitude>" + vbCrLf + sShift);
                             passValue = true;
                             Cnt++;
                         }
@@ -280,7 +329,7 @@ namespace xNS
                                 {
 
                                     string[] s = NextSibling().Restrictions.Split(';');
-                                    
+
                                     int v = Rnd.Next(s.Length);
                                     sb.Append(s[v]);
                                     passValue = true;
@@ -290,9 +339,10 @@ namespace xNS
                             if (!OK)
                             {
 
-                                if (Restrictions != null  && Restrictions != "") {
+                                if (Restrictions != null && Restrictions != "")
+                                {
                                     string[] s = Restrictions.Split(';');
-                                    
+
                                     int v = Rnd.Next(s.Length);
                                     sb.Append(s[v]);
                                     passValue = true;
@@ -314,12 +364,12 @@ namespace xNS
                                     {
                                         if (Parent != null && Parent.Parent != null)
                                         {
-                                            sb.Append("строка № " + Cnt.ToString() + " для [" + Parent.Parent.Name.ToLower() + "]");
+                                            sb.Append("строка № " + Cnt.ToString() + " [" + Parent.Parent.Name.ToLower() + "]");
                                             passValue = true;
                                         }
                                         else
                                         {
-                                            sb.Append("строка № " + Cnt.ToString() + " для [" + Name.ToLower() + "]");
+                                            sb.Append("строка № " + Cnt.ToString() + " [" + Name.ToLower() + "]");
                                             passValue = true;
                                         }
 
@@ -338,12 +388,12 @@ namespace xNS
 
                             if (Parent != null)
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " для [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
                             else
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " для [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
 
@@ -358,12 +408,12 @@ namespace xNS
 
                             if (Parent != null)
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "код " + v.ToString() + " - расшифровка № " + v.ToString() + " для [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "Код " + v.ToString() + " - расшифровка № " + v.ToString() + " [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
                             else
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "код " + v.ToString() + " - расшифровка № " + v.ToString() + " для [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "Код " + v.ToString() + " - расшифровка № " + v.ToString() + " [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
 
@@ -384,7 +434,7 @@ namespace xNS
                             }
                             else
                             {
-                                
+
                                 int v = Rnd.Next(0, 100);
                                 sb.Append(Cnt.ToString() + "." + v.ToString());
                                 passValue = true;
@@ -395,7 +445,7 @@ namespace xNS
                         if (this.Type == "oe:DV_BOOLEAN")
                         {
                             int v = Rnd.Next(0, 2);
-                            if(v==1)
+                            if (v == 1)
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "true" + "</value>" + vbCrLf + sShift);
                             else
                                 sb.Append(vbCrLf + sShift + "\t<value>" + "false" + "</value>" + vbCrLf + sShift);
@@ -409,14 +459,14 @@ namespace xNS
                             passValue = true;
                         }
 
-                        if(this.Type== "oe:LOCATABLE_REF")
+                        if (this.Type == "oe:LOCATABLE_REF")
                         {
                             sb.Append("REF № " + Cnt.ToString());
                             passValue = true;
                             Cnt++;
                         }
 
-                        
+
 
                         if (this.Type == "" && Children.Count == 0 && Choice.Count == 0)
                         {
@@ -425,9 +475,9 @@ namespace xNS
                             Cnt++;
                         }
 
-                        if(passValue==false && this.Type != "" && Children.Count == 0 && Choice.Count == 0)
+                        if (passValue == false && this.Type != "" && Children.Count == 0 && Choice.Count == 0)
                         {
-                            sb.Append("Значение ещё неизвестного типа " + Cnt.ToString() + ". Тип=" +this.Type);
+                            sb.Append("Значение ещё неизвестного типа " + Cnt.ToString() + ". Тип=" + this.Type);
                         }
 
 
@@ -436,9 +486,9 @@ namespace xNS
 
                     foreach (xsdItem i in Children)
                     {
-                        
+
                         int ifgen = Rnd.Next(1, 100);
-                        if (i.NodeLevel() >2 &&  (ifgen >= RandomPercent || i.oMin=="1" ))
+                        if (i.NodeLevel() > 2 && (ifgen >= i.GenPercent || i.oMin == "1"))
                         {
                             i.Generate(sb);
                         }
@@ -452,7 +502,7 @@ namespace xNS
                     {
                         int ifgen = Rnd.Next(1, 100);
                         int v = Rnd.Next(Choice.Count);
-                        if (Choice[v].NodeLevel() >2 && ( ifgen >= RandomPercent || Choice[v].oMin == "1"))
+                        if (Choice[v].NodeLevel() > 2 && (ifgen >= Choice[v].GenPercent || Choice[v].oMin == "1"))
                         {
                             Choice[v].Generate(sb);
                         }
@@ -465,8 +515,9 @@ namespace xNS
                     sb.Append("</" + Name + ">");
                 }
             }
-            return sb; 
+            return sb;
         }
 
     }
+
 }

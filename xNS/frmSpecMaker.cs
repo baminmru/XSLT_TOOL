@@ -68,7 +68,7 @@ namespace xNS
                 if (t.IsHeader()) Flags += "H";
                 if (t.IsNewLine()) Flags += "Lf";
                 if (t.Capitalize) Flags += "^";
-                if (t.WithHeader() && t.IsHeader() == false && t.IsTOC() == false && t.IsBoolean() == false) Flags += "N";
+                if (t.WithCaption() && t.IsHeader() == false && t.IsTOC() == false && t.IsBoolean() == false) Flags += "N";
                 if (t.IsMulty()) Flags += "*";
                 if (t.DotAfter) Flags += "Dt";
 
@@ -102,10 +102,6 @@ namespace xNS
             int rIdx;
             int cIdx;
            
-
-            
-            int i;
-
 
         XsltItem[] Levels = new XsltItem[10];
         XsltItem x;
@@ -187,7 +183,7 @@ namespace xNS
                 if (c.IsBold()) Flags += "B";
                 if (c.IsNewLine()) Flags += "Lf";
                 if (c.Capitalize ) Flags += "^";
-                if (c.WithHeader() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean()==false ) Flags += "N";
+                if (c.WithCaption() && c.IsHeader() == false && c.IsTOC() == false && c.IsBoolean()==false ) Flags += "N";
                 if (c.IsMulty()) Flags += "*";
                 if (c.DotAfter) Flags += "Dt";
                 TreeNode n2 = new TreeNode(c.ItemID);
@@ -207,7 +203,7 @@ namespace xNS
             if (t.IsBold()) Flags += "B";
             if (t.IsNewLine()) Flags += "Lf";
             if (t.Capitalize) Flags += "^";
-            if (t.WithHeader() && t.IsHeader() == false && t.IsTOC() == false && t.IsBoolean() == false) Flags += "N";
+            if (t.WithCaption() && t.IsHeader() == false && t.IsTOC() == false && t.IsBoolean() == false) Flags += "N";
             if (t.IsMulty()) Flags += "*";
             if (t.DotAfter) Flags += "Dt";
             n.Text = t.ItemID + " " + Flags + " " + t.Caption;
@@ -289,6 +285,7 @@ namespace xNS
         }
 
 
+
         private void readChild(xsdItem xsd, XmlElement el)
         {
             XmlNodeList ct = el.SelectNodes("./xs:complexType", nsmgr);
@@ -361,13 +358,15 @@ namespace xNS
 
 
                                 try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
-                                catch { }
+                                catch { xsdChild.oMin = "0"; }
+                                if (xsdChild.oMin == "") xsdChild.oMin = "0";
 
                                 try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
-                                catch { }
+                                catch { xsdChild.oMax = "1"; }
+                                if (xsdChild.oMax == "") xsdChild.oMax = "1";
 
                                 try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
-                                catch { }
+                                catch { xsdChild.Fixed = ""; }
 
 
 
@@ -438,10 +437,12 @@ namespace xNS
                                 }
 
                                 try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
-                                catch { }
+                                catch { xsdChild.oMin = "0"; }
+                                if (xsdChild.oMin == "") xsdChild.oMin = "0";
 
                                 try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
-                                catch { }
+                                catch { xsdChild.oMax = "1"; }
+                                if (xsdChild.oMax == "") xsdChild.oMax = "1";
 
                                 try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
                                 catch { }
@@ -481,6 +482,7 @@ namespace xNS
             }
         }
 
+
         private string BuildXML()
         {
             StopStr = new List<String>();
@@ -509,7 +511,7 @@ namespace xNS
             nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
             //nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
 
-            XmlElement xe;
+           
             StringBuilder sb = new StringBuilder();
 
             xsdItem root = new xsdItem();
@@ -551,14 +553,14 @@ namespace xNS
             {
                 for (int j = 1; j <= 5; j++)
                 {
-                    xsdItem.RandomPercent = i * 2;
+                    root.SetGenPercent( (short)(i * 2));
                     sOut = root.Generate(null).ToString();
                     File.WriteAllText(testName + "\\test_" + i.ToString() + "_" + j.ToString() + ".xml", sOut);
                 }
             }
             //}
 
-            xsdItem.RandomPercent = 0;
+            root.SetGenPercent(0);
             sOut = root.Generate(null).ToString();
             return sOut;
         }
@@ -688,32 +690,7 @@ namespace xNS
             if (x.Children.Count >= 1 )
             {
 
-                /* Boolean hdrChild = false;
-                 foreach (XsltItem nc in x.Children)
-                 {
-                     if (nc.IsHeader())
-                     {
-                         hdrChild = true;
-                         break;
-                     }
-                 }
 
-                 // если есть дочерние с заголовком
-                 if (hdrChild)
-                 {
-                     x.DotAfter = false;  // будем брать точку у последнего сына-дочки
-                                          //// последний потомок всегда с точкой
-                     lc = x.Children[x.Children.Count - 1];
-                     lc.DotAfter = true;
-
-                     // все дочерние переделать на точку
-                     //foreach (XsltItem nc in x.Children)
-                     //{
-                     //    nc.ComaBefore = false;
-                     //    nc.DotAfter = true;
-                     //}
-                 }
-                 */
 
                 x.DotAfter = false;  // будем брать точку у последнего сына-дочки
                                      //// последний потомок всегда с точкой
@@ -1001,7 +978,7 @@ namespace xNS
             List<XsltItem> ToDrop = new List<XsltItem>();
             foreach (XsltItem c in x.Children)
             {
-                if((c.Caption.ToLower()=="input" || c.Caption.ToLower().Contains("кнопка добавления"))  && c.Children.Count==0)
+                if((c.Caption.ToLower()=="input" || c.Caption.ToLower().Contains("кнопка добавления") || c.Caption.ToLower() == "input_text")  && c.Children.Count==0)
                 {
                     ToDrop.Add(c);
                     
