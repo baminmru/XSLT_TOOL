@@ -40,6 +40,7 @@ namespace xNS
             tmp = tmp.Replace(":", "_");
             tmp = tmp.Replace("=", "_");
             tmp = tmp.Replace("(", "_");
+            tmp = tmp.Replace("№", "_");
             tmp = tmp.Replace(")", "_");
             tmp = tmp.Replace(",", "_");
             tmp = tmp.Replace(".", "_");
@@ -356,7 +357,7 @@ namespace xNS
         private static XmlDocument xdoc = null;
         private static string xdocPath = "";
         private static List<XmlPlusItem> PathList = null;
-
+       
         public void ReadXML(string xmlPath, string sNS)
         {
             if (SpecPro.xdocPath != xmlPath)
@@ -454,17 +455,6 @@ namespace xNS
             realpath = realpath.Replace("*:_1_value", "");
             
 
-
-
-
-            /*
-              "_per_mo_value/magnitude","_per_mo_value/magnitude","_per_d_value/magnitude",
-                 "ml_value/magnitude","_1_value/magnitude"
-             */
-
-
-            //"gm_value/magnitude","g_per_24hr_value/magnitude","_value/magnitude","mg_value/magnitude","micro_g_value/magnitude"
-
             realpath = realpath.Replace("*:min_value", "");
             realpath = realpath.Replace("*:s_value", "");
             
@@ -481,46 +471,46 @@ namespace xNS
             {
 
 
-            foreach (XsltItem child in sX.Children)
-            {
-                if (child.Children.Count == 0)
+                foreach (XsltItem child in sX.Children)
                 {
-                    XmlPlusItem xpi = FindNSPath(child);
-                        if (xpi != null && xpi.PathNs != "")
+                    if (child.Children.Count == 0)
                     {
-
-                        if (child.IsMulty())
-                        {
-                            sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
-                        }
-                        else
+                        XmlPlusItem xpi = FindNSPath(child);
+                        if (xpi != null && xpi.PathNs != "")
                         {
 
-                            if (child.IsBoolean())
+                            if (child.IsMulty())
                             {
-                                sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" = 'true' ");
+                                sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
                             }
                             else
                             {
-                                sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" != '' ");
+
+                                if (child.IsBoolean())
+                                {
+                                    sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" = 'true' ");
+                                }
+                                else
+                                {
+                                    sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" != '' ");
+                                }
                             }
+
                         }
-                        
                     }
-                }
-                else
-                {
-                    if (child.IsMulty())
+                    else
                     {
-                        XmlPlusItem xpi = FindNSPath(child);
+                        if (child.IsMulty())
+                        {
+                            XmlPlusItem xpi = FindNSPath(child);
                             if (xpi!=null && xpi.PathNs != "")
                             {
-                        sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
-                    }
+                                sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
+                            }
                         }
-                    ChildTest(sb, child);
+                        ChildTest(sb, child);
+                    }
                 }
-            }
             }
             catch(System.Exception ex)
             {
@@ -543,7 +533,7 @@ namespace xNS
             {
                 return "<!-- Error: " + ex.Message + " -->";
             }
-
+          
             try
             {
                 StringBuilder sb = new StringBuilder();
@@ -564,7 +554,7 @@ namespace xNS
                     }
 
                     // закрытие предыдущих переменных
-                    if (sX.IsMulty())  // перед циклом закрываем переменную
+                    if (sX.IsMulty())  // перед циклом закрываем переменную 
                     {
                         bool CloseVar = true;
                         if(sX.Children.Count==1)
@@ -582,24 +572,32 @@ namespace xNS
 
                         if (CloseVar)
                         {
-                        if (OpenVariable[0] != null)
-                        {
-                            if (DebugPrint) sb.AppendLine("<!-- Close prev var before FOR -->");
-                                
-                            sb.AppendLine("</xsl:variable>");
-                                
-                            if (sX.ComaBefore == false)
+                            if (OpenVariable[0] != null)
                             {
-                                    sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
-                                sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") +@" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
-                            }
+                                if (DebugPrint) sb.AppendLine("<!-- Close prev var before FOR -->");
+                                
+                                sb.AppendLine("</xsl:variable>");
+                                
+                                if (sX.ComaBefore == false)
+                                {
+                                    if(OpenVariable[0].Parent != null  && OpenVariable[0].Parent.WithCaption() && OpenVariable[0].Parent.IsHeader())
+                                    {
+                                        sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                    }
+                                    else
+                                    {
+                                        sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                    }
+                                    
+                                    sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
+                                }
                                 else
                                 {
-                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                                 }
 
-                            OpenVariable[0] = null;
-                        }
+                                OpenVariable[0] = null;
+                            }
                         }
 
                     }
@@ -610,13 +608,21 @@ namespace xNS
                             if (DebugPrint) sb.AppendLine("<!-- Close prev var TOC  -->");
                             sb.AppendLine("</xsl:variable>");
                             if (OpenVariable[0].WithCaption()) {
-                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                //sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                if (OpenVariable[0].Parent != null && OpenVariable[0].Parent.WithCaption() && OpenVariable[0].Parent.IsHeader())
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
+                                else
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
                             }
-                           
+                            
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
                             OpenVariable[0] = null;
                         }
@@ -628,15 +634,23 @@ namespace xNS
 
                         if (OpenVariable[0] != null)
                         {
-                            if (DebugPrint) sb.AppendLine("<!-- Close prev var  Hdr -->");
+                            if (DebugPrint) sb.AppendLine("<!-- Close prev var Hdr -->");
                             sb.AppendLine("</xsl:variable>");
                             if (OpenVariable[0].WithCaption())
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                //sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                if (OpenVariable[0].Parent != null && OpenVariable[0].Parent.WithCaption() && OpenVariable[0].Parent.IsHeader())
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
+                                else
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
                             }
 
                             //sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
@@ -647,27 +661,27 @@ namespace xNS
 
                     }
 
-                        List<XmlPlusItem> ChildList = null;
-                        ChildList = FindChildList(sX);
-                        string sTest;
+                    List<XmlPlusItem> ChildList = null;
+                    ChildList = FindChildList(sX);
+                    string sTest;
                     if (sX.Children.Count == 0)
                     {
                         if (sX.IsBoolean())
                         {
-
+                            
                             sTest =  CutFor(sX, xpi.PathNs, excludeFor) + @" = 'true'  ";
                             
                         }else if (sX.IsSinglePeriod())
                         {
-        
+
                             string realpath = SinglePeriodPathPatch(xpi.PathNs);
 
                             sTest = CutFor(sX, realpath, excludeFor) + @" != '' ";
-                          
+
                         }
-                        else if (sX.IsSize())  
+                        else if (sX.IsSize())
                         {
-                          
+
                             string realpath = SinglePeriodPathPatch(xpi.PathNs);
 
                             sTest = CutFor(sX, realpath, excludeFor) + @" != '' ";
@@ -682,7 +696,7 @@ namespace xNS
                             sTest = " '1' = '1' "; // true 
                         }
                     } else{
-                            sTest = " '1' = '0' ";
+                        sTest = " '1' = '0' ";
 
                         StringBuilder sbChild = new StringBuilder();
                         ChildTest(sbChild, sX);
@@ -727,7 +741,7 @@ namespace xNS
 
                             }
                         }
-
+                        
 
                         sb.AppendLine(@"<!-- "+ sX.ItemID+" --><xsl:if ");
                         sb.AppendLine(@" test  =""" + sTest + @""" ");
@@ -752,7 +766,7 @@ namespace xNS
                                 sb.AppendLine(TocStart(sX.Caption));
 
                                 // все до первого заголовка  забираем в переменную чтобы убрать  запятые и капитализировать ???
-                                sb.AppendLine("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
+                                sb.Append("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
                                 OpenVariable[0] = sX;
 
 
@@ -763,7 +777,7 @@ namespace xNS
                                 //sb.Append("<strong>" + sX.Caption + ": </strong>");
                                 sb.Append(HeaderStart(sX.Caption, sX));
 
-                                sb.AppendLine("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
+                                sb.Append("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
                                 OpenVariable[0] = sX;
                             }
                             else
@@ -813,25 +827,9 @@ namespace xNS
                             tmp += @"</xsl:call-template>";
                             sb.AppendLine(tmp);
 
-
-                          
-
-                        }
-                        else if (sX.IsSize())
-                        {
-                           
-                            string realpath = SinglePeriodPathPatch(xpi.PathNs);
-                            string tmp;
-
-                            tmp = @"<xsl:call-template name=""SinglePeriodFormat"">";
-                            tmp += @"<xsl:with-param name=""v"" select=""" + CutFor(sX, realpath, excludeFor) + @"""/>";
-                            tmp += @"<xsl:with-param name=""pString"" select=""" + CutFor(sX, realpath, excludeFor).Replace(":magnitude", ":units") + @"""/>";
-                            tmp += @"</xsl:call-template>";
-                            sb.AppendLine(tmp);
-
                         }
 
-                        else if (sX.IsQuantity())
+                        else if (sX.IsQuantity() || sX.IsSize() )
                         {
 
                             if (sX.IsDecimal())
@@ -841,8 +839,7 @@ namespace xNS
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""PostProcess"">");
-                                sb.AppendLine(@"<xsl:with-param name=""size"" select=""0"" />");
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
                                 sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, SinglePeriodPathPatch(xpi.PathNs), excludeFor) + @"""/></xsl:call-template>");
                             }
                             
@@ -880,10 +877,6 @@ namespace xNS
                         }
                         else
                         {
-
-
-                           
-
                             if (sX.WithCaption() == false)
                             {
 
@@ -904,14 +897,33 @@ namespace xNS
                                 {
                                     if (UseCap)
                                         sb.AppendLine("<xsl:if test='position()>1' >");
-                                    sb.AppendLine(@"<xsl:call-template name=""string-capltrim"">");
+                                    if(sX.IsBrField())
+                                        sb.AppendLine(@"<xsl:call-template name=""string-capltrim"">");
+                                    else
+                                        sb.AppendLine(@"<xsl:call-template name=""string-capltrim_nobr"">");
                                     sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
                                     sb.Append(@"</xsl:call-template>");
                                     if (UseCap)
                                     {
                                         sb.AppendLine("</xsl:if>");
                                         sb.AppendLine("<xsl:if test='position()=1' >");
-                                        sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
+
+                                        if (  sX.Parent != null && sX.Parent.WithCaption() && sX.Parent.IsHeader())
+                                        {
+                                            if (sX.IsBrField())
+                                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
+                                            else
+                                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim_nobr"">");
+
+                                        }
+                                        else
+                                        {
+                                            if (sX.IsBrField())
+                                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim"">");
+                                            else
+                                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim_nobr"">");
+                                        }
+
                                         sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
                                         sb.Append(@"</xsl:call-template>");
                                         sb.AppendLine("</xsl:if>");
@@ -919,14 +931,20 @@ namespace xNS
                                 }
                                 else
                                 {
-                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
+                                    if (sX.IsBrField())
+                                        sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
+                                    else
+                                        sb.AppendLine(@"<xsl:call-template name=""string-ltrim_nobr"">");
                                     sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
                                     sb.Append(@"</xsl:call-template>");
                                 }
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
+                                if (sX.IsBrField())
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim"">");
+                                else
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim_nobr"">");
                                 sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
                                 sb.Append(@"</xsl:call-template>");
                             }
@@ -1036,9 +1054,9 @@ namespace xNS
                             if (CloseVar)
                             {
 
-                            // содержимое цикла забираем в переменную чтобы убрать запятые и капитализировать ???
-                            sb.AppendLine("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
-                            OpenVariable[0] = sX;
+                                // содержимое цикла забираем в переменную чтобы убрать запятые и капитализировать ???
+                                sb.Append("<xsl:variable name='content" + sX.ItemID.Replace(".", "_") + "' >");
+                                OpenVariable[0] = sX;
                             }
 
                             SpecPro sp2 = Processor();
@@ -1051,10 +1069,10 @@ namespace xNS
 
                             if (CloseVar)
                             {
-                            // закрываем переменную, чтобы не  пересекать границы  цикла
-                            if (OpenVariable[0] != null)
-                            {
-                                sb.AppendLine("</xsl:variable>");
+                                // закрываем переменную, чтобы не  пересекать границы  цикла
+                                if (OpenVariable[0] != null)
+                                {
+                                    sb.AppendLine("</xsl:variable>");
                                     bool CapSecond = false;
                                     if(sX.Children.Count > 0)
                                     {
@@ -1064,20 +1082,28 @@ namespace xNS
                                         }
 
                                     }
-                                  
+
                                     if (CapSecond)
                                     {
                                         sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template></xsl:if>");
                                         sb.AppendLine(@"<xsl:if test='position()>1' ><xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template></xsl:if>");
                                     }
                                     else {
-                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                        if (sX.Children.Count > 0)
+                                        {
+                                            sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template></xsl:if>");
+                                            sb.AppendLine(@"<xsl:if test='position()>1' ><xsl:call-template name=""string-cltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template></xsl:if>");
+                                        }
+                                        else
+                                        {
+                                            sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                        }
                                     }
 
                                     
-                                sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
-                                OpenVariable[0] = null;
-                            }
+                                    sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
+                                    OpenVariable[0] = null;
+                                }
                             }
 
 
@@ -1088,14 +1114,14 @@ namespace xNS
                             // ситуация  когда надо капитализировать первый элемент цикла. Возможно условие придется  уточнять
                             if (sX.WithCaption()==false && (sX.PrevSibling()!=null  && sX.PrevSibling().DotAfter))
                             {
-                                sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
+                                sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-capltrim_nobr""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
+                                sb.AppendLine(@"<xsl:if test='position()=1' ><xsl:call-template name=""string-ltrim_nobr""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
                             }
                                 
-                            sb.AppendLine(@"<xsl:if test='position()>1' ><xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
+                            sb.AppendLine(@"<xsl:if test='position()>1' ><xsl:call-template name=""string-ltrim_nobr""><xsl:with-param name = ""string"" select = '.' /></xsl:call-template></xsl:if>");
                         }
 
                         sb.Append(@"</xsl:for-each>");
@@ -1112,11 +1138,19 @@ namespace xNS
                             sb.AppendLine("</xsl:variable>");
                             if (OpenVariable[0].WithCaption())
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                if (OpenVariable[0].Parent != null && OpenVariable[0].Parent.WithCaption() && OpenVariable[0].Parent.IsHeader())
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
+                                else
+                                {
+                                    sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                }
+                                //sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             }
                             //sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
@@ -1136,11 +1170,11 @@ namespace xNS
                             sb.AppendLine("</xsl:variable>");
                             if (OpenVariable[0].WithCaption())
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:call-template name=""string-ltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             }
                             else
                             {
-                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
+                                sb.AppendLine(@"<xsl:call-template name=""string-capltrim_br""><xsl:with-param name = ""string"" select = '$content" + OpenVariable[0].ItemID.Replace(".", "_") + "' /></xsl:call-template>");
                             }
                             sb.AppendLine(@"<xsl:if test = ""$content" + OpenVariable[0].ItemID.Replace(".", "_") + @" !='' and not (ends-with($content" + OpenVariable[0].ItemID.Replace(".", "_") + @",'. '))"" >. </xsl:if>");
                             OpenVariable[0] = null;
@@ -1232,7 +1266,7 @@ namespace xNS
                 }
                 else
                 {
-                    sOut += @"<span> " + Caption + ": </span>";
+                    sOut += @"<span>" + Caption + ": </span>";
                 }
 
             return sOut;

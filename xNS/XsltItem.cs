@@ -123,7 +123,16 @@ namespace xNS
             return false;
         }
 
-       
+
+        public Boolean IsBrField()
+        {
+            if (Caption.ToLower()== "жалоба") return true;
+            if (Caption.ToLower() == "анамнез заболевания") return true;
+            if (Caption.ToLower() == "интерпретация результатов") return true;
+            if (Caption.ToLower() == "прочие рекомендации") return true;
+            return false;
+        }
+
 
         public Boolean IsHeader()
         {

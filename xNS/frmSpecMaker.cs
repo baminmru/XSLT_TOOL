@@ -101,7 +101,7 @@ namespace xNS
             int tIdx = 0;
             int rIdx;
             int cIdx;
-           
+ 
 
         XsltItem[] Levels = new XsltItem[10];
         XsltItem x;
@@ -386,7 +386,7 @@ namespace xNS
                                         if (seq != null && seq.Count > 0)
                                         {
                                             xsdChild.Restrictions = processRestrictions(seq[0].InnerXml);
-                                            if(xsdChild.Restrictions!=null  && xsdChild.Restrictions!="")
+                                            if (xsdChild.Restrictions != null && xsdChild.Restrictions != "")
                                                 xsd.Children.Add(xsdChild);
                                         }
                                     }
@@ -481,9 +481,9 @@ namespace xNS
 
             }
         }
+    
 
-
-        private string BuildXML()
+    private string BuildXML()
         {
             StopStr = new List<String>();
             string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context;Любое_событие_as_Interval_Event";
@@ -690,7 +690,7 @@ namespace xNS
             if (x.Children.Count >= 1 )
             {
 
-
+                
 
                 x.DotAfter = false;  // будем брать точку у последнего сына-дочки
                                      //// последний потомок всегда с точкой

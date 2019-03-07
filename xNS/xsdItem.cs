@@ -364,12 +364,12 @@ namespace xNS
                                     {
                                         if (Parent != null && Parent.Parent != null)
                                         {
-                                            sb.Append("строка № " + Cnt.ToString() + " [" + Parent.Parent.Name.ToLower() + "]");
+                                            sb.Append("строка \r\n№ " + Cnt.ToString() + " \r\n[" + Parent.Parent.Name.ToLower() + "]");
                                             passValue = true;
                                         }
                                         else
                                         {
-                                            sb.Append("строка № " + Cnt.ToString() + " [" + Name.ToLower() + "]");
+                                            sb.Append("строка \r\n№ " + Cnt.ToString() + " \r\n[" + Name.ToLower() + "]");
                                             passValue = true;
                                         }
 
@@ -388,12 +388,12 @@ namespace xNS
 
                             if (Parent != null)
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст \r\n№ " + Cnt.ToString() + " \r\n[" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
                             else
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст № " + Cnt.ToString() + " [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "текст \r\n№ " + Cnt.ToString() + " \r\n[" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
 
@@ -408,12 +408,12 @@ namespace xNS
 
                             if (Parent != null)
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "Код " + v.ToString() + " - расшифровка № " + v.ToString() + " [" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "Код " + v.ToString() + " - расшифровка \r\n№ " + v.ToString() + " \r\n[" + Parent.Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
                             else
                             {
-                                sb.Append(vbCrLf + sShift + "\t<value>" + "Код " + v.ToString() + " - расшифровка № " + v.ToString() + " [" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<value>" + "Код " + v.ToString() + " - расшифровка \r\n№ " + v.ToString() + " \r\n[" + Name.ToLower() + "]</value>" + vbCrLf + sShift);
                                 passValue = true;
                             }
 
