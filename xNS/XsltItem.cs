@@ -20,7 +20,9 @@ namespace xNS
         [XmlIgnoreAttribute]
         public static string vbCrLf = "\r\n";
 
+        [XmlIgnoreAttribute]
         public string xslFor;
+
         public string Caption;
         public string FormInfo;
         public string FactorInfo;
@@ -31,6 +33,7 @@ namespace xNS
         public Boolean LineFeed;
         public Boolean LineFeedManual;
         public List<XsltItem> Children = new List<XsltItem>();
+       // public List<string> Values = new List<string>();
 
         public override string ToString()
         {
@@ -173,6 +176,13 @@ namespace xNS
             if (FactorInfo.Contains("DV_BOOLEAN")) return true;
             return false;
         }
+
+        public Boolean IsOrdinal()
+        {
+            if (FactorInfo.Contains("DV_ORDINAL")) return true;
+            return false;
+        }
+
 
         public Boolean IsQuantity()
         {

@@ -928,6 +928,14 @@ namespace xNS
                 }
                 LoadTree(true);
             }
+            else
+            {
+                if(!t.FormInfo.Contains("пункт «оглавления»"))
+                {
+                    t.FormInfo += "\r\nпункт «оглавления»";
+                    LoadTree(true);
+                }
+            }
          
             
         }
@@ -1018,6 +1026,33 @@ namespace xNS
         }
 
         private List<String> StopStr;
+
+        private void cmdAddZero_Click(object sender, EventArgs e)
+        {
+            if (items == null) return;
+
+            XsltItem t;
+            t = new XsltItem ();
+            t.FormInfo = "[пункт «оглавления» Жалобы в колонке слева]";
+            t.Caption = "Жалобы";
+            t.FactorInfo = "[ 0..1 ] Заголовок раздела";
+            t.ItemID = "0";
+
+            
+
+
+            List<XsltItem>  items2 = new List<XsltItem>();
+            items2.Add(t);
+            foreach(XsltItem t2 in items)
+            {
+                items2.Add(t2);
+            }
+
+            items = items2;
+
+            LoadTree(true);
+
+        }
     }
 
 

@@ -856,6 +856,16 @@ namespace xNS
                             sb.AppendLine(@"<xsl:with-param name=""dateString"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
                             sb.Append(@"</xsl:call-template>");
                         }
+                        else if (sX.IsOrdinal())
+                        {
+                            sb.AppendLine(@"(<xsl:call-template name=""string-capltrim_nobr"">");
+                            sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
+                            sb.Append(@"</xsl:call-template>) ");
+                            sb.Append(@"<xsl:call-template name=""string-capltrim_nobr"">");
+                            sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs.Replace("*:value/*:value", "*:value/*:symbol/*:value"), excludeFor) + @"""/>");
+                            sb.Append(@"</xsl:call-template>");
+                        }
+
                         else if (sX.IsPeriod())
                         {
                             if (sX.Caption.EndsWith("ие"))
