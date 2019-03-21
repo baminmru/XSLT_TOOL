@@ -219,7 +219,7 @@ namespace xNS
             allTails[0] = new[]  // common tail
             {
                 "value/value", "value/rm:value", "value/rm:defining_code/rm:code_string","value/defining_code/code_string", "lower/magnitude",
-                "upper/magnitude", "value/magnitude", "value/rm:magnitude", "magnitude"
+                "upper/magnitude", "value/magnitude", "value/rm:magnitude", "magnitude","value/numerator"
             };
             allTails[1] = new[]  // single period
             {
@@ -476,24 +476,54 @@ namespace xNS
                 {
                     if (child.Children.Count == 0)
                     {
-                        XmlPlusItem xpi = FindNSPath(child);
+
+                        if (sX.Caption.ToLower() == "купирующий фактор")
+                        {
+                            sX.Path = sX.Path.Replace("/купирующий_фактор", "/провоцирующий_фактор");
+                            child.Path = child.Path.Replace("/купирующий_фактор", "/провоцирующий_фактор");
+                        }
+                            XmlPlusItem xpi = FindNSPath(child);
                         if (xpi != null && xpi.PathNs != "")
                         {
+                            string childPath = xpi.PathNs;
+
+                            if (sX.Children.Count > 0)
+                            {
+
+
+                                if (sX.Caption.ToLower() == "провоцирующий фактор")
+                                {
+                                    XmlPlusItem parentXpi = FindNSPath(sX);
+                                    string SelPath = parentXpi.PathNs;
+                                    SelPath = SelPath + "[contains(*:name/*:value,'Провоцирующий')]";
+                                    childPath = childPath.Replace(parentXpi.PathNs, SelPath);
+
+                                }
+
+                                if (sX.Caption.ToLower() == "купирующий фактор")
+                                {
+                                    XmlPlusItem parentXpi = FindNSPath(sX);
+                                    string SelPath = parentXpi.PathNs;
+                                    SelPath = SelPath + "[contains(*:name/*:value,'Купирующий')]";
+                                    childPath = childPath.Replace(parentXpi.PathNs, SelPath);
+
+                                }
+                            }
 
                             if (child.IsMulty())
                             {
-                                sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @") > 0 ");
+                                sb.AppendLine(" or count(" + CutFor(child, SinglePeriodPathPatch(childPath), false) + @") > 0 ");
                             }
                             else
                             {
 
                                 if (child.IsBoolean())
                                 {
-                                    sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" = 'true' ");
+                                    sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(childPath), false) + @" = 'true' ");
                                 }
                                 else
                                 {
-                                    sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(xpi.PathNs), false) + @" != '' ");
+                                    sb.AppendLine(" or " + CutFor(child, SinglePeriodPathPatch(childPath), false) + @" != '' ");
                                 }
                             }
 
@@ -525,6 +555,7 @@ namespace xNS
         {
 
             string sNS = "*";
+            sX.Path=sX.Path.Replace("/купирующий_фактор", "/провоцирующий_фактор");
 
             try
             {
@@ -866,6 +897,15 @@ namespace xNS
                             sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs.Replace("*:value/*:value", "*:value/*:symbol/*:value"), excludeFor) + @"""/>");
                             sb.Append(@"</xsl:call-template>");
                         }
+                        else  if (sX.IsProportion ())
+                        {
+                            sb.AppendLine(@"<xsl:call-template name=""string-capltrim_nobr"">");
+                            sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs, excludeFor) + @"""/>");
+                            sb.Append(@"</xsl:call-template> ");
+                            sb.Append(@"/ <xsl:call-template name=""string-capltrim_nobr"">");
+                            sb.AppendLine(@"<xsl:with-param name=""string"" select=""" + CutFor(sX, xpi.PathNs.Replace("*:value/*:numerator", "*:value/*:denominator"), excludeFor) + @"""/>");
+                            sb.Append(@"</xsl:call-template>");
+                        }
 
                         else if (sX.IsPeriod())
                         {
@@ -1030,6 +1070,20 @@ namespace xNS
                             SelPath = "/ERROR";
                             sb.AppendLine(@"<xsl:text> [ОШИБКА: ПУСТОЙ ПУТЬ ДЛЯ  ЦИКЛА, ID:"+ sX.ItemID +"] </xsl:text>");
                         }
+
+                        if (sX.Children.Count > 0)
+                        {
+                            if (sX.Caption.ToLower() == "провоцирующий фактор")
+                            {
+                                SelPath = SelPath + "[contains(*:name/*:value,'Провоцирующий')]";
+                            }
+
+                            if (sX.Caption.ToLower() == "купирующий фактор")
+                            {
+                                SelPath = SelPath + "[contains(*:name/*:value,'Купирующий')]";
+                            }
+                        }
+
                         sb.AppendLine(@"<xsl:for-each select=""" + SelPath + @""">");
                         if (sX.IsNewLine())
                         {

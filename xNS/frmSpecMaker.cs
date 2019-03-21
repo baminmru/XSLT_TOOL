@@ -133,7 +133,9 @@ namespace xNS
                             if (cIdx == 5)
                                 x.FactorInfo = c.Xml.Value.Trim();
                             if (cIdx == 7)
-                                x.Path = c.Xml.Value.Trim();
+                            {
+                                x.Path = c.Xml.Value.Trim().Replace("/купирующий_фактор", "/провоцирующий_фактор"); 
+                            }
                             if (cIdx > 7)
                             {
                                 if (c.Xml.Value.Contains("show-decimals"))
@@ -286,201 +288,201 @@ namespace xNS
 
 
 
-        private void readChild(xsdItem xsd, XmlElement el)
-        {
-            XmlNodeList ct = el.SelectNodes("./xs:complexType", nsmgr);
-            foreach (XmlNode node in ct)
-            {
+        //private void readChild(xsdItem xsd, XmlElement el)
+        //{
+        //    XmlNodeList ct = el.SelectNodes("./xs:complexType", nsmgr);
+        //    foreach (XmlNode node in ct)
+        //    {
 
-                XmlElement el2 = (XmlElement)node;
-                XmlNodeList sq = el2.SelectNodes("./xs:sequence", nsmgr);
-                foreach (XmlNode node2 in sq)
-                {
+        //        XmlElement el2 = (XmlElement)node;
+        //        XmlNodeList sq = el2.SelectNodes("./xs:sequence", nsmgr);
+        //        foreach (XmlNode node2 in sq)
+        //        {
 
-                    XmlElement el3 = (XmlElement)node2;
-                    XmlNodeList children = el3.SelectNodes("./xs:element", nsmgr);
-                    foreach (XmlNode node3 in children)
-                    {
+        //            XmlElement el3 = (XmlElement)node2;
+        //            XmlNodeList children = el3.SelectNodes("./xs:element", nsmgr);
+        //            foreach (XmlNode node3 in children)
+        //            {
 
-                        XmlElement el4 = (XmlElement)node3;
-
-
-                        xsdItem xsdChild = new xsdItem();
-                        try { xsdChild.Name = el4.GetAttribute("name"); }
-                        catch { }
-
-                        if (xsdChild.Name != "")
-                        {
-                            if (!StopStr.Contains(xsdChild.Name.ToLower()))
-                            {
-                                try { xsdChild.Type = el4.GetAttribute("type"); }
-                                catch { xsdChild.Type = ""; }
-
-                                if (xsdChild.Type == "")
-                                {
-                                    XmlNodeList restricts = el4.SelectNodes("./xs:simpleType/xs:restriction", nsmgr);
-                                    if (restricts != null && restricts.Count > 0)
-                                    {
-                                        XmlElement r = (XmlElement)restricts[0];
-                                        try { xsdChild.Type = r.GetAttribute("base"); }
-                                        catch { xsdChild.Type = ""; }
-
-                                        XmlNodeList pattern = r.SelectNodes("xs:pattern", nsmgr);
-
-                                        foreach (XmlNode pn in pattern)
-                                        {
-                                            XmlElement p = (XmlElement)pn;
-                                            try { xsdChild.Patterns.Add(p.GetAttribute("value")); }
-                                            catch { }
-                                        }
-
-                                        XmlNodeList ens = r.SelectNodes("xs:enumeration", nsmgr);
-
-                                        if (ens.Count > 0)
-                                        {
-                                            string R = "";
-                                            foreach (XmlNode pn in ens)
-                                            {
-                                                if (R != "") R += ";";
-
-                                                XmlElement p = (XmlElement)pn;
-                                                try { R += p.GetAttribute("value"); }
-                                                catch { }
-                                            }
-                                            if (R != "")
-                                            {
-                                                xsdChild.Restrictions = R;
-                                            }
-                                        }
-
-                                    }
-                                }
+        //                XmlElement el4 = (XmlElement)node3;
 
 
-                                try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
-                                catch { xsdChild.oMin = "0"; }
-                                if (xsdChild.oMin == "") xsdChild.oMin = "0";
+        //                xsdItem xsdChild = new xsdItem();
+        //                try { xsdChild.Name = el4.GetAttribute("name"); }
+        //                catch { }
 
-                                try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
-                                catch { xsdChild.oMax = "1"; }
-                                if (xsdChild.oMax == "") xsdChild.oMax = "1";
+        //                if (xsdChild.Name != "")
+        //                {
+        //                    if (!StopStr.Contains(xsdChild.Name.ToLower()))
+        //                    {
+        //                        try { xsdChild.Type = el4.GetAttribute("type"); }
+        //                        catch { xsdChild.Type = ""; }
 
-                                try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
-                                catch { xsdChild.Fixed = ""; }
+        //                        if (xsdChild.Type == "")
+        //                        {
+        //                            XmlNodeList restricts = el4.SelectNodes("./xs:simpleType/xs:restriction", nsmgr);
+        //                            if (restricts != null && restricts.Count > 0)
+        //                            {
+        //                                XmlElement r = (XmlElement)restricts[0];
+        //                                try { xsdChild.Type = r.GetAttribute("base"); }
+        //                                catch { xsdChild.Type = ""; }
 
+        //                                XmlNodeList pattern = r.SelectNodes("xs:pattern", nsmgr);
 
+        //                                foreach (XmlNode pn in pattern)
+        //                                {
+        //                                    XmlElement p = (XmlElement)pn;
+        //                                    try { xsdChild.Patterns.Add(p.GetAttribute("value")); }
+        //                                    catch { }
+        //                                }
 
+        //                                XmlNodeList ens = r.SelectNodes("xs:enumeration", nsmgr);
 
-                                if (xsdChild.Name.ToLower() == "defining_code")
-                                {
-                                    XmlNodeList restricts = el4.SelectNodes(".//xs:restriction", nsmgr);
-                                    if (restricts != null && restricts.Count > 0)
-                                    {
-                                        xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
-                                        if (xsdChild.Restrictions != null && xsdChild.Restrictions != "")
-                                            xsd.Children.Add(xsdChild);
-                                    }
-                                    else
-                                    {
-                                        XmlNodeList seq = el4.SelectNodes("./xs:complexType/xs:sequence", nsmgr);
-                                        if (seq != null && seq.Count > 0)
-                                        {
-                                            xsdChild.Restrictions = processRestrictions(seq[0].InnerXml);
-                                            if (xsdChild.Restrictions != null && xsdChild.Restrictions != "")
-                                                xsd.Children.Add(xsdChild);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    xsd.Children.Add(xsdChild);
-                                    readChild(xsdChild, el4);
-                                }
+        //                                if (ens.Count > 0)
+        //                                {
+        //                                    string R = "";
+        //                                    foreach (XmlNode pn in ens)
+        //                                    {
+        //                                        if (R != "") R += ";";
 
+        //                                        XmlElement p = (XmlElement)pn;
+        //                                        try { R += p.GetAttribute("value"); }
+        //                                        catch { }
+        //                                    }
+        //                                    if (R != "")
+        //                                    {
+        //                                        xsdChild.Restrictions = R;
+        //                                    }
+        //                                }
 
-
-                            }
-                        }
-
-
-                    }
-
-
-                    children = el3.SelectNodes("./xs:choice/xs:element", nsmgr);
-                    foreach (XmlNode node3 in children)
-                    {
-
-                        XmlElement el4 = (XmlElement)node3;
+        //                            }
+        //                        }
 
 
-                        xsdItem xsdChild = new xsdItem();
-                        try { xsdChild.Name = el4.GetAttribute("name"); }
-                        catch { }
+        //                        try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
+        //                        catch { xsdChild.oMin = "0"; }
+        //                        if (xsdChild.oMin == "") xsdChild.oMin = "0";
 
-                        if (xsdChild.Name != "")
-                        {
-                            if (!StopStr.Contains(xsdChild.Name.ToLower()))
-                            {
-                                try { xsdChild.Type = el4.GetAttribute("type"); }
-                                catch { xsdChild.Type = ""; }
+        //                        try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
+        //                        catch { xsdChild.oMax = "1"; }
+        //                        if (xsdChild.oMax == "") xsdChild.oMax = "1";
 
-                                if (xsdChild.Type == "")
-                                {
-                                    XmlNodeList restricts = el4.SelectNodes("./xs:simpleType/xs:restriction", nsmgr);
-                                    if (restricts != null && restricts.Count > 0)
-                                    {
-                                        XmlElement r = (XmlElement)restricts[0];
-                                        try { xsdChild.Type = r.GetAttribute("base"); }
-                                        catch { xsdChild.Type = ""; }
-
-                                    }
-                                }
-
-                                try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
-                                catch { xsdChild.oMin = "0"; }
-                                if (xsdChild.oMin == "") xsdChild.oMin = "0";
-
-                                try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
-                                catch { xsdChild.oMax = "1"; }
-                                if (xsdChild.oMax == "") xsdChild.oMax = "1";
-
-                                try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
-                                catch { }
+        //                        try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
+        //                        catch { xsdChild.Fixed = ""; }
 
 
 
 
-
-                                if (xsdChild.Name.ToLower() == "defining_code")
-                                {
-                                    XmlNodeList restricts = el4.SelectNodes(".//xs:restriction", nsmgr);
-                                    if (restricts != null && restricts.Count > 0)
-                                    {
-                                        xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
-                                        xsd.Choice.Add(xsdChild);
-                                    }
-                                }
-                                else
-                                {
-                                    xsd.Choice.Add(xsdChild);
-                                    readChild(xsdChild, el4);
-                                }
-
-
-
-
-                            }
-                        }
-                    }
-
-
-                }
-
-
+        //                        if (xsdChild.Name.ToLower() == "defining_code")
+        //                        {
+        //                            XmlNodeList restricts = el4.SelectNodes(".//xs:restriction", nsmgr);
+        //                            if (restricts != null && restricts.Count > 0)
+        //                            {
+        //                                xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
+        //                                if (xsdChild.Restrictions != null && xsdChild.Restrictions != "")
+        //                                    xsd.Children.Add(xsdChild);
+        //                            }
+        //                            else
+        //                            {
+        //                                XmlNodeList seq = el4.SelectNodes("./xs:complexType/xs:sequence", nsmgr);
+        //                                if (seq != null && seq.Count > 0)
+        //                                {
+        //                                    xsdChild.Restrictions = processRestrictions(seq[0].InnerXml);
+        //                                    if (xsdChild.Restrictions != null && xsdChild.Restrictions != "")
+        //                                        xsd.Children.Add(xsdChild);
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            xsd.Children.Add(xsdChild);
+        //                            readChild(xsdChild, el4);
+        //                        }
 
 
-            }
-        }
+
+        //                    }
+        //                }
+
+
+        //            }
+
+
+        //            children = el3.SelectNodes("./xs:choice/xs:element", nsmgr);
+        //            foreach (XmlNode node3 in children)
+        //            {
+
+        //                XmlElement el4 = (XmlElement)node3;
+
+
+        //                xsdItem xsdChild = new xsdItem();
+        //                try { xsdChild.Name = el4.GetAttribute("name"); }
+        //                catch { }
+
+        //                if (xsdChild.Name != "")
+        //                {
+        //                    if (!StopStr.Contains(xsdChild.Name.ToLower()))
+        //                    {
+        //                        try { xsdChild.Type = el4.GetAttribute("type"); }
+        //                        catch { xsdChild.Type = ""; }
+
+        //                        if (xsdChild.Type == "")
+        //                        {
+        //                            XmlNodeList restricts = el4.SelectNodes("./xs:simpleType/xs:restriction", nsmgr);
+        //                            if (restricts != null && restricts.Count > 0)
+        //                            {
+        //                                XmlElement r = (XmlElement)restricts[0];
+        //                                try { xsdChild.Type = r.GetAttribute("base"); }
+        //                                catch { xsdChild.Type = ""; }
+
+        //                            }
+        //                        }
+
+        //                        try { xsdChild.oMin = el4.GetAttribute("minOccurs"); }
+        //                        catch { xsdChild.oMin = "0"; }
+        //                        if (xsdChild.oMin == "") xsdChild.oMin = "0";
+
+        //                        try { xsdChild.oMax = el4.GetAttribute("maxOccurs"); }
+        //                        catch { xsdChild.oMax = "1"; }
+        //                        if (xsdChild.oMax == "") xsdChild.oMax = "1";
+
+        //                        try { xsdChild.Fixed = el4.GetAttribute("fixed"); }
+        //                        catch { }
+
+
+
+
+
+        //                        if (xsdChild.Name.ToLower() == "defining_code")
+        //                        {
+        //                            XmlNodeList restricts = el4.SelectNodes(".//xs:restriction", nsmgr);
+        //                            if (restricts != null && restricts.Count > 0)
+        //                            {
+        //                                xsdChild.Restrictions = processRestrictions(restricts[0].InnerXml);
+        //                                xsd.Choice.Add(xsdChild);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            xsd.Choice.Add(xsdChild);
+        //                            readChild(xsdChild, el4);
+        //                        }
+
+
+
+
+        //                    }
+        //                }
+        //            }
+
+
+        //        }
+
+
+
+
+        //    }
+        //}
         private XMLBuilder xb;
         private string BuildXML()
         {
@@ -502,87 +504,87 @@ namespace xNS
         }
 
 
-    private string _BuildXML()
-        {
-            StopStr = new List<String>();
-            string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context;Любое_событие_as_Interval_Event";
+    //private string _BuildXML()
+    //    {
+    //        StopStr = new List<String>();
+    //        string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context;Любое_событие_as_Interval_Event";
 
-            String[] stops = sIg.ToLower().Split(';');
+    //        String[] stops = sIg.ToLower().Split(';');
 
-            foreach (string s in stops)
-            {
-                StopStr.Add(s);
-            }
-
-           
-            XmlDocument xDoc = new XmlDocument();
-
-            string sXSD = File.ReadAllText(txtXSD.Text);
-
-            //  patch Factor problem
-            sXSD=sXSD.Replace("Провоцирующий_fslash_купирующий_фактор", "Провоцирующий_фактор");
-            sXSD = sXSD.Replace("&lt;", "_меньше_");
-            sXSD = sXSD.Replace("&gt;", "_больше_");
-
-            xDoc.LoadXml(sXSD);
-
-            nsmgr = new XmlNamespaceManager(xDoc.NameTable);
-            nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
-            //nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
+    //        foreach (string s in stops)
+    //        {
+    //            StopStr.Add(s);
+    //        }
 
            
-            StringBuilder sb = new StringBuilder();
+    //        XmlDocument xDoc = new XmlDocument();
 
-            xsdItem root = new xsdItem();
+    //        string sXSD = File.ReadAllText(txtXSD.Text);
 
-            XmlNodeList rootElements = xDoc.LastChild.ChildNodes;
-            XmlElement rootEl;
+    //        //  patch Factor problem
+    //        sXSD=sXSD.Replace("Провоцирующий_fslash_купирующий_фактор", "Провоцирующий_фактор");
+    //        sXSD = sXSD.Replace("&lt;", "_меньше_");
+    //        sXSD = sXSD.Replace("&gt;", "_больше_");
 
-            foreach (XmlNode node in rootElements)
-            {
-                if (node.Name == "xs:element")
-                {
-                    rootEl = (XmlElement)node;
-                    Name = rootEl.GetAttribute("name");
+    //        xDoc.LoadXml(sXSD);
 
-                    root.Name = Name;
-                    root.Type = "root";
+    //        nsmgr = new XmlNamespaceManager(xDoc.NameTable);
+    //        nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
+    //        //nsmgr.AddNamespace("xs", "http://www.w3.org/2001/XMLSchema");
 
-                    readChild(root, rootEl);
+           
+    //        StringBuilder sb = new StringBuilder();
 
-                }
-            }
+    //        xsdItem root = new xsdItem();
 
-            root.RestoreParent();
+    //        XmlNodeList rootElements = xDoc.LastChild.ChildNodes;
+    //        XmlElement rootEl;
 
-            using (var writer = new System.IO.StreamWriter(txtXSD.Text+".map"))
-            {
-                var serializer = new XmlSerializer(root.GetType());
-                serializer.Serialize(writer, root);
-                writer.Flush();
-            }
+    //        foreach (XmlNode node in rootElements)
+    //        {
+    //            if (node.Name == "xs:element")
+    //            {
+    //                rootEl = (XmlElement)node;
+    //                Name = rootEl.GetAttribute("name");
 
-            string sOut;
-            string testName;
-            //if (TestCount > 0)
-            //{
-            FileInfo fi = new FileInfo(txtXSD.Text);
-            testName = fi.DirectoryName;
-            for (int i = 1; i <= 10; i++)
-            {
-                for (int j = 1; j <= 5; j++)
-                {
-                    root.SetGenPercent( (short)(i * 2));
-                    sOut = root.Generate(null).ToString();
-                    File.WriteAllText(testName + "\\test_" + i.ToString() + "_" + j.ToString() + ".xml", sOut);
-                }
-            }
-            //}
+    //                root.Name = Name;
+    //                root.Type = "root";
 
-            root.SetGenPercent(0);
-            sOut = root.Generate(null).ToString();
-            return sOut;
-        }
+    //                readChild(root, rootEl);
+
+    //            }
+    //        }
+
+    //        root.RestoreParent();
+
+    //        using (var writer = new System.IO.StreamWriter(txtXSD.Text+".map"))
+    //        {
+    //            var serializer = new XmlSerializer(root.GetType());
+    //            serializer.Serialize(writer, root);
+    //            writer.Flush();
+    //        }
+
+    //        string sOut;
+    //        string testName;
+    //        //if (TestCount > 0)
+    //        //{
+    //        FileInfo fi = new FileInfo(txtXSD.Text);
+    //        testName = fi.DirectoryName;
+    //        for (int i = 1; i <= 10; i++)
+    //        {
+    //            for (int j = 1; j <= 5; j++)
+    //            {
+    //                root.SetGenPercent( (short)(i * 2));
+    //                sOut = root.Generate(null).ToString();
+    //                File.WriteAllText(testName + "\\test_" + i.ToString() + "_" + j.ToString() + ".xml", sOut);
+    //            }
+    //        }
+    //        //}
+
+    //        root.SetGenPercent(0);
+    //        sOut = root.Generate(null).ToString();
+    //        return sOut;
+    //    }
 
         private void cmdProcess_Click(object sender, EventArgs e)
         {
@@ -1044,7 +1046,7 @@ namespace xNS
             }
         }
 
-        private List<String> StopStr;
+       // private List<String> StopStr;
 
         private void cmdAddZero_Click(object sender, EventArgs e)
         {

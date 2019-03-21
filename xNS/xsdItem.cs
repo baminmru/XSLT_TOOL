@@ -333,7 +333,7 @@ namespace xNS
                     {
                         // допускаем только наличие  служебных  компонентов внутри пути 
                         if (tmp != "" && !(tmp.ToLower().StartsWith("любое_событие_as_point")
-                       || tmp.ToLower().StartsWith("любые_события") || tmp.ToLower() == "точка_во_времени") && tmp != "data" && tmp != "protocol" && tmp != "value")
+                       || tmp.ToLower().StartsWith("любое_событие_времени_as_point") || tmp.ToLower().StartsWith("любые_события") || tmp.ToLower() == "точка_во_времени") && tmp != "data" && tmp != "protocol" && tmp != "value")
                         {
                             return false;
                         }
@@ -518,6 +518,19 @@ namespace xNS
                                 Cnt++;
                             }
 
+                            if (this.Type == "oe:DV_PROPORTION")
+                            {
+
+                                int v = Rnd.Next(1, Cnt + 1);
+                                sb.Append(vbCrLf + sShift + "\t<numerator>" + v.ToString() + "</numerator>");
+                                v = 1 + Rnd.Next(1, Cnt + 1);
+                                sb.Append(vbCrLf + sShift + "\t<denominator>" + v.ToString() + "</denominator>");
+                                v = 1 + Rnd.Next(1, 3);
+                                sb.Append(vbCrLf + sShift + "\t<type>" + v.ToString() + "</type>");
+                                sb.Append(vbCrLf + sShift + "\t<precision>1</precision>");
+                                passValue = true;
+                                Cnt++;
+                            }
 
                             if (this.Type == "xs:string")
                             {
@@ -665,6 +678,21 @@ namespace xNS
                                 Cnt++;
                             }
 
+                            //oe:DV_IDENTIFIER
+                            if (this.Type == "oe:DV_IDENTIFIER")
+                            {
+                                sb.Append(vbCrLf + sShift + "\t<id>" + Cnt.ToString() + "</id>" + vbCrLf + sShift);
+                                passValue = true;
+                                Cnt++;
+                            }
+
+                            if (this.Type == "oe:DV_PARSABLE")
+                            {
+                                sb.Append(vbCrLf + sShift + "\t<value>" + Cnt.ToString() + "</value>" + vbCrLf + sShift);
+                                sb.Append(vbCrLf + sShift + "\t<formalism>Proforma</formalism>" + vbCrLf + sShift);
+                                passValue = true;
+                                Cnt++;
+                            }
 
 
                             if (this.Type == "" && Children.Count == 0 && Choice.Count == 0)
@@ -802,6 +830,20 @@ namespace xNS
                             int v = Rnd.Next(1, Cnt + 1);
                             sb.Append(vbCrLf + sShift + "\t<magnitude>" + v.ToString() + "</magnitude>");
                             sb.Append(vbCrLf + sShift + "\t<units>" + Builder.GetRandomUnit() + "</units>" + vbCrLf + sShift);
+                            passValue = true;
+                            Cnt++;
+                        }
+
+                        if (this.Type == "oe:DV_PROPORTION")
+                        {
+
+                            int v = Rnd.Next(1, Cnt + 1);
+                            sb.Append(vbCrLf + sShift + "\t<numerator>" + v.ToString() + "</numerator>");
+                            v = 1 + Rnd.Next(1, Cnt + 1);
+                            sb.Append(vbCrLf + sShift + "\t<denominator>" + v.ToString() + "</denominator>");
+                            v = 1 + Rnd.Next(1, 3);
+                            sb.Append(vbCrLf + sShift + "\t<type>" + v.ToString() + "</type>");
+                            sb.Append(vbCrLf + sShift + "\t<precision>1</precision>");
                             passValue = true;
                             Cnt++;
                         }
@@ -951,8 +993,22 @@ namespace xNS
                             passValue = true;
                             Cnt++;
                         }
+                        //oe:DV_IDENTIFIER
+                        if (this.Type == "oe:DV_IDENTIFIER")
+                        {
+                            sb.Append(vbCrLf + sShift + "\t<id>" + Cnt.ToString() + "</id>" + vbCrLf + sShift);
+                            passValue = true;
+                            Cnt++;
+                        }
 
-                        
+                        if (this.Type == "oe:DV_PARSABLE")
+                        {
+                            sb.Append(vbCrLf + sShift + "\t<value>" + Cnt.ToString() + "</value>" + vbCrLf + sShift);
+                            sb.Append(vbCrLf + sShift + "\t<formalism>Proforma</formalism>" + vbCrLf + sShift);
+                            passValue = true;
+                            Cnt++;
+                        }
+
 
                         if (this.Type == "" && Children.Count == 0 && Choice.Count == 0)
                         {

@@ -183,6 +183,12 @@ namespace xNS
             return false;
         }
 
+        //DV_PROPORTION
+        public Boolean IsProportion()
+        {
+            if (FactorInfo.Contains("DV_PROPORTION")) return true;
+            return false;
+        }
 
         public Boolean IsQuantity()
         {
