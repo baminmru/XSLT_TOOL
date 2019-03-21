@@ -481,9 +481,28 @@ namespace xNS
 
             }
         }
-    
+        private XMLBuilder xb;
+        private string BuildXML()
+        {
+            xb = new XMLBuilder();
+            FileInfo fi = new FileInfo(txtXSD.Text);
 
-    private string BuildXML()
+            string OutputFolder = fi.DirectoryName;
+
+           
+            xb.XSDPath = txtXSD.Text;
+            xb.OutFolder = OutputFolder;
+
+
+            List<string> genpaths = new List<string>();
+            String sPaths = "";
+            string xmlPath = xb.BuildXML(sPaths);
+            string xmlData = File.ReadAllText(xmlPath);
+            return xmlData;
+        }
+
+
+    private string _BuildXML()
         {
             StopStr = new List<String>();
             string sIg = "state;magnitude_status;math_function;origin;time;width;normal_status;other_reference_ranges;normal_range;null_flavour;terminology_id;mappings;links;language;encoding;provider;subject;other_participations;context;setting;uid;composer;territory;category;context;Любое_событие_as_Interval_Event";
@@ -584,7 +603,7 @@ namespace xNS
                 else
                 {
                    string XMLText = BuildXML();
-                    File.WriteAllText(txtXSD.Text + ".xml", XMLText);
+                    //File.WriteAllText(txtXSD.Text + ".xml", XMLText);
                     xmlpath = "AUTO";
                     sp.LoadXML(XMLText, "*");
                 }
@@ -1037,6 +1056,7 @@ namespace xNS
             t.Caption = "Жалобы";
             t.FactorInfo = "[ 0..1 ] Заголовок раздела";
             t.ItemID = "0";
+            t.Path = "generic text";
 
             
 

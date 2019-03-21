@@ -271,6 +271,7 @@ namespace xNS
 
         private XmlPlusItem FindNSPath(XsltItem sX)
         {
+            if (sX.Path == null) sX.Path = "";
             string sFind = sX.Path;
             if (sX.Path.Trim() == "" || sX.Path.Trim().ToLower().StartsWith("generic"))
             {
