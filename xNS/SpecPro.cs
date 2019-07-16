@@ -883,7 +883,7 @@ namespace xNS
                         }
                         else if (sX.IsBoolean())
                         {
-                            sb.Append("<span>" + sX.Caption.ToLower() + "</span>");
+                            sb.Append("<xsl:text>" + sX.Caption.ToLower() + "</xsl:text>");
                         }
                         else
                         {
@@ -1276,7 +1276,7 @@ namespace xNS
                 }
                 else
                 {
-                    sOut += @"<span>" + Caption + ": </span>";
+                    sOut += @"<xsl:text>" + Caption + ": </xsl:text>";
                 }
 
             return sOut;
@@ -1288,7 +1288,7 @@ namespace xNS
             string sOut = "";
             if (sX.ComaBefore) sOut+=", ";
             if(Caption.Trim() !="")
-                sOut += @"<span>" + Caption + ": </span>";
+                sOut += @"<xsl:text>" + Caption + ": </xsl:text>";
             return sOut;
         }
 
